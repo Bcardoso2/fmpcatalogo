@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autogiro - Catálogo de Veículos</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        /* Design System (Mantido) */
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-elevated: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --radius: 16px;
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* CRITICAL: Hidden class */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+        }
+        
+        .logo-text {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .stat-item {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .stat-item:hover {
+            background: rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .user-credits {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-login {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .btn-login:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* NOVO ESTILO: Botão de Propostas */
+        .btn-proposals-header {
+            background: var(--secondary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            transition: var(--transition);
+            margin-right: 1rem;
+        }
+
+        .btn-proposals-header:hover {
+            background: #6d28d9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Filters */
+        .filters-section {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .search-bar {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .search-bar::before {
+            content: '🔍';
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 2px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Results Summary */
+        .results-summary {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .results-summary strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Vehicles Grid */
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .vehicle-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .vehicle-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        /* Gallery */
+        .vehicle-gallery {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background: var(--bg-elevated);
+        }
+        
+        .main-image-container {
+            position: relative;
+            height: 220px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .main-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .vehicle-card:hover .main-image-container img {
+            transform: scale(1.1);
+        }
+        
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+        }
+        
+        .main-image-container:hover .image-overlay {
+            opacity: 1;
+        }
+        
+        .zoom-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .thumbnail-strip {
+            display: flex;
+            height: 60px;
+            gap: 5px;
+            padding: 5px;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .thumbnail-strip img {
+            flex: 1;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        
+        .thumbnail-strip img:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .more-photos {
+            flex: 1;
+            height: 50px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+        
+        .more-photos:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .no-image {
+            height: 280px;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+        
+        .no-image-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Vehicle Info */
+        .vehicle-info {
+            padding: 1.5rem;
+        }
+        
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+        
+        .vehicle-title-section {
+            flex: 1;
+        }
+        
+        .vehicle-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+        
+        .vehicle-year {
+            display: inline-block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+        }
+        
+        .vehicle-badges {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .category-badge, .laudo-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+        }
+
+        .vehicle-pricing {
+            margin-bottom: 1.25rem;
+            text-align: center;
+            padding: 1.25rem;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+        }
+        
+        .main-price {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+
+        .vehicle-specs-mini {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .spec-mini {
+            background: rgba(100, 116, 139, 0.1);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            padding: 0.375rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .vehicle-location {
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Actions */
+        .vehicle-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .vehicle-actions .btn-proposal {
+            grid-column: 1 / -1;
+        }
+        
+        .btn-primary, .btn-secondary, .btn-proposal, .btn-laudo {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+            text-align: center;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--text-secondary);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(100, 116, 139, 0.2);
+            border-color: rgba(100, 116, 139, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-proposal {
+            background: #25D366;
+            color: white;
+        }
+        
+        .btn-proposal:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+        
+        .btn-laudo {
+            background: #FF6B35;
+            color: white;
+        }
+        
+        .btn-laudo:hover {
+            background: #E55A2B;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: rgba(100, 116, 139, 0.1);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            background: rgba(100, 116, 139, 0.2);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: 2px solid rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+        
+        .btn-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-submit:disabled {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Toast Notifications */
+        #toastContainer {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 9999;
+        }
+        
+        .toast {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            min-width: 300px;
+            color: var(--text-primary);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .toast-success { border-left: 4px solid var(--success); }
+        .toast-error { border-left: 4px solid var(--danger); }
+        
+        /* NOVO ESTILO: Tabela de Propostas (Responsiva) */
+        .proposals-table {
+            width: 100%;
+            min-width: 500px; /* Garante que a tabela tenha uma largura mínima para a rolagem no mobile */
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .proposals-table th, .proposals-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            font-size: 0.9rem;
+            white-space: nowrap; /* Impede que o conteúdo da célula quebre, forçando a rolagem */
+        }
+        
+        .proposals-table th {
+            color: var(--primary);
+            font-weight: 700;
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .proposals-table td {
+            color: var(--text-secondary);
+        }
+        
+        .proposals-table .status-pending { color: var(--warning); font-weight: 600; }
+        .proposals-table .status-accepted { color: var(--success); font-weight: 600; }
+        .proposals-table .status-rejected { color: var(--danger); font-weight: 600; }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vehicle-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-proposals-header {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="toastContainer"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">AG</div>
+                <div class="logo-text">Autogiro</div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalVehicles">0</span>
+                    <span class="stat-label">Veículos</span>
+                </div>
+            </div>
+            <div id="userInfoContainer" style="display: flex; align-items: center; gap: 1rem;">
+                <button class="btn-proposals-header hidden" id="btnProposals" onclick="handleViewProposals()">
+                    📜 Minhas Propostas
+                </button>
+                <div class="user-info hidden" id="userInfo">
+                    <span id="userName"></span>
+                    <span class="user-credits" id="userCredits">0 créditos</span>
+                    <button class="btn-logout" onclick="logout()">Sair</button>
+                </div>
+                <button class="btn-login" id="btnLogin" onclick="openLoginModal()">Entrar</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Carregando veículos...</p>
+        </div>
+
+        <div id="catalogContent" class="hidden">
+            <div class="filters-section">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por marca, modelo, cor...">
+                </div>
+            </div>
+
+            <div class="results-summary">
+                Mostrando <strong id="visibleCount">0</strong> veículos
+            </div>
+
+            <div class="vehicles-grid" id="vehiclesGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        const APP_STATE = {
+            vehicles: [],
+            currentUser: null,
+            isLoggedIn: false
+        }
+
+        const API_BASE = 'http://localhost:3000/api' // Certifique-se que o backend está rodando aqui
+
+        async function loadVehicles() {
+            try {
+                console.log('Carregando veículos...')
+                const response = await fetch(`${API_BASE}/vehicles`, { credentials: 'include' })
+                const data = await response.json()
+                
+                if (data.success) {
+                    APP_STATE.vehicles = data.vehicles
+                    renderVehicles()
+                    updateStats()
+                } else {
+                    showToast('Erro ao carregar veículos', 'error')
+                }
+            } catch (error) {
+                console.error('Erro ao carregar veículos:', error)
+                showToast('Erro ao conectar com o servidor', 'error')
+            } finally {
+                document.getElementById('loading').classList.add('hidden')
+                document.getElementById('catalogContent').classList.remove('hidden')
+            }
+        }
+
+        async function checkAuth() {
+            try {
+                console.log('Verificando autenticação...')
+                const response = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' })
+                const data = await response.json()
+                
+                if (data.success && data.user) {
+                    APP_STATE.currentUser = data.user
+                    APP_STATE.isLoggedIn = true
+                } else {
+                    APP_STATE.isLoggedIn = false
+                    APP_STATE.currentUser = null
+                }
+                
+                updateUserUI()
+            } catch (error) {
+                console.error('Erro ao verificar auth:', error)
+                APP_STATE.isLoggedIn = false
+                APP_STATE.currentUser = null
+                updateUserUI()
+            }
+        }
+
+        function updateUserUI() {
+            const userInfo = document.getElementById('userInfo')
+            const btnLogin = document.getElementById('btnLogin')
+            const userName = document.getElementById('userName')
+            const userCredits = document.getElementById('userCredits')
+            const btnProposals = document.getElementById('btnProposals')
+            
+            if (APP_STATE.isLoggedIn && APP_STATE.currentUser) {
+                userInfo.classList.remove('hidden')
+                btnLogin.classList.add('hidden')
+                btnProposals.classList.remove('hidden') 
+                userName.textContent = APP_STATE.currentUser.name
+                userCredits.textContent = `${parseFloat(APP_STATE.currentUser.credits).toFixed(1)} créditos`
+            } else {
+                userInfo.classList.add('hidden')
+                btnLogin.classList.remove('hidden')
+                btnProposals.classList.add('hidden')
+            }
+        }
+
+        function renderVehicles() {
+            const grid = document.getElementById('vehiclesGrid')
+            grid.innerHTML = ''
+            
+            APP_STATE.vehicles.forEach((vehicle, index) => {
+                const card = createVehicleCard(vehicle, index)
+                grid.appendChild(card)
+            })
+        }
+
+        function createVehicleCard(vehicle, index) {
+            const div = document.createElement('div')
+            div.className = 'vehicle-card'
+            div.setAttribute('data-index', index)
+            
+            const images = vehicle.images || []
+            const hasImages = images.length > 0
+            
+            div.innerHTML = `
+                <div class="vehicle-gallery">
+                    ${hasImages ? `
+                        <div class="main-image-container" onclick="openGallery(${index})">
+                            <img src="${images[0].url}" alt="${vehicle.brand} ${vehicle.model}">
+                            <div class="image-overlay">
+                                <span class="zoom-icon">🔍</span>
+                                <span>Ver ${images.length} foto${images.length > 1 ? 's' : ''}</span>
+                            </div>
+                        </div>
+                        ${images.length > 1 ? `
+                            <div class="thumbnail-strip">
+                                ${images.slice(1, 4).map((img, idx) => `
+                                    <img src="${img.thumb || img.url}" alt="Foto ${idx + 2}" 
+                                            onclick="openGallery(${index}, ${idx + 1})">
+                                `).join('')}
+                                ${images.length > 4 ? `
+                                    <div class="more-photos" onclick="openGallery(${index})">+${images.length - 4}</div>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+                    ` : `
+                        <div class="no-image">
+                            <div class="no-image-icon">📷</div>
+                            <span>Sem Imagem</span>
+                        </div>
+                    `}
+                </div>
+
+                <div class="vehicle-info">
+                    <div class="vehicle-header">
+                        <div class="vehicle-title-section">
+                            <h3 class="vehicle-title">${vehicle.brand} ${vehicle.model}</h3>
+                            <div class="vehicle-year">${vehicle.year}</div>
+                        </div>
+                        <div class="vehicle-badges">
+                            <span class="category-badge">${vehicle.laudo_status || 'N/A'}</span>
+                        </div>
+                    </div>
+
+                    <div class="vehicle-pricing">
+                        <div class="main-price">R$ ${formatPrice(vehicle.price)}</div>
+                    </div>
+
+                    <div class="vehicle-specs-mini">
+                        <span class="spec-mini">🛣️ ${formatNumber(vehicle.mileage)} km</span>
+                        <span class="spec-mini">⛽ ${vehicle.fuel_type || 'N/A'}</span>
+                    </div>
+
+                    <div class="vehicle-location">
+                        <span>📍 ${vehicle.location || 'N/A'}</span>
+                    </div>
+
+                    <div class="vehicle-actions">
+                        <button class="btn-primary" onclick="openDetails(${index})">ℹ️ Ver Detalhes</button>
+                        <button class="btn-secondary" onclick="openGallery(${index})">🖼️ Fotos (${images.length})</button>
+                        ${vehicle.laudo_file_url ? `
+                            <button class="btn-laudo" onclick="window.open('${vehicle.laudo_file_url}', '_blank')">📋 Ver Laudo</button>
+                        ` : ''}
+                        <button class="btn-proposal" onclick="handleProposal(${index})">💰 Fazer Proposta</button>
+                    </div>
+                </div>
+            `
+            
+            return div
+        }
+
+        function formatPrice(price) {
+            return parseFloat(price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+        }
+
+        function formatNumber(num) {
+            return parseInt(num || 0).toLocaleString('pt-BR')
+        }
+
+        function updateStats() {
+            document.getElementById('totalVehicles').textContent = APP_STATE.vehicles.length
+            document.getElementById('visibleCount').textContent = APP_STATE.vehicles.length
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput')
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase()
+                    const cards = document.querySelectorAll('.vehicle-card')
+                    let count = 0
+                    
+                    cards.forEach((card, idx) => {
+                        const vehicle = APP_STATE.vehicles[idx]
+                        const text = `${vehicle.brand} ${vehicle.model} ${vehicle.description || ''}`.toLowerCase()
+                        
+                        if (text.includes(query)) {
+                            card.style.display = ''
+                            count++
+                        } else {
+                            card.style.display = 'none'
+                        }
+                    })
+                    
+                    document.getElementById('visibleCount').textContent = count
+                })
+            }
+        })
+
+        function openLoginModal() {
+            createModal('🔐 Login', `
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="loginPhone">Telefone:</label>
+                        <input type="tel" id="loginPhone" class="form-input" 
+                               placeholder="11999999999" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">Senha:</label>
+                        <input type="password" id="loginPassword" class="form-input" 
+                               placeholder="Sua senha" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">Entrar</button>
+                </form>
+            `)
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault()
+            
+            const phone = document.getElementById('loginPhone').value
+            const password = document.getElementById('loginPassword').value
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ phone, password })
+                })
+                
+                const data = await response.json()
+                
+                if (data.success) {
+                    APP_STATE.currentUser = data.user
+                    APP_STATE.isLoggedIn = true
+                    updateUserUI()
+                    closeAllModals()
+                    showToast('Login realizado com sucesso!', 'success')
+                    
+                    if (!data.user.cpf) {
+                        setTimeout(() => openCpfModal(), 500)
+                    }
+                } else {
+                    showToast(data.error || 'Erro ao fazer login', 'error')
+                }
+            } catch (error) {
+                console.error('Erro no login:', error)
+                showToast('Erro ao conectar com o servidor', 'error')
+            }
+        }
+
+        function openCpfModal() {
+            createModal('📝 Complete seu Cadastro', `
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                    <h3 style="color: var(--warning); margin-bottom: 1rem;">CPF Necessário</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+                        Para fazer propostas e recargas de crédito via PIX, precisamos do seu CPF cadastrado.
+                    </p>
+                    
+                    <form id="cpfForm" onsubmit="handleCpfSubmit(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="userCpf">CPF: *</label>
+                            <input type="text" id="userCpf" class="form-input" 
+                                   placeholder="000.000.000-00" required
+                                   maxlength="14"
+                                   oninput="formatCpfInput(this)">
+                            <small style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.5rem;">
+                                Digite apenas os números do seu CPF
+                            </small>
+                        </div>
+                        
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 8px; font-size: 0.875rem; color: var(--primary); text-align: left; margin: 1.25rem 0;">
+                            <strong>🔒 Seus dados estão seguros</strong><br>
+                            Seu CPF é necessário apenas para emissão de cobranças PIX conforme exigência do Banco Central.
+                        </div>
+                        
+                        <button type="submit" class="btn-submit">💾 Salvar CPF</button>
+                        
+                        <button type="button" class="btn-secondary" 
+                                onclick="closeAllModals()" 
+                                style="width: 100%; margin-top: 0.75rem;">
+                            Agora não
+                        </button>
+                    </form>
+                </div>
+            `, false)
+        }
+
+        function formatCpfInput(input) {
+            let value = input.value.replace(/\D/g, '')
+            
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+            }
+            
+            input.value = value
+        }
+
+        async function handleCpfSubmit(event) {
+            event.preventDefault()
+            
+            const cpfInput = document.getElementById('userCpf').value
+            const cpf = cpfInput.replace(/\D/g, '')
+            
+            if (cpf.length !== 11) {
+                showToast('CPF inválido. Digite 11 dígitos.', 'error')
+                return
+            }
+            
+            const btn = event.target.querySelector('.btn-submit')
+            btn.disabled = true
+            btn.textContent = '⏳ Salvando...'
+            
+            try {
+                const response = await fetch(`${API_BASE}/credits/update-cpf`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ cpf })
+                })
+                
+                const data = await response.json()
+                
+                if (data.success) {
+                    APP_STATE.currentUser.cpf = cpf
+                    closeAllModals()
+                    showToast('✅ CPF cadastrado com sucesso!', 'success')
+                } else {
+                    showToast(data.error || 'Erro ao cadastrar CPF', 'error')
+                    btn.disabled = false
+                    btn.textContent = '💾 Salvar CPF'
+                }
+            } catch (error) {
+                console.error('Erro ao cadastrar CPF:', error)
+                showToast('Erro ao conectar com o servidor', 'error')
+                btn.disabled = false
+                btn.textContent = '💾 Salvar CPF'
+            }
+        }
+        
+        async function logout() {
+            try {
+                await fetch(`${API_BASE}/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                })
+                
+                APP_STATE.currentUser = null
+                APP_STATE.isLoggedIn = false
+                updateUserUI()
+                showToast('Logout realizado com sucesso', 'success')
+            } catch (error) {
+                console.error('Erro no logout:', error)
+            }
+        }
+
+        async function handleProposal(index) {
+            const vehicle = APP_STATE.vehicles[index]
+            
+            if (!APP_STATE.isLoggedIn) {
+                showToast('Você precisa fazer login para fazer uma proposta', 'error')
+                openLoginModal()
+                return
+            }
+            
+            if (!APP_STATE.currentUser.cpf) {
+                showToast('Complete seu cadastro para fazer propostas', 'error')
+                openCpfModal()
+                return
+            }
+            
+            if (APP_STATE.currentUser.credits < 1) {
+                openRechargeModal()
+                return
+            }
+            
+            openProposalModal(vehicle)
+        }
+        
+        function openProposalModal(vehicle) {
+            createModal('💰 Fazer Proposta', `
+                <div style="text-align: center;">
+                    <h3>${vehicle.brand} ${vehicle.model} ${vehicle.year}</h3>
+                    <p style="font-size: 1.2rem; color: var(--success); font-weight: 600; margin: 1.25rem 0;">
+                        Preço Anunciado: R$ ${formatPrice(vehicle.price)}
+                    </p>
+                    
+                    <form id="proposalForm" onsubmit="submitProposal(event, '${vehicle.external_id}')">
+                        <div class="form-group">
+                            <label class="form-label" for="proposalValue">Valor da Proposta: *</label>
+                            <input type="number" id="proposalValue" class="form-input" 
+                                   placeholder="0.00" step="0.01" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="clientName">Seu Nome: *</label>
+                            <input type="text" id="clientName" class="form-input" 
+                                   value="${APP_STATE.currentUser.name}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="clientPhone">Seu Telefone: *</label>
+                            <input type="tel" id="clientPhone" class="form-input" 
+                                   value="${APP_STATE.currentUser.phone}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="clientEmail">Seu Email: (opcional)</label>
+                            <input type="email" id="clientEmail" class="form-input" 
+                                   value="${APP_STATE.currentUser.email || ''}" placeholder="seu@email.com">
+                        </div>
+                        
+                        <div style="background: rgba(245, 158, 11, 0.1); padding: 1rem; border-radius: 8px; margin: 1.25rem 0; font-size: 0.875rem; color: var(--warning);">
+                            <strong>⚠️ Atenção:</strong> Esta proposta consumirá <strong>1 crédito</strong> do seu saldo.<br>
+                            Saldo atual: <strong>${parseFloat(APP_STATE.currentUser.credits).toFixed(1)} créditos</strong>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit">💾 Enviar Proposta (1 crédito)</button>
+                    </form>
+                </div>
+            `)
+        }
+
+        async function submitProposal(event, vehicleExternalId) {
+            event.preventDefault()
+            
+            const btn = event.target.querySelector('.btn-submit')
+            btn.disabled = true
+            btn.textContent = '⏳ Enviando...'
+            
+            const proposalData = {
+                vehicle_external_id: vehicleExternalId,
+                proposal_amount: parseFloat(document.getElementById('proposalValue').value),
+                customer_name: document.getElementById('clientName').value,
+                customer_phone: document.getElementById('clientPhone').value,
+                customer_email: document.getElementById('clientEmail').value || null
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/proposals`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(proposalData)
+                })
+                
+                const data = await response.json()
+                
+                if (data.success) {
+                    APP_STATE.currentUser.credits = data.remaining_credits
+                    updateUserUI()
+                    closeAllModals()
+                    showToast('✅ Proposta enviada com sucesso!', 'success')
+                } else {
+                    showToast(data.error || 'Erro ao enviar proposta', 'error')
+                    btn.disabled = false
+                    btn.textContent = '💾 Enviar Proposta (1 crédito)'
+                }
+            } catch (error) {
+                console.error('Erro ao enviar proposta:', error)
+                showToast('Erro ao conectar com o servidor', 'error')
+                btn.disabled = false
+                btn.textContent = '💾 Enviar Proposta (1 crédito)'
+            }
+        }
+
+        function openRechargeModal() {
+            createModal('💳 Recarregar Créditos', `
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                    <h3 style="color: var(--warning); margin-bottom: 1rem;">Créditos Insuficientes</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+                        Você não possui créditos suficientes para fazer uma proposta.<br>
+                        Cada proposta consome <strong>1 crédito</strong>.
+                    </p>
+                    
+                    <div style="background: rgba(15, 23, 42, 0.5); padding: 1.25rem; border-radius: 10px; margin: 1.25rem 0;">
+                        <p><strong>Seu saldo atual:</strong> ${parseFloat(APP_STATE.currentUser.credits).toFixed(1)} créditos</p>
+                    </div>
+                    
+                    <form id="rechargeForm" onsubmit="requestRecharge(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="rechargeAmount">Valor da Recarga (R$): *</label>
+                            <input type="number" id="rechargeAmount" class="form-input" 
+                                   placeholder="10.00" step="0.01" min="10" required>
+                            <small style="color: var(--text-muted); font-size: 0.8rem;">Mínimo: R$ 10,00 | R$ 1,00 = 1 crédito</small>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit">💳 Solicitar Recarga</button>
+                    </form>
+                </div>
+            `)
+        }
+
+        async function requestRecharge(event) {
+            event.preventDefault()
+            
+            if (!APP_STATE.currentUser.cpf) {
+                closeAllModals()
+                setTimeout(() => {
+                    showToast('Complete seu cadastro para fazer recargas', 'error')
+                    openCpfModal()
+                }, 300)
+                return
+            }
+            
+            const amount = parseFloat(document.getElementById('rechargeAmount').value)
+            
+            try {
+                const response = await fetch(`${API_BASE}/credits/request-recharge`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ amount })
+                })
+                
+                const data = await response.json()
+                
+                if (data.success) {
+                    showRechargeInfo(data.purchase)
+                } else {
+                    showToast(data.error || 'Erro ao solicitar recarga', 'error')
+                }
+            } catch (error) {
+                console.error('Erro ao solicitar recarga:', error)
+                showToast('Erro ao conectar com o servidor', 'error')
+            }
+        }
+        
+        function showRechargeInfo(purchase) {
+            closeAllModals()
+            
+            const modalContent = `
+                <div style="text-align: center;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Pagamento via PIX</h3>
+                    
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                            Valor a pagar
+                        </p>
+                        <p style="font-size: 2.5rem; font-weight: 800; color: var(--success); margin-bottom: 0.5rem;">
+                            R$ ${purchase.amount.toFixed(2)}
+                        </p>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                            = <strong>${purchase.credits.toFixed(1)} créditos</strong>
+                        </p>
+                    </div>
+                    
+                    ${purchase.qr_code_image ? `
+                        <div style="margin: 2rem 0;">
+                            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--text-primary);">Escaneie o QR Code</p>
+                            <div style="width: 280px; height: 280px; margin: 0 auto; overflow: hidden; 
+                                        border-radius: 12px; border: 3px solid var(--primary); 
+                                        background: white; position: relative;">
+                                <img src="${purchase.qr_code_image}" alt="QR Code PIX" 
+                                     style="position: absolute; 
+                                             width: auto;
+                                             height: 730px;
+                                             top: -320px;
+                                             right: -150px;">
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${purchase.copy_paste_code ? `
+                        <div style="background: rgba(15, 23, 42, 0.5); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                            <p style="margin-bottom: 0.75rem; font-weight: 600; color: var(--text-primary); text-align: left;">
+                                PIX Copia e Cola
+                            </p>
+                            <textarea readonly id="pixCode"
+                                      style="width: 100%; min-height: 70px; background: rgba(59, 130, 246, 0.1); 
+                                             border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 8px; 
+                                             padding: 0.75rem; color: var(--text-primary); font-family: monospace; 
+                                             font-size: 0.7rem; resize: none; line-height: 1.4;"
+                            >${purchase.copy_paste_code}</textarea>
+                            <button class="btn-secondary" onclick="copyPixCode()" style="width: 100%; margin-top: 0.75rem;">
+                                Copiar Código PIX
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 1.25rem; border-radius: 10px; font-size: 0.85rem; color: var(--primary); text-align: left; margin-top: 1.5rem;">
+                        <strong>Como pagar:</strong><br>
+                        <ol style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                            <li>Abra o app do seu banco</li>
+                            <li>Escolha "Pagar com PIX"</li>
+                            <li>Escaneie o QR Code acima</li>
+                            <li>Confirme o pagamento de R$ ${purchase.amount.toFixed(2)}</li>
+                            <li>Aguarde até 5 minutos</li>
+                        </ol>
+                    </div>
+                    
+                    <button class="btn-submit" onclick="closeAllModals()" style="margin-top: 1.5rem;">
+                        Entendi
+                    </button>
+                </div>
+            `
+            
+            createModal('QR Code PIX', modalContent, false)
+            startPaymentPolling(purchase.id)
+        }
+        let paymentCheckInterval = null
+
+        function startPaymentPolling(purchaseId) {
+            if (paymentCheckInterval) {
+                clearInterval(paymentCheckInterval)
+            }
+            
+            paymentCheckInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/credits/check-payment/${purchaseId}`, {
+                        credentials: 'include'
+                    })
+                    
+                    const data = await response.json()
+                    
+                    if (data.success && data.status === 'paid') {
+                        clearInterval(paymentCheckInterval)
+                        APP_STATE.currentUser.credits = data.new_balance
+                        updateUserUI()
+                        closeAllModals()
+                        showToast(`Pagamento confirmado! ${data.credits_added.toFixed(1)} créditos adicionados`, 'success')
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar pagamento:', error)
+                }
+            }, 10000)
+            
+            setTimeout(() => {
+                if (paymentCheckInterval) {
+                    clearInterval(paymentCheckInterval)
+                }
+            }, 300000)
+        }
+
+
+        function copyPixCode() {
+            const pixCode = document.getElementById('pixCode')
+            if (pixCode) {
+                pixCode.select()
+                try {
+                    document.execCommand('copy')
+                    showToast('Código PIX copiado!', 'success')
+                } catch (err) {
+                    navigator.clipboard.writeText(pixCode.value).then(() => {
+                        showToast('Código PIX copiado!', 'success')
+                    })
+                }
+            }
+        }
+        
+        function openDetails(index) {
+            const vehicle = APP_STATE.vehicles[index]
+            
+            createModal(`ℹ️ ${vehicle.brand} ${vehicle.model}`, `
+                <div style="background: rgba(15, 23, 42, 0.5); padding: 1.5rem; border-radius: 10px;">
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">Informações do Veículo</h4>
+                    
+                    <p><strong>Marca/Modelo:</strong> ${vehicle.brand} ${vehicle.model}</p>
+                    <p><strong>Ano:</strong> ${vehicle.year}</p>
+                    <p><strong>Quilometragem:</strong> ${formatNumber(vehicle.mileage)} km</p>
+                    <p><strong>Combustível:</strong> ${vehicle.fuel_type || 'N/A'}</p>
+                    <p><strong>Transmissão:</strong> ${vehicle.transmission || 'N/A'}</p>
+                    <p><strong>Cor:</strong> ${vehicle.color || 'N/A'}</p>
+                    <p><strong>Preço:</strong> R$ ${formatPrice(vehicle.price)}</p>
+                    <p><strong>Localização:</strong> ${vehicle.location || 'N/A'}</p>
+                    
+                    ${vehicle.description ? `
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(148, 163, 184, 0.1);">
+                            <h4 style="margin-bottom: 0.5rem; color: var(--primary);">Descrição</h4>
+                            <p style="color: var(--text-secondary);">${vehicle.description}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `)
+        }
+
+        function openGallery(index, startImage = 0) {
+            const vehicle = APP_STATE.vehicles[index]
+            const images = vehicle.images || []
+            
+            if (images.length === 0) {
+                showToast('Nenhuma imagem disponível', 'error')
+                return
+            }
+            
+            let currentImage = startImage
+            
+            createModal(`🖼️ ${vehicle.brand} ${vehicle.model} - Fotos`, `
+                <div id="galleryContent" style="text-align: center;">
+                    <img id="galleryImage" src="${images[currentImage].url}" 
+                          style="max-width: 100%; max-height: 60vh; border-radius: 10px;">
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        Foto ${currentImage + 1} de ${images.length}
+                    </p>
+                    ${images.length > 1 ? `
+                        <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
+                            <button class="btn-secondary" onclick="changeGalleryImage(-1)">← Anterior</button>
+                            <button class="btn-secondary" onclick="changeGalleryImage(1)">Próxima →</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `)
+            
+            window.changeGalleryImage = (direction) => {
+                currentImage += direction
+                if (currentImage < 0) currentImage = images.length - 1
+                if (currentImage >= images.length) currentImage = 0
+                
+                document.getElementById('galleryImage').src = images[currentImage].url
+                document.querySelector('#galleryContent p').textContent = `Foto ${currentImage + 1} de ${images.length}`
+            }
+        }
+
+        function createModal(title, content, canCloseOutside = true) {
+            const overlay = document.createElement('div')
+            overlay.className = 'modal-overlay'
+            overlay.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">${title}</h2>
+                        ${canCloseOutside ? `
+                            <button class="modal-close" onclick="closeModal(this)">&times;</button>
+                        ` : ''}
+                    </div>
+                    <div class="modal-body">
+                        ${content}
+                    </div>
+                </div>
+            `
+            
+            document.body.appendChild(overlay)
+            setTimeout(() => overlay.classList.add('active'), 10)
+            
+            if (canCloseOutside) {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) closeModal(overlay.querySelector('.modal-close'))
+                })
+            }
+            
+            return overlay
+        }
+        
+        function closeModal(closeBtn) {
+            const overlay = closeBtn.closest('.modal-overlay')
+            overlay.classList.remove('active')
+            setTimeout(() => overlay.remove(), 300)
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.classList.remove('active')
+                setTimeout(() => modal.remove(), 300)
+            })
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer')
+            const toast = document.createElement('div')
+            toast.className = `toast toast-${type}`
+            toast.textContent = message
+            container.appendChild(toast)
+            
+            setTimeout(() => {
+                toast.style.opacity = '0'
+                toast.style.transform = 'translateX(400px)'
+                setTimeout(() => toast.remove(), 300)
+            }, 3000)
+        }
+        
+        // --- FUNÇÕES PARA CONSULTA DE PROPOSTAS (NOVIDADE) ---
+
+        /**
+         * @function handleViewProposals
+         * @description Verifica se o usuário está logado e chama a função para buscar as propostas.
+         */
+        function handleViewProposals() {
+            if (!APP_STATE.isLoggedIn) {
+                showToast('Você precisa estar logado para ver suas propostas.', 'error');
+                return;
+            }
+            
+            fetchProposals();
+        }
+
+        /**
+         * @function fetchProposals
+         * @description Busca as propostas do usuário logado na API.
+         */
+        async function fetchProposals() {
+            createModal('📜 Minhas Propostas', `
+                <div style="text-align: center;">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando suas propostas...</p>
+                </div>
+            `, true);
+
+            try {
+                // Chama o endpoint que você criou no backend: /api/proposals/my
+                const response = await fetch(`${API_BASE}/proposals/my`, { 
+                    method: 'GET',
+                    credentials: 'include' 
+                });
+                
+                const data = await response.json();
+
+                if (data.success) {
+                    showProposalsModal(data.proposals);
+                } else {
+                    closeAllModals();
+                    showToast(data.error || 'Erro ao carregar propostas.', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar propostas:', error);
+                closeAllModals();
+                showToast('Erro de conexão ao buscar propostas.', 'error');
+            }
+        }
+
+        /**
+         * @function showProposalsModal
+         * @description Exibe o modal com a lista de propostas em uma tabela responsiva.
+         * @param {Array} proposals - Lista de propostas.
+         */
+/**
+ * @function showProposalsModal
+ * @description Exibe o modal com a lista de propostas em uma tabela responsiva.
+ * @param {Array} proposals - Lista de propostas.
+ */
+function showProposalsModal(proposals) {
+    closeAllModals();
+    
+    let content;
+    
+    if (proposals.length === 0) {
+        content = `
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">😔</div>
+                <h3 style="color: var(--text-primary);">Nenhuma Proposta Encontrada</h3>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                    Você ainda não fez nenhuma proposta em nosso catálogo.
+                </p>
+            </div>
+        `;
+    } else {
+        content = `
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                Total de <strong>${proposals.length}</strong> propostas efetuadas.
+            </p>
+            <div style="overflow-x: auto; max-height: 400px; border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 8px;">
+                <table class="proposals-table">
+                    <thead>
+                        <tr>
+                            <th>Veículo</th> 
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${proposals.map(proposal => {
+                            // CÓDIGO DE TRATAMENTO DE DADOS CORRIGIDO AQUI
+                            let vehicleInfo = proposal;
+                            
+                            // 1. Prioriza o JSON armazenado, mas apenas se for uma STRING
+                            if (typeof proposal.vehicle_info === 'string') {
+                                try {
+                                    vehicleInfo = JSON.parse(proposal.vehicle_info);
+                                } catch (e) {
+                                    // Se a string falhar, usa o objeto base (fallback)
+                                    vehicleInfo = proposal;
+                                }
+                            } else if (typeof proposal.vehicle_info === 'object' && proposal.vehicle_info !== null) {
+                                // 2. Se já for um objeto (como parece ser o caso do erro "[object Object]"), usa-o diretamente
+                                vehicleInfo = proposal.vehicle_info;
+                            }
+                            
+                            // 3. Usa os campos do JOIN como fallback, garantindo que brand, model e year sejam definidos
+                            const brand = proposal.brand || vehicleInfo.brand || 'N/A';
+                            const model = proposal.model || vehicleInfo.model || 'N/A';
+                            const year = proposal.year || vehicleInfo.year || 'N/A';
+                            
+                            const vehicleName = `${brand} ${model} (${year})`;
+                            const date = new Date(proposal.created_at).toLocaleDateString('pt-BR');
+                            const statusClass = `status-${proposal.status.toLowerCase().replace(' ', '-')}`;
+                            
+                            return `
+                                <tr>
+                                    <td>${vehicleName}</td>
+                                    <td>R$ ${formatPrice(proposal.proposal_amount)}</td>
+                                    <td class="${statusClass}">${formatStatus(proposal.status)}</td>
+                                    <td>${date}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    createModal('📜 Minhas Propostas', content, true);
+}
+        /**
+         * @function formatStatus
+         * @description Formata o status para exibição amigável.
+         */
+        function formatStatus(status) {
+            switch (status.toUpperCase()) {
+                case 'PENDING':
+                    return 'Pendente';
+                case 'ACCEPTED':
+                    return 'Aceita';
+                case 'REJECTED':
+                    return 'Recusada';
+                default:
+                    return status;
+            }
+        }
+        // --- FIM FUNÇÕES DE PROPOSTAS ---
+
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Iniciando aplicação...')
+            checkAuth().then(() => {
+                console.log('Auth checado, carregando veículos...')
+                loadVehicles()
+            })
+        })
+    </script>
+</body>
+</html>
