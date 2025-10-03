@@ -1,0 +1,9 @@
+# Remove o arquivo .env do índice de rastreamento (mantendo no seu disco local)
+# Se o arquivo .gitignore estiver correto, ele não será adicionado novamente
+git rm --cached .env
+
+# Adiciona o arquivo .gitignore (caso não o tenha feito)
+git add .gitignore
+
+# Cria um novo commit que registra a remoção do .env do rastreamento
+git commit -m "chore: Remove .env do rastreamento"

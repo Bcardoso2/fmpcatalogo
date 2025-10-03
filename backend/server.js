@@ -38,6 +38,7 @@ app.use('/api/auth', require('./routes/auth'))
 app.use('/api/vehicles', require('./routes/vehicles'))
 app.use('/api/proposals', require('./routes/proposals'))
 app.use('/api/credits', require('./routes/credits'))
+app.use('/api/admin', require('./routes/admin'))
 
 // =======================================================
 // ✅ ROTA DE HEALTH CHECK NA RAIZ (MELHOR PARA CRONJOB)
@@ -50,6 +51,11 @@ app.get('/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 })
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/admin/index.html'))
+})
+
 
 // Rota de fallback para o catálogo (mantida)
 app.get('/', (req, res) => {

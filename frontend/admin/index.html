@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autogiro Admin - Painel Administrativo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-elevated: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --radius: 16px;
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .hidden { display: none !important; }
+
+        .admin-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid rgba(148, 163, 184, 0.1);
+            padding: 2rem 0;
+        }
+
+        .logo {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .table-filters {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(100, 116, 139, 0.1);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-primary { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: rgba(100, 116, 139, 0.1);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: rgba(100, 116, 139, 0.2);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: 2px solid rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Toast */
+        #toastContainer {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            min-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast-success { border-left: 4px solid var(--success); }
+        .toast-error { border-left: 4px solid var(--danger); }
+    </style>
+</head>
+<body>
+    <div id="toastContainer"></div>
+
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-text">Autogiro Admin</div>
+            </div>
+            <nav>
+                <div class="nav-item active" onclick="showPage('dashboard')">📊 Dashboard</div>
+                <div class="nav-item" onclick="showPage('proposals')">💰 Propostas</div>
+                <div class="nav-item" onclick="showPage('users')">👥 Usuários</div>
+                <div class="nav-item" onclick="showPage('transactions')">💳 Transações</div>
+                <div class="nav-item" onclick="window.location.href='/'">🏠 Voltar ao Site</div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- Dashboard -->
+            <div id="dashboardPage">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Visão geral do sistema</p>
+                </div>
+
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats serão inseridos aqui -->
+                </div>
+            </div>
+
+            <!-- Propostas -->
+            <div id="proposalsPage" class="hidden">
+                <div class="page-header">
+                    <h1 class="page-title">Propostas</h1>
+                    <p class="page-subtitle">Gerenciar propostas de compra</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Todas as Propostas</h3>
+                        <div class="table-filters">
+                            <button class="filter-btn active" onclick="filterProposals('all')">Todas</button>
+                            <button class="filter-btn" onclick="filterProposals('pending')">Pendentes</button>
+                            <button class="filter-btn" onclick="filterProposals('accepted')">Aceitas</button>
+                            <button class="filter-btn" onclick="filterProposals('rejected')">Rejeitadas</button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Veículo</th>
+                                <th>Valor Proposta</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposalsTable">
+                            <!-- Propostas serão inseridas aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Usuários -->
+            <div id="usersPage" class="hidden">
+                <div class="page-header">
+                    <h1 class="page-title">Usuários</h1>
+                    <p class="page-subtitle">Gerenciar usuários do sistema</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Todos os Usuários</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>Email</th>
+                                <th>Créditos</th>
+                                <th>Total Comprado</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <!-- Usuários serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Transações -->
+            <div id="transactionsPage" class="hidden">
+                <div class="page-header">
+                    <h1 class="page-title">Transações</h1>
+                    <p class="page-subtitle">Histórico de transações de créditos</p>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Últimas Transações</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Saldo Anterior</th>
+                                <th>Saldo Novo</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTable">
+                            <!-- Transações serão inseridas aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api'
+        let currentFilter = 'all'
+
+        // Navegação
+        function showPage(page) {
+            document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'))
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'))
+            
+            document.getElementById(`${page}Page`).classList.remove('hidden')
+            event.target.classList.add('active')
+            
+            if (page === 'dashboard') loadDashboard()
+            if (page === 'proposals') loadProposals()
+            if (page === 'users') loadUsers()
+            if (page === 'transactions') loadTransactions()
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/dashboard`, { credentials: 'include' })
+                const data = await response.json()
+                
+                if (data.success) {
+                    const stats = data.stats
+                    document.getElementById('statsGrid').innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-label">Usuários Ativos</div>
+                            <div class="stat-value">${stats.total_users || 0}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Veículos Ativos</div>
+                            <div class="stat-value">${stats.total_vehicles || 0}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Propostas Pendentes</div>
+                            <div class="stat-value">${stats.pending_proposals || 0}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Propostas Aceitas</div>
+                            <div class="stat-value">${stats.accepted_proposals || 0}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total de Créditos</div>
+                            <div class="stat-value">${parseFloat(stats.total_credits || 0).toFixed(1)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Receita Total</div>
+                            <div class="stat-value">R$ ${parseFloat(stats.total_revenue || 0).toFixed(2)}</div>
+                        </div>
+                    `
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error)
+                showToast('Erro ao carregar dashboard', 'error')
+            }
+        }
+
+        // Propostas
+        async function loadProposals(status = null) {
+            try {
+                let url = `${API_BASE}/admin/proposals`
+                if (status) url += `?status=${status}`
+                
+                const response = await fetch(url, { credentials: 'include' })
+                const data = await response.json()
+                
+                if (data.success) {
+                    renderProposals(data.proposals)
+                }
+            } catch (error) {
+                console.error('Erro ao carregar propostas:', error)
+                showToast('Erro ao carregar propostas', 'error')
+            }
+        }
+
+        function renderProposals(proposals) {
+            const tbody = document.getElementById('proposalsTable')
+            
+            if (proposals.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Nenhuma proposta encontrada</td></tr>'
+                return
+            }
+            
+            tbody.innerHTML = proposals.map(p => `
+                <tr>
+                    <td>
+                        <strong>${p.customer_name}</strong><br>
+                        <small style="color: var(--text-muted)">${p.customer_phone}</small>
+                    </td>
+                    <td>
+                        ${p.vehicle_brand || 'N/A'} ${p.vehicle_model || ''} ${p.vehicle_year || ''}<br>
+                        <small style="color: var(--text-muted)">Preço: R$ ${parseFloat(p.vehicle_price || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</small>
+                    </td>
+                    <td><strong>R$ ${parseFloat(p.proposal_amount).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></td>
+                    <td><span class="badge badge-${getStatusColor(p.status)}">${getStatusText(p.status)}</span></td>
+                    <td>${new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td>
+                        ${p.status === 'pending' ? `
+                            <button class="btn btn-success btn-sm" onclick="updateProposalStatus('${p.id}', 'accepted')">Aceitar</button>
+                            <button class="btn btn-danger btn-sm" onclick="updateProposalStatus('${p.id}', 'rejected')">Rejeitar</button>
+                        ` : `
+                            <button class="btn btn-primary btn-sm" onclick="viewProposalDetails('${p.id}')">Ver Detalhes</button>
+                        `}
+                    </td>
+                </tr>
+            `).join('')
+        }
+
+        function filterProposals(status) {
+            currentFilter = status
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'))
+            event.target.classList.add('active')
+            loadProposals(status === 'all' ? null : status)
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                pending: 'warning',
+                accepted: 'success',
+                rejected: 'danger'
+            }
+            return colors[status] || 'primary'
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                pending: 'Pendente',
+                accepted: 'Aceita',
+                rejected: 'Rejeitada'
+            }
+            return texts[status] || status
+        }
+
+        async function updateProposalStatus(proposalId, status) {
+            const notes = prompt(status === 'accepted' ? 'Observações (opcional):' : 'Motivo da rejeição:')
+            
+            if (status === 'rejected' && !notes) {
+                showToast('Informe o motivo da rejeição', 'error')
+                return
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/proposals/${proposalId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ status, notes })
+                })
+                
+                const data = await response.json()
+                
+                if (data.success) {
+                    showToast(`Proposta ${status === 'accepted' ? 'aceita' : 'rejeitada'} com sucesso!`, 'success')
+                    loadProposals(currentFilter === 'all' ? null : currentFilter)
+                } else {
+                    showToast(data.error || 'Erro ao atualizar proposta', 'error')
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar proposta:', error)
+                showToast('Erro ao atualizar proposta', 'error')
+            }
+        }
+
+        function viewProposalDetails(proposalId) {
+            // Implementar visualização de detalhes se necessário
+            showToast('Funcionalidade em desenvolvimento', 'error')
+        }
+
+        // Usuários
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/users`, { credentials: 'include' })
+                const data = await response.json()
+                
+                if (data.success) {
+                    renderUsers(data.users)
+                }
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error)
+                showToast('Erro ao carregar usuários', 'error')
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTable')
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Nenhum usuário encontrado</td></tr>'
+                return
+            }
+            
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>
+                        <strong>${u.name}</strong><br>
+                        <small style="color: var(--text-muted)">${u.role}</small>
+                    </td>
+                    <td>${u.phone}</td>
+                    <td>${u.email || '-'}</td>
+                    <td><strong>${parseFloat(u.credits).toFixed(1)}</strong></td>
+                    <td>${parseFloat(u.total_credits_purchased || 0).toFixed(1)}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="openAddCreditsModal('${u.id}', '${u.name}')">
+                            Adicionar Créditos
+                        </button>
+                    </td>
+                </tr>
+            `).join('')
+        }
+
+        function openAddCreditsModal(userId, userName) {
+            const modal = createModal(`Adicionar Créditos - ${userName}`, `
+                <form id="addCreditsForm" onsubmit="addCredits(event, '${userId}')">
+                    <div class="form-group">
+                        <label class="form-label">Quantidade de Créditos:</label>
+                        <input type="number" id="creditsAmount" class="form-input" 
+                               step="0.1" min="0.1" required placeholder="Ex: 10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Descrição:</label>
+                        <textarea id="creditsDescription" class="form-textarea" 
+                                  placeholder="Motivo do ajuste..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Adicionar Créditos
+                    </button>
+                </form>
+            `)
+        }
+
+        async function addCredits(event, userId) {
+            event.preventDefault()
+            
+            const amount = parseFloat(document.getElementById('creditsAmount').value)
+            const description = document.getElementById('creditsDescription').value
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/users/${userId}/credits`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ amount, description })
+                })
+                
+                const data = await response.json()
+                
+                if (data.success) {
+                    showToast('Créditos adicionados com sucesso!', 'success')
+                    closeAllModals()
+                    loadUsers()
+                } else {
+                    showToast(data.error || 'Erro ao adicionar créditos', 'error')
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar créditos:', error)
+                showToast('Erro ao adicionar créditos', 'error')
+            }
+        }
+
+        // Transações
+        async function loadTransactions() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/transactions`, { credentials: 'include' })
+                const data = await response.json()
+                
+                if (data.success) {
+                    renderTransactions(data.transactions)
+                }
+            } catch (error) {
+                console.error('Erro ao carregar transações:', error)
+                showToast('Erro ao carregar transações', 'error')
+            }
+        }
+
+        function renderTransactions(transactions) {
+            const tbody = document.getElementById('transactionsTable')
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Nenhuma transação encontrada</td></tr>'
+                return
+            }
+            
+            tbody.innerHTML = transactions.map(t => `
+                <tr>
+                    <td>
+                        <strong>${t.user_name || 'N/A'}</strong><br>
+                        <small style="color: var(--text-muted)">${t.user_phone || ''}</small>
+                    </td>
+                    <td><span class="badge badge-${getTransactionTypeColor(t.type)}">${getTransactionTypeText(t.type)}</span></td>
+                    <td><strong>${parseFloat(t.amount).toFixed(1)}</strong></td>
+                    <td>${parseFloat(t.balance_before).toFixed(1)}</td>
+                    <td>${parseFloat(t.balance_after).toFixed(1)}</td>
+                    <td>${new Date(t.created_at).toLocaleString('pt-BR')}</td>
+                </tr>
+            `).join('')
+        }
+
+        function getTransactionTypeColor(type) {
+            const colors = {
+                purchase: 'success',
+                proposal_debit: 'warning',
+                admin_adjustment: 'primary',
+                refund: 'danger'
+            }
+            return colors[type] || 'primary'
+        }
+
+        function getTransactionTypeText(type) {
+            const texts = {
+                purchase: 'Compra',
+                proposal_debit: 'Proposta',
+                admin_adjustment: 'Ajuste Admin',
+                refund: 'Reembolso'
+            }
+            return texts[type] || type
+        }
+
+        // Modal
+        function createModal(title, content) {
+            const overlay = document.createElement('div')
+            overlay.className = 'modal-overlay'
+            overlay.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">${title}</h2>
+                        <button class="modal-close" onclick="closeModal(this)">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        ${content}
+                    </div>
+                </div>
+            `
+            
+            document.body.appendChild(overlay)
+            setTimeout(() => overlay.classList.add('active'), 10)
+            
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeModal(overlay.querySelector('.modal-close'))
+            })
+            
+            return overlay
+        }
+
+        function closeModal(closeBtn) {
+            const overlay = closeBtn.closest('.modal-overlay')
+            overlay.classList.remove('active')
+            setTimeout(() => overlay.remove(), 300)
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.classList.remove('active')
+                setTimeout(() => modal.remove(), 300)
+            })
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer')
+            const toast = document.createElement('div')
+            toast.className = `toast toast-${type}`
+            toast.textContent = message
+            container.appendChild(toast)
+            
+            setTimeout(() => {
+                toast.style.opacity = '0'
+                toast.style.transform = 'translateX(400px)'
+                setTimeout(() => toast.remove(), 300)
+            }, 3000)
+        }
+
+        // Inicializar
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDashboard()
+        })
+    </script>
+</body>
+</html>
