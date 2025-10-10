@@ -16,7 +16,8 @@ router.post('/login', async (req, res) => {
     }
     
     const result = await query(
-      `SELECT id, phone, name, email, client_id, credits, role, is_active, password_hash, cpf
+      `SELECT id, phone, name, email, client_id, credits, role, is_active, password_hash, cpf,
+              terms_accepted, terms_accepted_at
        FROM users
        WHERE phone = $1 AND is_active = true`,
       [phone]
@@ -55,7 +56,9 @@ router.post('/login', async (req, res) => {
         email: user.email,
         cpf: user.cpf,
         credits: parseFloat(user.credits),
-        role: user.role
+        role: user.role,
+        terms_accepted: user.terms_accepted || false,
+        terms_accepted_at: user.terms_accepted_at || null
       }
     })
     
@@ -92,9 +95,9 @@ router.post('/register', async (req, res) => {
     const password_hash = await bcrypt.hash(password, 10)
     
     const result = await query(
-      `INSERT INTO users (phone, name, email, password_hash, role, credits, is_active)
-       VALUES ($1, $2, $3, $4, 'customer', 0, true)
-       RETURNING id, phone, name, email, credits, role, cpf`,
+      `INSERT INTO users (phone, name, email, password_hash, role, credits, is_active, terms_accepted)
+       VALUES ($1, $2, $3, $4, 'customer', 0, true, false)
+       RETURNING id, phone, name, email, credits, role, cpf, terms_accepted, terms_accepted_at`,
       [phone, name, email || null, password_hash]
     )
     
@@ -113,7 +116,9 @@ router.post('/register', async (req, res) => {
         email: user.email,
         cpf: user.cpf,
         credits: parseFloat(user.credits),
-        role: user.role
+        role: user.role,
+        terms_accepted: user.terms_accepted || false,
+        terms_accepted_at: user.terms_accepted_at || null
       }
     })
     
@@ -141,7 +146,7 @@ router.get('/me', async (req, res) => {
   
   try {
     const result = await query(
-      `SELECT id, phone, name, email, client_id, credits, role, cpf
+      `SELECT id, phone, name, email, client_id, credits, role, cpf, terms_accepted, terms_accepted_at
        FROM users
        WHERE id = $1 AND is_active = true`,
       [req.session.userId]
@@ -162,12 +167,60 @@ router.get('/me', async (req, res) => {
         email: user.email,
         cpf: user.cpf,
         credits: parseFloat(user.credits),
-        role: user.role
+        role: user.role,
+        terms_accepted: user.terms_accepted || false,
+        terms_accepted_at: user.terms_accepted_at || null
       }
     })
   } catch (error) {
     console.error('Erro ao buscar usuário:', error)
     res.status(500).json({ success: false, error: 'Erro no servidor' })
+  }
+})
+
+// POST /api/auth/accept-terms
+router.post('/accept-terms', async (req, res) => {
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ success: false, error: 'Não autenticado' })
+  }
+  
+  try {
+    const result = await query(
+      `UPDATE users 
+       SET terms_accepted = true, 
+           terms_accepted_at = NOW(),
+           updated_at = NOW()
+       WHERE id = $1
+       RETURNING id, phone, name, email, cpf, credits, role, terms_accepted, terms_accepted_at`,
+      [req.session.userId]
+    )
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Usuário não encontrado' 
+      })
+    }
+
+    const user = result.rows[0]
+
+    res.json({ 
+      success: true,
+      user: {
+        id: user.id,
+        phone: user.phone,
+        name: user.name,
+        email: user.email,
+        cpf: user.cpf,
+        credits: parseFloat(user.credits),
+        role: user.role,
+        terms_accepted: user.terms_accepted,
+        terms_accepted_at: user.terms_accepted_at
+      }
+    })
+  } catch (error) {
+    console.error('Erro ao aceitar termos:', error)
+    res.status(500).json({ success: false, error: 'Erro ao aceitar termos' })
   }
 })
 
