@@ -111,51 +111,144 @@ router.post('/', requireAuth, checkCredits(1), async (req, res) => {
   }
 })
 
-// GET /api/proposals/my - Minhas propostas (CORRIGIDO)
+// GET /api/proposals/my - Minhas propostas
 router.get('/my', requireAuth, async (req, res) => {
-    // 1. Conecta ao pool de conexões
-    const client = await require('../config/database').pool.connect();
+  const client = await require('../config/database').pool.connect()
+  
+  try {
+    const result = await client.query(`
+      SELECT 
+        p.id, p.vehicle_external_id, p.proposal_amount, p.status,
+        p.created_at,
+        v.brand, v.model, v.year, 
+        p.vehicle_info 
+      FROM proposals p
+      LEFT JOIN vehicles v ON p.vehicle_id = v.id
+      WHERE p.user_id = $1
+      ORDER BY p.created_at DESC
+    `, [req.session.userId])
     
-    try {
-        const result = await client.query(`
-            SELECT 
-                p.id, p.vehicle_external_id, p.proposal_amount, p.status,
-                p.created_at,
-                -- Inclui os campos do JOIN e o JSON de backup (vehicle_info)
-                v.brand, v.model, v.year, 
-                p.vehicle_info 
-            FROM proposals p
-            LEFT JOIN vehicles v ON p.vehicle_id = v.id
-            WHERE p.user_id = $1
-            ORDER BY p.created_at DESC
-        `, [req.session.userId]);
-        
-        // Mapeia os resultados para garantir que vehicle_info seja um objeto JSON se for uma string
-        const proposals = result.rows.map(row => {
-            if (row.vehicle_info && typeof row.vehicle_info === 'string') {
-                try {
-                    // Tenta converter a string JSON do banco em um objeto
-                    row.vehicle_info = JSON.parse(row.vehicle_info);
-                } catch (e) {
-                    console.warn("vehicle_info não é um JSON válido e foi ignorado.");
-                    // Deixa como está ou define como null
-                }
-            }
-            return row;
-        });
+    // Mapeia os resultados para garantir que vehicle_info seja um objeto JSON
+    const proposals = result.rows.map(row => {
+      if (row.vehicle_info && typeof row.vehicle_info === 'string') {
+        try {
+          row.vehicle_info = JSON.parse(row.vehicle_info)
+        } catch (e) {
+          console.warn("vehicle_info não é um JSON válido e foi ignorado.")
+        }
+      }
+      return row
+    })
 
-        res.json({ 
-            success: true, 
-            proposals: proposals 
-        });
-        
-    } catch (error) {
-        console.error('Erro ao buscar propostas:', error);
-        res.status(500).json({ success: false, error: 'Erro ao buscar propostas' });
-    } finally {
-        // 2. MUITO IMPORTANTE: Libera a conexão do cliente de volta para o pool
-        client.release();
+    res.json({ 
+      success: true, 
+      proposals: proposals 
+    })
+    
+  } catch (error) {
+    console.error('Erro ao buscar propostas:', error)
+    res.status(500).json({ success: false, error: 'Erro ao buscar propostas' })
+  } finally {
+    client.release()
+  }
+})
+
+// PATCH /api/proposals/:id/status - Atualizar status da proposta
+router.patch('/:id/status', requireAuth, async (req, res) => {
+  const client = await require('../config/database').pool.connect()
+  
+  try {
+    const { id } = req.params
+    const { status } = req.body
+    
+    // Status permitidos
+    const allowedStatuses = ['pending', 'accepted', 'rejected', 'outbid']
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Status inválido' 
+      })
     }
-});
+    
+    await client.query('BEGIN')
+    
+    // Buscar proposta atual
+    const proposalResult = await client.query(
+      'SELECT id, user_id, status, credits_used FROM proposals WHERE id = $1',
+      [id]
+    )
+    
+    if (proposalResult.rows.length === 0) {
+      await client.query('ROLLBACK')
+      return res.status(404).json({ success: false, error: 'Proposta não encontrada' })
+    }
+    
+    const proposal = proposalResult.rows[0]
+    const oldStatus = proposal.status
+    
+    // Verifica se o usuário é dono da proposta
+    if (proposal.user_id !== req.session.userId) {
+      await client.query('ROLLBACK')
+      return res.status(403).json({ success: false, error: 'Sem permissão' })
+    }
+    
+    // Reembolsa se mudou para rejected (não foi aceita) ou outbid (foi superada)
+    const shouldRefund = (status === 'rejected' || status === 'outbid') && 
+                        (oldStatus === 'pending' || oldStatus === 'accepted')
+    
+    if (shouldRefund) {
+      // Buscar saldo atual
+      const userResult = await client.query(
+        'SELECT credits FROM users WHERE id = $1',
+        [proposal.user_id]
+      )
+      
+      const currentCredits = parseFloat(userResult.rows[0].credits)
+      const refundAmount = parseFloat(proposal.credits_used)
+      
+      // Reembolsar crédito
+      await client.query(
+        'UPDATE users SET credits = credits + $1 WHERE id = $2',
+        [refundAmount, proposal.user_id]
+      )
+      
+      // Registrar transação de reembolso
+      await client.query(`
+        INSERT INTO credit_transactions (
+          user_id, type, amount, balance_before, balance_after,
+          proposal_id, description
+        ) VALUES ($1, 'refund', $2, $3, $4, $5, $6)
+      `, [
+        proposal.user_id,
+        refundAmount,
+        currentCredits,
+        currentCredits + refundAmount,
+        id,
+        `Reembolso - Proposta ${status === 'rejected' ? 'rejeitada' : 'superada'}`
+      ])
+    }
+    
+    // Atualizar status da proposta
+    await client.query(
+      'UPDATE proposals SET status = $1, updated_at = NOW() WHERE id = $2',
+      [status, id]
+    )
+    
+    await client.query('COMMIT')
+    
+    res.json({ 
+      success: true,
+      refunded: shouldRefund,
+      refund_amount: shouldRefund ? parseFloat(proposal.credits_used) : 0
+    })
+    
+  } catch (error) {
+    await client.query('ROLLBACK')
+    console.error('Erro ao atualizar status da proposta:', error)
+    res.status(500).json({ success: false, error: 'Erro ao atualizar status' })
+  } finally {
+    client.release()
+  }
+})
 
 module.exports = router
