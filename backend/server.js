@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000
 // Middleware
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? 'https://seu-dominio.com' 
+        ? 'https://autogiro.onrender.com' 
         : 'http://localhost:3000',
     credentials: true
 }))
@@ -52,14 +52,43 @@ app.get('/health', (req, res) => {
     });
 })
 
+// Rotas do admin
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/admin/index.html'))
+    res.sendFile(path.join(__dirname, '../frontend/admin/index.html'))
 })
 
-
-// Rota de fallback para o catálogo (mantida)
+// Rotas do catálogo público
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/catalog/index.html'))
+})
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/catalog/login.html'))
+})
+
+app.get('/propostas', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/catalog/propostas.html'))
+})
+
+app.get('/recarga', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/catalog/recarga.html'))
+})
+
+app.get('/perfil', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/catalog/perfil.html'))
+})
+
+// Fallback para SPA - qualquer outra rota vai para o index
+app.get('*', (req, res) => {
+    // Se não for uma rota da API, serve o index
+    if (!req.path.startsWith('/api/')) {
+        res.sendFile(path.join(__dirname, '../frontend/catalog/index.html'))
+    } else {
+        res.status(404).json({ 
+            success: false, 
+            error: 'Rota não encontrada' 
+        })
+    }
 })
 
 // Tratamento de erros
@@ -76,4 +105,9 @@ app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${PORT}`)
     console.log(`📊 API disponível em http://localhost:${PORT}/api`)
     console.log(`🎨 Catálogo em http://localhost:${PORT}`)
+    console.log(`🔐 Login em http://localhost:${PORT}/login`)
+    console.log(`📜 Propostas em http://localhost:${PORT}/propostas`)
+    console.log(`💳 Recarga em http://localhost:${PORT}/recarga`)
+    console.log(`👤 Perfil em http://localhost:${PORT}/perfil`)
+    console.log(`⚙️  Admin em http://localhost:${PORT}/admin`)
 })

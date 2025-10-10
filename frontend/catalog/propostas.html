@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Propostas - FMP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #064e3b;
+        --primary-dark: #022c22;
+        --primary-light: #047857;
+        --secondary: #059669;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --bg-dark: #0a0f1e;
+        --bg-darker: #050812;
+        --bg-card: #0f1729;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --text-muted: #64748b;
+        --radius: 16px;
+        --shadow: 0 10px 40px rgba(0,0,0,0.3);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html {
+        overflow-x: hidden;
+    }
+    
+    body { 
+        font-family: 'Inter', -apple-system, system-ui, sans-serif;
+        background: var(--bg-darker);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .hidden { display: none !important; }
+
+    /* Animated Background */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(circle at 20% 50%, rgba(6, 78, 59, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.1) 0%, transparent 50%);
+        animation: gradientShift 20s ease infinite;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    /* Header */
+    .header {
+        background: rgba(15, 23, 41, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+    .logo-icon {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 1.25rem;
+        box-shadow: 0 8px 16px rgba(6, 78, 59, 0.3);
+    }
+
+    .logo-text {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+    .nav-link:hover, .nav-link.active {
+        background: rgba(6, 78, 59, 0.2);
+        color: var(--secondary);
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(6, 78, 59, 0.15);
+        border: 1px solid rgba(6, 78, 59, 0.25);
+        border-radius: 12px;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .user-credits {
+        font-weight: 700;
+        color: var(--success);
+    }
+
+    .btn-logout {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+        padding: 0.5rem 0.875rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-logout:hover {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    /* Container */
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header {
+        margin-bottom: 2.5rem;
+        animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+    }
+
+    /* Loading */
+    .loading {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(6, 78, 59, 0.2);
+        border-top-color: var(--secondary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.3;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-text {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: 0 8px 20px rgba(6, 78, 59, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(6, 78, 59, 0.4);
+    }
+
+    /* Proposals Grid */
+    .proposals-grid {
+        display: grid;
+        gap: 1.5rem;
+        animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .proposal-card {
+        background: rgba(15, 23, 41, 0.8);
+        backdrop-filter: blur(40px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        position: relative;
+    }
+
+    .proposal-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary), var(--success));
+    }
+
+    .proposal-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(6, 78, 59, 0.3);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .proposal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .proposal-vehicle {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .vehicle-name {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .vehicle-details {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-accepted {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-rejected {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .proposal-body {
+        padding: 1.5rem;
+    }
+
+    .proposal-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-label {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        word-break: break-word;
+    }
+
+    .info-value.price {
+        font-size: 1.35rem;
+        color: var(--success);
+    }
+
+    #toastContainer {
+        position: fixed;
+        top: 1.25rem;
+        right: 1.25rem;
+        z-index: 9999;
+    }
+
+    .toast {
+        background: rgba(15, 23, 41, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: slideIn 0.3s ease;
+        min-width: 300px;
+        color: var(--text-primary);
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast-success { 
+        border-left: 4px solid var(--success);
+        background: rgba(16, 185, 129, 0.1);
+    }
+    
+    .toast-error { 
+        border-left: 4px solid var(--danger);
+        background: rgba(239, 68, 68, 0.1);
+    }
+
+    @media (min-width: 640px) {
+        .container {
+            padding: 2.5rem 1.5rem;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .vehicle-name {
+            font-size: 1.25rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            gap: 1rem;
+        }
+
+        .nav-menu {
+            order: 3;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .user-info {
+            font-size: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            gap: 0.5rem;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+        }
+        
+        .proposal-info {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+    <div id="toastContainer"></div>
+<header class="header">
+    <div class="header-content">
+        <a href="index" class="logo">
+            <div class="logo-icon">AG</div>
+            <div class="logo-text">Autogiro</div>
+        </a>
+
+        <nav class="nav-menu">
+            <a href="index" class="nav-link">Catálogo</a>
+            <a href="propostas" class="nav-link active">Propostas</a>
+            <a href="recarga" class="nav-link">Recarregar</a>
+            <a href="perfil" class="nav-link">Perfil</a>
+        </nav>
+        
+        <div class="user-info hidden" id="userInfo">
+            <span id="userName"></span>
+            <span class="user-credits" id="userCredits">0 créditos</span>
+            <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">📜 Minhas Propostas</h1>
+        <p class="page-subtitle">Acompanhe o status das suas propostas de compra</p>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Carregando suas propostas...</p>
+    </div>
+
+    <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">📭</div>
+        <h2 class="empty-title">Nenhuma Proposta Encontrada</h2>
+        <p class="empty-text">Você ainda não fez nenhuma proposta em nosso catálogo.</p>
+        <a href="index" class="btn-primary">Explorar Veículos</a>
+    </div>
+
+    <div class="proposals-grid hidden" id="proposalsGrid"></div>
+</div>
+
+<script>
+    const API_BASE = 'https://autogiro.onrender.com/api';
+    let currentUser = null;
+
+    async function checkAuth() {
+        try {
+            const response = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
+            const data = await response.json();
+            
+            if (!data.success || !data.user) {
+                window.location.href = 'login';
+                return false;
+            }
+            
+            currentUser = data.user;
+            updateUserUI();
+            return true;
+        } catch (error) {
+            console.error('Erro ao verificar auth:', error);
+            window.location.href = 'login';
+            return false;
+        }
+    }
+
+    function updateUserUI() {
+        const userInfo = document.getElementById('userInfo');
+        const userName = document.getElementById('userName');
+        const userCredits = document.getElementById('userCredits');
+        
+        if (currentUser) {
+            userInfo.classList.remove('hidden');
+            userName.textContent = currentUser.name;
+            userCredits.textContent = `${parseFloat(currentUser.credits).toFixed(1)} créditos`;
+        }
+    }
+
+    async function loadProposals() {
+        try {
+            const response = await fetch(`${API_BASE}/proposals/my`, { credentials: 'include' });
+            const data = await response.json();
+            
+            if (data.success) {
+                renderProposals(data.proposals);
+            } else {
+                showToast(data.error || 'Erro ao carregar propostas', 'error');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar propostas:', error);
+            showToast('Erro ao conectar com o servidor', 'error');
+        } finally {
+            document.getElementById('loading').classList.add('hidden');
+        }
+    }
+
+    function renderProposals(proposals) {
+        const grid = document.getElementById('proposalsGrid');
+        const emptyState = document.getElementById('emptyState');
+        
+        if (proposals.length === 0) {
+            emptyState.classList.remove('hidden');
+            return;
+        }
+        
+        grid.classList.remove('hidden');
+        grid.innerHTML = proposals.map(proposal => createProposalCard(proposal)).join('');
+    }
+
+    function createProposalCard(proposal) {
+        let vehicleInfo = proposal;
+        
+        if (typeof proposal.vehicle_info === 'string') {
+            try {
+                vehicleInfo = JSON.parse(proposal.vehicle_info);
+            } catch (e) {
+                vehicleInfo = proposal;
+            }
+        } else if (typeof proposal.vehicle_info === 'object' && proposal.vehicle_info !== null) {
+            vehicleInfo = proposal.vehicle_info;
+        }
+        
+        const brand = proposal.brand || vehicleInfo.brand || 'N/A';
+        const model = proposal.model || vehicleInfo.model || 'N/A';
+        const year = proposal.year || vehicleInfo.year || 'N/A';
+        const vehicleName = `${brand} ${model}`;
+        
+        const date = new Date(proposal.created_at).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+        
+        const statusMap = {
+            'PENDING': { text: 'Pendente', class: 'status-pending' },
+            'ACCEPTED': { text: 'Aceita', class: 'status-accepted' },
+            'REJECTED': { text: 'Recusada', class: 'status-rejected' }
+        };
+        
+        const status = statusMap[proposal.status.toUpperCase()] || statusMap['PENDING'];
+        
+        return `
+            <div class="proposal-card">
+                <div class="proposal-header">
+                    <div class="proposal-vehicle">
+                        <h3 class="vehicle-name">${vehicleName}</h3>
+                        <p class="vehicle-details">Ano: ${year}</p>
+                    </div>
+                    <span class="status-badge ${status.class}">${status.text}</span>
+                </div>
+                <div class="proposal-body">
+                    <div class="proposal-info">
+                        <div class="info-item">
+                            <span class="info-label">Valor Proposto</span>
+                            <span class="info-value price">R$ ${formatPrice(proposal.proposal_amount)}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Data da Proposta</span>
+                            <span class="info-value">${date}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Contato</span>
+                            <span class="info-value">${proposal.customer_phone}</span>
+                        </div>
+                        ${proposal.customer_email ? `
+                            <div class="info-item">
+                                <span class="info-label">E-mail</span>
+                                <span class="info-value">${proposal.customer_email}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function formatPrice(price) {
+        return parseFloat(price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    }
+
+    async function logout() {
+        try {
+            await fetch(`${API_BASE}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            
+            window.location.href = 'login';
+        } catch (error) {
+            console.error('Erro no logout:', error);
+        }
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(400px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        const authenticated = await checkAuth();
+        if (authenticated) {
+            loadProposals();
+        }
+    });
+</script>
+</body>
+</html>

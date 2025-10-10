@@ -57,12 +57,12 @@ router.post('/request-recharge', requireAuth, async (req, res) => {
     const { amount } = req.body
     
     // Validação de valor mínimo
-    if (!amount || amount < 10) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Valor mínimo para recarga é R$ 10,00' 
-      })
-    }
+    if (!amount || amount < 1000) {
+  return res.status(400).json({ 
+    success: false, 
+    error: 'Valor mínimo para recarga é R$ 1.000,00' 
+  })
+}
     
     // Buscar config da Cora
     const configResult = await query(

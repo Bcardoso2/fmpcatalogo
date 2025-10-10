@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - FMP REPASSES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #064e3b;
+        --primary-dark: #022c22;
+        --primary-light: #047857;
+        --secondary: #059669;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --bg-dark: #0a0f1e;
+        --bg-darker: #050812;
+        --bg-card: #0f1729;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --text-muted: #64748b;
+        --radius: 16px;
+        --shadow: 0 10px 40px rgba(0,0,0,0.3);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html {
+        overflow-x: hidden;
+    }
+    
+    body { 
+        font-family: 'Inter', -apple-system, system-ui, sans-serif;
+        background: var(--bg-darker);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .hidden { display: none !important; }
+
+    /* Animated Background */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(circle at 20% 50%, rgba(6, 78, 59, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.1) 0%, transparent 50%);
+        animation: gradientShift 20s ease infinite;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    /* Header */
+    .header {
+        background: rgba(15, 23, 41, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+    .logo-icon {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 1.25rem;
+        box-shadow: 0 8px 16px rgba(6, 78, 59, 0.3);
+    }
+
+    .logo-text {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+    .nav-link:hover, .nav-link.active {
+        background: rgba(6, 78, 59, 0.2);
+        color: var(--secondary);
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(6, 78, 59, 0.15);
+        border: 1px solid rgba(6, 78, 59, 0.25);
+        border-radius: 12px;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .user-credits {
+        font-weight: 700;
+        color: var(--success);
+    }
+
+    .btn-logout {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+        padding: 0.5rem 0.875rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-logout:hover {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    /* Container */
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header {
+        margin-bottom: 2.5rem;
+        animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+    }
+
+    /* Profile Card */
+    .profile-card {
+        background: rgba(15, 23, 41, 0.8);
+        backdrop-filter: blur(40px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary), var(--success));
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 2.25rem;
+        box-shadow: 0 12px 24px rgba(6, 78, 59, 0.4);
+        flex-shrink: 0;
+    }
+
+    .profile-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        word-wrap: break-word;
+    }
+
+    .profile-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--secondary);
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .section-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        background: rgba(6, 78, 59, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: var(--transition);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: rgba(6, 78, 59, 0.1);
+        box-shadow: 0 0 0 4px rgba(6, 78, 59, 0.1);
+    }
+
+    .form-input:disabled {
+        background: rgba(100, 116, 139, 0.1);
+        cursor: not-allowed;
+        color: var(--text-muted);
+    }
+
+    .form-hint {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    .info-box {
+        background: rgba(6, 78, 59, 0.1);
+        border: 1px solid rgba(6, 78, 59, 0.2);
+        border-radius: 12px;
+        padding: 1.125rem;
+        margin: 1.5rem 0;
+    }
+
+    .info-box.warning {
+        background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.2);
+    }
+
+    .info-box.warning .info-icon {
+        color: var(--warning);
+    }
+
+    .info-box .info-icon {
+        color: var(--secondary);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.9rem;
+    }
+
+    .info-box p {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: var(--transition);
+        font-family: inherit;
+        box-shadow: 0 8px 20px rgba(6, 78, 59, 0.3);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(6, 78, 59, 0.4);
+    }
+
+    .btn-submit:disabled {
+        background: rgba(100, 116, 139, 0.2);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-danger {
+        background: rgba(239, 68, 68, 0.1);
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        color: var(--danger);
+        box-shadow: none;
+    }
+
+    .btn-danger:hover {
+        background: var(--danger);
+        color: white;
+        border-color: var(--danger);
+    }
+
+    #toastContainer {
+        position: fixed;
+        top: 1.25rem;
+        right: 1.25rem;
+        z-index: 9999;
+    }
+
+    .toast {
+        background: rgba(15, 23, 41, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: slideIn 0.3s ease;
+        min-width: 300px;
+        color: var(--text-primary);
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast-success { 
+        border-left: 4px solid var(--success);
+        background: rgba(16, 185, 129, 0.1);
+    }
+    
+    .toast-error { 
+        border-left: 4px solid var(--danger);
+        background: rgba(239, 68, 68, 0.1);
+    }
+
+    @media (min-width: 640px) {
+        .container {
+            padding: 2.5rem 1.5rem;
+        }
+        
+        .profile-card {
+            padding: 2.5rem;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .profile-name {
+            font-size: 1.75rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            gap: 1rem;
+        }
+
+        .nav-menu {
+            order: 3;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .user-info {
+            font-size: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            gap: 0.5rem;
+        }
+
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .profile-stats {
+            justify-content: center;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <div id="toastContainer"></div>
+<header class="header">
+    <div class="header-content">
+        <a href="index" class="logo">
+            <div class="logo-icon">AG</div>
+            <div class="logo-text">Autogiro</div>
+        </a>
+
+        <nav class="nav-menu">
+            <a href="index" class="nav-link">Catálogo</a>
+            <a href="propostas" class="nav-link">Propostas</a>
+            <a href="recarga" class="nav-link">Recarregar</a>
+            <a href="perfil" class="nav-link active">Perfil</a>
+        </nav>
+
+        <div class="user-info hidden" id="userInfo">
+            <span id="userName"></span>
+            <span class="user-credits" id="userCredits">0 créditos</span>
+            <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Meu Perfil</h1>
+        <p class="page-subtitle">Gerencie suas informações pessoais</p>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">A</div>
+            <div class="profile-info">
+                <h2 class="profile-name" id="profileName">Carregando...</h2>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="statCredits">0.0</span>
+                        <span class="stat-label">Créditos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="statProposals">0</span>
+                        <span class="stat-label">Propostas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="section-title">Informações Pessoais</h3>
+        
+        <form onsubmit="handleUpdateProfile(event)">
+            <div class="form-group">
+                <label class="form-label" for="profileNameInput">Nome Completo</label>
+                <input type="text" id="profileNameInput" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="profilePhone">Telefone</label>
+                <input type="tel" id="profilePhone" class="form-input" disabled>
+                <small class="form-hint">O telefone não pode ser alterado</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="profileEmail">E-mail</label>
+                <input type="email" id="profileEmail" class="form-input" placeholder="seu@email.com">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="profileCpf">CPF</label>
+                <input type="text" id="profileCpf" class="form-input" 
+                       placeholder="000.000.000-00" maxlength="14"
+                       oninput="formatCpfInput(this)">
+                <small class="form-hint">Necessário para recargas via PIX</small>
+            </div>
+
+            <div class="info-box">
+                <strong class="info-icon">🔒 Seus dados estão seguros</strong>
+                <p>Suas informações pessoais são protegidas e usadas apenas para processar transações e melhorar sua experiência.</p>
+            </div>
+
+            <button type="submit" class="btn-submit">Salvar Alterações</button>
+        </form>
+    </div>
+
+    <div class="profile-card">
+        <h3 class="section-title">Alterar Senha</h3>
+        
+        <form onsubmit="handleChangePassword(event)">
+            <div class="form-group">
+                <label class="form-label" for="currentPassword">Senha Atual</label>
+                <input type="password" id="currentPassword" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="newPassword">Nova Senha</label>
+                <input type="password" id="newPassword" class="form-input" 
+                       minlength="6" required>
+                <small class="form-hint">Mínimo 6 caracteres</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">Confirmar Nova Senha</label>
+                <input type="password" id="confirmPassword" class="form-input" 
+                       minlength="6" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Alterar Senha</button>
+        </form>
+    </div>
+
+    <div class="profile-card">
+        <h3 class="section-title">Zona de Perigo</h3>
+        
+        <div class="info-box warning">
+            <strong class="info-icon">⚠️ Atenção</strong>
+            <p>Excluir sua conta é uma ação permanente e não pode ser desfeita. Todos os seus dados serão removidos.</p>
+        </div>
+
+        <button class="btn-submit btn-danger" onclick="confirmDeleteAccount()">
+            Excluir Minha Conta
+        </button>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'https://autogiro.onrender.com/api';
+    let currentUser = null;
+
+    async function checkAuth() {
+        try {
+            const response = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
+            const data = await response.json();
+            
+            if (!data.success || !data.user) {
+                window.location.href = 'login';
+                return false;
+            }
+            
+            currentUser = data.user;
+            updateUserUI();
+            loadProfile();
+            return true;
+        } catch (error) {
+            console.error('Erro ao verificar auth:', error);
+            window.location.href = 'login';
+            return false;
+        }
+    }
+
+    function updateUserUI() {
+        const userInfo = document.getElementById('userInfo');
+        const userName = document.getElementById('userName');
+        const userCredits = document.getElementById('userCredits');
+        
+        if (currentUser) {
+            userInfo.classList.remove('hidden');
+            userName.textContent = currentUser.name;
+            userCredits.textContent = `${parseFloat(currentUser.credits).toFixed(1)} créditos`;
+        }
+    }
+
+    async function loadProfile() {
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const profileNameInput = document.getElementById('profileNameInput');
+        const profilePhone = document.getElementById('profilePhone');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileCpf = document.getElementById('profileCpf');
+        const statCredits = document.getElementById('statCredits');
+        
+        profileAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+        profileName.textContent = currentUser.name;
+        profileNameInput.value = currentUser.name;
+        profilePhone.value = currentUser.phone;
+        profileEmail.value = currentUser.email || '';
+        profileCpf.value = currentUser.cpf ? formatCpf(currentUser.cpf) : '';
+        statCredits.textContent = parseFloat(currentUser.credits).toFixed(1);
+        
+        try {
+            const response = await fetch(`${API_BASE}/proposals/my`, { credentials: 'include' });
+            const data = await response.json();
+            
+            if (data.success) {
+                document.getElementById('statProposals').textContent = data.proposals.length;
+            }
+        } catch (error) {
+            console.error('Erro ao carregar propostas:', error);
+        }
+    }
+
+    function formatCpf(cpf) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    function formatCpfInput(input) {
+        let value = input.value.replace(/\D/g, '');
+        
+        if (value.length <= 11) {
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+        
+        input.value = value;
+    }
+
+    async function handleUpdateProfile(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('profileNameInput').value;
+        const email = document.getElementById('profileEmail').value || null;
+        const cpfInput = document.getElementById('profileCpf').value;
+        const cpf = cpfInput.replace(/\D/g, '');
+        
+        if (cpf && cpf.length !== 11) {
+            showToast('CPF inválido. Digite 11 dígitos.', 'error');
+            return;
+        }
+        
+        const btn = event.target.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.textContent = 'Salvando...';
+        
+        try {
+            const response = await fetch(`${API_BASE}/auth/update-profile`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ name, email, cpf: cpf || null })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                currentUser = { ...currentUser, name, email, cpf };
+                updateUserUI();
+                loadProfile();
+                showToast('Perfil atualizado com sucesso!', 'success');
+            } else {
+                showToast(data.error || 'Erro ao atualizar perfil', 'error');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar perfil:', error);
+            showToast('Erro ao conectar com o servidor', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Salvar Alterações';
+        }
+    }
+
+    async function handleChangePassword(event) {
+        event.preventDefault();
+        
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (newPassword !== confirmPassword) {
+            showToast('As senhas não coincidem', 'error');
+            return;
+        }
+        
+        const btn = event.target.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.textContent = 'Alterando...';
+        
+        try {
+            const response = await fetch(`${API_BASE}/auth/change-password`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ current_password: currentPassword, new_password: newPassword })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showToast('Senha alterada com sucesso!', 'success');
+                event.target.reset();
+            } else {
+                showToast(data.error || 'Erro ao alterar senha', 'error');
+            }
+        } catch (error) {
+            console.error('Erro ao alterar senha:', error);
+            showToast('Erro ao conectar com o servidor', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Alterar Senha';
+        }
+    }
+
+    function confirmDeleteAccount() {
+        if (confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+            deleteAccount();
+        }
+    }
+
+    async function deleteAccount() {
+        try {
+            const response = await fetch(`${API_BASE}/auth/delete-account`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showToast('Conta excluída com sucesso', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login';
+                }, 2000);
+            } else {
+                showToast(data.error || 'Erro ao excluir conta', 'error');
+            }
+        } catch (error) {
+            console.error('Erro ao excluir conta:', error);
+            showToast('Erro ao conectar com o servidor', 'error');
+        }
+    }
+
+    async function logout() {
+        try {
+            await fetch(`${API_BASE}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            
+            window.location.href = 'login';
+        } catch (error) {
+            console.error('Erro no logout:', error);
+        }
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(400px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        await checkAuth();
+    });
+</script>
+</body>
+</html>

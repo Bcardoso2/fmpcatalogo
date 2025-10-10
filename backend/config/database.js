@@ -2,30 +2,33 @@ const { Pool } = require('pg')
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-})
-
-pool.on('connect', () => {
-  console.log('✅ Conectado ao PostgreSQL')
+  ssl: process.env.NODE_ENV === 'production' 
+    ? { rejectUnauthorized: false } 
+    : { rejectUnauthorized: false }, // SSL também no local
+  max: 10,
+  idleTimeoutMillis: 60000,
+  connectionTimeoutMillis: 30000,
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10000,
+  // IMPORTANTE: Adicione statement timeout
+  statement_timeout: 60000 // 60 segundos por query
 })
 
 pool.on('error', (err) => {
-  console.error('❌ Erro no PostgreSQL:', err)
+  console.error('Erro no pool:', err)
 })
 
 async function query(text, params) {
-  const start = Date.now()
+  const client = await pool.connect()
   try {
-    const res = await pool.query(text, params)
-    const duration = Date.now() - start
-    console.log('Query executada:', { text, duration, rows: res.rowCount })
+    const res = await client.query(text, params)
     return res
   } catch (error) {
-    console.error('Erro na query:', error)
+    console.error('Erro na query:', error.message)
     throw error
+  } finally {
+    client.release()
   }
 }
 
-module.exports = { pool, query }
+module.exports = { query, pool }

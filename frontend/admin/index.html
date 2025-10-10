@@ -39,6 +39,120 @@
 
         .hidden { display: none !important; }
 
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: var(--radius);
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: var(--shadow);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .login-form {
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: 2px solid rgba(148, 163, 184, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-login:disabled {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Admin Container */
         .admin-container {
             display: grid;
             grid-template-columns: 250px 1fr;
@@ -332,17 +446,7 @@
             padding: 1.5rem;
         }
 
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-input, .form-textarea {
+        .form-textarea {
             width: 100%;
             padding: 0.75rem 1rem;
             background: rgba(30, 41, 59, 0.5);
@@ -351,14 +455,11 @@
             color: var(--text-primary);
             font-size: 1rem;
             font-family: inherit;
-        }
-
-        .form-textarea {
             resize: vertical;
             min-height: 100px;
         }
 
-        .form-input:focus, .form-textarea:focus {
+        .form-textarea:focus {
             outline: none;
             border-color: var(--primary);
         }
@@ -395,7 +496,37 @@
 <body>
     <div id="toastContainer"></div>
 
-    <div class="admin-container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <div class="login-logo-icon">AG</div>
+                <h1 class="login-title">Autogiro Admin</h1>
+                <p class="login-subtitle">Painel Administrativo</p>
+            </div>
+            
+            <form class="login-form" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="adminPhone">Telefone:</label>
+                    <input type="tel" id="adminPhone" class="form-input" 
+                           placeholder="11999999999" required autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="adminPassword">Senha:</label>
+                    <input type="password" id="adminPassword" class="form-input" 
+                           placeholder="Sua senha" required>
+                </div>
+                
+                <button type="submit" class="btn-login" id="btnAdminLogin">
+                    Entrar no Painel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-container hidden">
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-text">Autogiro Admin</div>
@@ -405,6 +536,7 @@
                 <div class="nav-item" onclick="showPage('proposals')">💰 Propostas</div>
                 <div class="nav-item" onclick="showPage('users')">👥 Usuários</div>
                 <div class="nav-item" onclick="showPage('transactions')">💳 Transações</div>
+                <div class="nav-item" onclick="adminLogout()">🚪 Sair</div>
                 <div class="nav-item" onclick="window.location.href='/'">🏠 Voltar ao Site</div>
             </nav>
         </aside>
@@ -451,7 +583,6 @@
                             </tr>
                         </thead>
                         <tbody id="proposalsTable">
-                            <!-- Propostas serão inseridas aqui -->
                         </tbody>
                     </table>
                 </div>
@@ -480,7 +611,6 @@
                             </tr>
                         </thead>
                         <tbody id="usersTable">
-                            <!-- Usuários serão inseridos aqui -->
                         </tbody>
                     </table>
                 </div>
@@ -509,7 +639,6 @@
                             </tr>
                         </thead>
                         <tbody id="transactionsTable">
-                            <!-- Transações serão inseridas aqui -->
                         </tbody>
                     </table>
                 </div>
@@ -518,10 +647,91 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:3000/api'
+        const API_BASE = 'https://autogiro.onrender.com/api'
         let currentFilter = 'all'
+        let isAdmin = false
 
-        // Navegação
+        // Login Admin
+        async function handleAdminLogin(event) {
+            event.preventDefault()
+            
+            const phone = document.getElementById('adminPhone').value
+            const password = document.getElementById('adminPassword').value
+            const btn = document.getElementById('btnAdminLogin')
+            
+            btn.disabled = true
+            btn.textContent = 'Verificando...'
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ phone, password })
+                })
+                
+                const data = await response.json()
+                
+                if (data.success && data.user.role === 'admin') {
+                    isAdmin = true
+                    document.getElementById('loginScreen').classList.add('hidden')
+                    document.getElementById('adminPanel').classList.remove('hidden')
+                    loadDashboard()
+                    showToast('Login admin realizado com sucesso!', 'success')
+                } else if (data.success && data.user.role !== 'admin') {
+                    showToast('Acesso negado. Você não é administrador.', 'error')
+                    btn.disabled = false
+                    btn.textContent = 'Entrar no Painel'
+                } else {
+                    showToast(data.error || 'Credenciais inválidas', 'error')
+                    btn.disabled = false
+                    btn.textContent = 'Entrar no Painel'
+                }
+            } catch (error) {
+                console.error('Erro no login admin:', error)
+                showToast('Erro ao conectar com o servidor', 'error')
+                btn.disabled = false
+                btn.textContent = 'Entrar no Painel'
+            }
+        }
+
+        // Logout Admin
+        async function adminLogout() {
+            try {
+                await fetch(`${API_BASE}/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                })
+                
+                isAdmin = false
+                document.getElementById('loginScreen').classList.remove('hidden')
+                document.getElementById('adminPanel').classList.add('hidden')
+                document.getElementById('adminPhone').value = ''
+                document.getElementById('adminPassword').value = ''
+                showToast('Logout realizado com sucesso', 'success')
+            } catch (error) {
+                console.error('Erro no logout:', error)
+            }
+        }
+
+        // Verificar auth ao carregar
+        async function checkAdminAuth() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' })
+                const data = await response.json()
+                
+                if (data.success && data.user.role === 'admin') {
+                    isAdmin = true
+                    document.getElementById('loginScreen').classList.add('hidden')
+                    document.getElementById('adminPanel').classList.remove('hidden')
+                    loadDashboard()
+                }
+            } catch (error) {
+                console.log('Não autenticado')
+            }
+        }
+
+      // Navegação
         function showPage(page) {
             document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'))
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'))
@@ -620,7 +830,7 @@
                             <button class="btn btn-success btn-sm" onclick="updateProposalStatus('${p.id}', 'accepted')">Aceitar</button>
                             <button class="btn btn-danger btn-sm" onclick="updateProposalStatus('${p.id}', 'rejected')">Rejeitar</button>
                         ` : `
-                            <button class="btn btn-primary btn-sm" onclick="viewProposalDetails('${p.id}')">Ver Detalhes</button>
+                            <button class="btn btn-primary btn-sm" onclick="viewProposalDetails('${p.id}')">Detalhes</button>
                         `}
                     </td>
                 </tr>
@@ -683,7 +893,6 @@
         }
 
         function viewProposalDetails(proposalId) {
-            // Implementar visualização de detalhes se necessário
             showToast('Funcionalidade em desenvolvimento', 'error')
         }
 
@@ -894,7 +1103,7 @@
 
         // Inicializar
         window.addEventListener('DOMContentLoaded', () => {
-            loadDashboard()
+            checkAdminAuth()
         })
     </script>
 </body>

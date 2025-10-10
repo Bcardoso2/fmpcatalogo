@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview FIPE - DealersClub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header h1 { color: #333; margin-bottom: 10px; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .stat-label { font-size: 12px; color: #666; margin-bottom: 5px; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #333; }
+        
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-group label { font-weight: 500; }
+        .filter-group select, .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .vehicle-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .vehicle-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        
+        .vehicle-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #eee;
+        }
+        
+        .vehicle-content { padding: 20px; }
+        .vehicle-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .vehicle-info {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .price-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 5px;
+        }
+        .fipe-info {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .badge-excelente { background: #d4edda; color: #155724; }
+        .badge-bom { background: #d1ecf1; color: #0c5460; }
+        .badge-justo { background: #fff3cd; color: #856404; }
+        .badge-caro { background: #f8d7da; color: #721c24; }
+        .badge-sem-fipe { background: #e2e3e5; color: #383d41; }
+        .badge-high { background: #d4edda; color: #155724; }
+        .badge-medium { background: #fff3cd; color: #856404; }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Preview FIPE - DealersClub</h1>
+            <p>Análise de preços gerada em 08/10/2025, 13:20:52</p>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total de Veículos</div>
+                    <div class="stat-value">50</div>
+                </div>
+                <div class="stat-card" style="border-color: #28a745;">
+                    <div class="stat-label">FIPE Encontrada</div>
+                    <div class="stat-value">43</div>
+                </div>
+                <div class="stat-card" style="border-color: #dc3545;">
+                    <div class="stat-label">FIPE Não Encontrada</div>
+                    <div class="stat-value">3</div>
+                </div>
+                <div class="stat-card" style="border-color: #17a2b8;">
+                    <div class="stat-label">Taxa de Sucesso</div>
+                    <div class="stat-value">86.0%</div>
+                </div>
+                <div class="stat-card" style="border-color: #6610f2;">
+                    <div class="stat-label">Via Placa</div>
+                    <div class="stat-value">19</div>
+                </div>
+                <div class="stat-card" style="border-color: #fd7e14;">
+                    <div class="stat-label">Via API</div>
+                    <div class="stat-value">24</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>Filtrar por status:</label>
+                <select id="statusFilter" onchange="filterVehicles()">
+                    <option value="all">Todos</option>
+                    <option value="excelente">Excelente</option>
+                    <option value="bom">Bom</option>
+                    <option value="justo">Justo</option>
+                    <option value="caro">Caro</option>
+                    <option value="sem-fipe">Sem FIPE</option>
+                </select>
+                
+                <label>Categoria:</label>
+                <select id="categoryFilter" onchange="filterVehicles()">
+                    <option value="all">Todas</option>
+                    <option value="Carro">Carro</option>
+                    <option value="Caminhão">Caminhão</option>
+                    <option value="Moto">Moto</option>
+                    <option value="Implemento">Implemento</option>
+                </select>
+                
+                <label>Buscar:</label>
+                <input type="text" id="searchInput" placeholder="Marca, modelo..." onkeyup="filterVehicles()">
+            </div>
+        </div>
+
+        <div class="vehicles-grid" id="vehiclesGrid">
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429430/images/thumbs/07f923059a3472aa8d17e7b3b0f1e173.jpg" class="vehicle-image" alt="Toyota Etios 2014">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Toyota Etios 2014</div>
+                        <div class="vehicle-info">📍 Gaspar, SC</div>
+                        <div class="vehicle-info">🏷️ Placa: OKH-4925</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 27.600,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 42.079,273<br>
+                                    📊 Desconto: 34.4%<br>
+                                    💵 Economize: R$ 14.479,27<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429429/images/thumbs/48de23e5f6c0a687cb5fc145eed9da1c.jpg" class="vehicle-image" alt="Toyota Corolla 2023">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Toyota Corolla 2023</div>
+                        <div class="vehicle-info">📍 Porto Alegre, RS</div>
+                        <div class="vehicle-info">🏷️ Placa: JBV-1C89</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 94.300,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 146.565,00<br>
+                                    📊 Desconto: 35.7%<br>
+                                    💵 Economize: R$ 52.265<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429428/images/thumbs/f5aca86c4ca6f5b28025dfba30b9a13f.jpg" class="vehicle-image" alt="Hyundai HB20 2018">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Hyundai HB20 2018</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: FTA-4H51</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 31.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 53.374,50<br>
+                                    📊 Desconto: 41.9%<br>
+                                    💵 Economize: R$ 22.374,5<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429427/images/thumbs/060caafdc1c4f89b9b3f94e89e4ce64d.jpg" class="vehicle-image" alt="Peugeot 307 2009">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Peugeot 307 2009</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: EGW-3J71</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 12.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 46.826,00<br>
+                                    📊 Desconto: 74.4%<br>
+                                    💵 Economize: R$ 34.826<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429426/images/thumbs/7dcc88200c5abc8ba56865335766c2d5.jpg" class="vehicle-image" alt="Hyundai Tucson 2007">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Hyundai Tucson 2007</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: DUM-8051</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 20.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 33.247,00<br>
+                                    📊 Desconto: 38.3%<br>
+                                    💵 Economize: R$ 12.747<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429425/images/thumbs/f2927d9f576b2e412e620955b669a0ff.jpg" class="vehicle-image" alt="Hyundai Tucson 2010">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Hyundai Tucson 2010</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: NPU-2J60</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 24.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 38.995,667<br>
+                                    📊 Desconto: 38.5%<br>
+                                    💵 Economize: R$ 14.995,67<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429424/images/thumbs/cf2dbb5ab4966ec09602a9e1d61778ff.jpg" class="vehicle-image" alt="Hyundai Ix35 2012">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Hyundai Ix35 2012</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: ETE-3J21</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 51.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 62.998,00<br>
+                                    📊 Desconto: 19.0%<br>
+                                    💵 Economize: R$ 11.998<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_07_04/CrxjsJSilSI6llDcrZc8.jpg" class="vehicle-image" alt="Renault Kwid 2022">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Renault Kwid 2022</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: RMJ-9H85</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 26.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 39.584,00<br>
+                                    📊 Desconto: 33.1%<br>
+                                    💵 Economize: R$ 13.084<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428106/images/thumbs/48294187658d74ac0b1f17f33fea62dc.jpg" class="vehicle-image" alt="Fiat Palio 2015">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Palio 2015</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: FZZ-4H40</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 15.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 33.566,00<br>
+                                    📊 Desconto: 55.3%<br>
+                                    💵 Economize: R$ 18.566<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/427469/images/thumbs/85d932778fcf4455849e79ddadd9b973.jpg" class="vehicle-image" alt="Land Rover Evoque 2018">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Land Rover Evoque 2018</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: FVN-2107</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 95.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 524.459,00<br>
+                                    📊 Desconto: 81.9%<br>
+                                    💵 Economize: R$ 429.459<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/427466/images/thumbs/5e2c32e163c06f1bdd77d5cc4ad8743d.jpg" class="vehicle-image" alt="Renault Sandero 2019">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Renault Sandero 2019</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: PDD-9C09</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 25.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 52.257,143<br>
+                                    📊 Desconto: 52.2%<br>
+                                    💵 Economize: R$ 27.257,14<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/425162/images/thumbs/faf9de1a845a6f6d5ac0cdd28f4c7feb.jpg" class="vehicle-image" alt="Nissan Versa 2017">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Nissan Versa 2017</div>
+                        <div class="vehicle-info">📍 Manaus, AM</div>
+                        <div class="vehicle-info">🏷️ Placa: PHJ-3905</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 14.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 43.344,00<br>
+                                    📊 Desconto: 66.5%<br>
+                                    💵 Economize: R$ 28.844<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_08_26/jYAA0J16DeujXpYZgn3v.jpg" class="vehicle-image" alt="Fiat Idea 2012">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Idea 2012</div>
+                        <div class="vehicle-info">📍 Rio de Janeiro, RJ</div>
+                        <div class="vehicle-info">🏷️ Placa: KVM-5685</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 14.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 45.745,00<br>
+                                    📊 Desconto: 69.4%<br>
+                                    💵 Economize: R$ 31.745<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428580/images/thumbs/2a8374862742d0186b49bbfd7d9390f7.jpg" class="vehicle-image" alt="Hyundai HB20 2018">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Hyundai HB20 2018</div>
+                        <div class="vehicle-info">📍 Gaspar, SC</div>
+                        <div class="vehicle-info">🏷️ Placa: QMT-0E79</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 30.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 67.155,00<br>
+                                    📊 Desconto: 55.3%<br>
+                                    💵 Economize: R$ 37.155<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428578/images/thumbs/80791d9e7726dc36bc9f258d1fa82a17.jpg" class="vehicle-image" alt="Chevrolet Onix 2018">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Chevrolet Onix 2018</div>
+                        <div class="vehicle-info">📍 Goiânia, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: QMT-9C99</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 20.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 43.005,00<br>
+                                    📊 Desconto: 53.5%<br>
+                                    💵 Economize: R$ 23.005<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="sem-fipe" data-category="Moto">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428577/images/thumbs/29f6e64116ad206c7de0f8061a8c3861.jpg" class="vehicle-image" alt="Yamaha FZ15 2024">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Yamaha FZ15 2024</div>
+                        <div class="vehicle-info">📍 Goiânia, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: SCC-5E49</div>
+                        <div class="vehicle-info">📦 Moto</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            
+                            <span class="badge badge-sem-fipe">SEM FIPE</span>
+                            
+                            
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 11.500,00</div>
+                            <div class="fipe-info">❌ FIPE não disponível</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428573/images/thumbs/538f8d28cbc00b1075b65032cb42bce3.jpg" class="vehicle-image" alt="Peugeot 307 2011">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Peugeot 307 2011</div>
+                        <div class="vehicle-info">📍 Goiânia, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: NLJ-3259</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 6.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 46.826,00<br>
+                                    📊 Desconto: 86.1%<br>
+                                    💵 Economize: R$ 40.326<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428567/images/thumbs/a8aebb63cbc028bc4085a5b02fedebd2.jpg" class="vehicle-image" alt="Ford Ka 2020">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Ford Ka 2020</div>
+                        <div class="vehicle-info">📍 Gaspar, SC</div>
+                        <div class="vehicle-info">🏷️ Placa: QUI-3A99</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 19.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 26.559,00<br>
+                                    📊 Desconto: 26.6%<br>
+                                    💵 Economize: R$ 7.059<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428561/images/thumbs/4f25070aaaf8d1b58072e4ea58ebd09d.jpg" class="vehicle-image" alt="Fiat Cronos 2021">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Cronos 2021</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: RTD-7H70</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 40.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 64.039,00<br>
+                                    📊 Desconto: 37.5%<br>
+                                    💵 Economize: R$ 24.039<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/427547/images/thumbs/cd7449cd5fc86270323ec8155882caec.jpg" class="vehicle-image" alt="Toyota Corolla 2015">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Toyota Corolla 2015</div>
+                        <div class="vehicle-info">📍 Goiânia, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: FSY-8B19</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 60.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 180.521,00<br>
+                                    📊 Desconto: 66.5%<br>
+                                    💵 Economize: R$ 120.021<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="justo" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428494/images/thumbs/24e53391a34f59f7909c68595b4ae248.jpg" class="vehicle-image" alt="Hyundai Creta 2022">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Hyundai Creta 2022</div>
+                        <div class="vehicle-info">📍 São Bernardo do Campo, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: EGX-2E57</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            <span class="badge badge-justo">JUSTO</span>
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 80.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 83.552,00<br>
+                                    📊 Desconto: 4.3%<br>
+                                    💵 Economize: R$ 3.552<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428492/images/thumbs/6b99255f1b9fd68db19ec009c9963800.jpg" class="vehicle-image" alt="Nissan Versa 2018">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Nissan Versa 2018</div>
+                        <div class="vehicle-info">📍 Goiânia, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: PZV-3F77</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 36.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 44.428,00<br>
+                                    📊 Desconto: 19.0%<br>
+                                    💵 Economize: R$ 8.428<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="caro" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428487/images/thumbs/aa8c456c5fdb1c7ef2ea03a0840d1658.jpg" class="vehicle-image" alt="Volkswagen Saveiro 2016">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Volkswagen Saveiro 2016</div>
+                        <div class="vehicle-info">📍 Valparaíso de Goiás, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: QFB-2C53</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            <span class="badge badge-caro">CARO</span>
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 31.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 22.745,00<br>
+                                    📊 Desconto: -38.5%<br>
+                                    <br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428485/images/thumbs/f3a2d7b84e8135c07613b4ac4b2843b7.jpg" class="vehicle-image" alt="Fiat Idea 2012">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Idea 2012</div>
+                        <div class="vehicle-info">📍 Igarapé, MG</div>
+                        <div class="vehicle-info">🏷️ Placa: EVB-3802</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 13.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 45.745,00<br>
+                                    📊 Desconto: 70.5%<br>
+                                    💵 Economize: R$ 32.245<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="caro" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_08_22/hJXtW3DQaAN3xJONip2X.jpg" class="vehicle-image" alt="Fiat Strada 2020">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Strada 2020</div>
+                        <div class="vehicle-info">📍 São Bernardo do Campo, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: QQT-2C57</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            <span class="badge badge-caro">CARO</span>
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 39.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 26.377,00<br>
+                                    📊 Desconto: -47.9%<br>
+                                    <br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_08_22/XY8XauSM0ziq676joepw.jpg" class="vehicle-image" alt="Renault Logan 2018">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Renault Logan 2018</div>
+                        <div class="vehicle-info">📍 São Bernardo do Campo, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: FZX-1497</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 18.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 34.795,00<br>
+                                    📊 Desconto: 46.8%<br>
+                                    💵 Economize: R$ 16.295<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="sem-fipe" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428220/images/thumbs/a7553f39bd56c7f0ea0741cff33f2217.jpg" class="vehicle-image" alt="Fiat Cronos 2025">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Cronos 2025</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: TLT-2E04</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            
+                            <span class="badge badge-sem-fipe">SEM FIPE</span>
+                            
+                            
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 65.500,00</div>
+                            <div class="fipe-info">❌ FIPE não disponível</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/428219/images/thumbs/3cca1df0ce9cce1860509672518d2dff.jpg" class="vehicle-image" alt="Fiat Punto 2013">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Punto 2013</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: FFZ-9C17</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 12.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 34.016,75<br>
+                                    📊 Desconto: 63.3%<br>
+                                    💵 Economize: R$ 21.516,75<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="sem-fipe" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_08_22/EL2gkzlHS9vCAq2vWpFh.jpg" class="vehicle-image" alt="Citroen C4 2010">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Citroen C4 2010</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: KVF-7B65</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            
+                            <span class="badge badge-sem-fipe">SEM FIPE</span>
+                            
+                            
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 6.000,00</div>
+                            <div class="fipe-info">❌ FIPE não disponível</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/425161/images/thumbs/2441a8e687baf0726037027fa4b19c1f.jpg" class="vehicle-image" alt="Ford Fiesta 2009">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Ford Fiesta 2009</div>
+                        <div class="vehicle-info">📍 São José dos Pinhais, PR</div>
+                        <div class="vehicle-info">🏷️ Placa: ARJ-0F37</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 7.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 25.476,667<br>
+                                    📊 Desconto: 70.6%<br>
+                                    💵 Economize: R$ 17.976,67<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/425189/images/thumbs/ffed7136ceeaea798d622231da43916a.jpg" class="vehicle-image" alt="Fiat Palio 2009">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Palio 2009</div>
+                        <div class="vehicle-info">📍 Rio de Janeiro, RJ</div>
+                        <div class="vehicle-info">🏷️ Placa: KWT-1I75</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 8.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 24.467,273<br>
+                                    📊 Desconto: 67.3%<br>
+                                    💵 Economize: R$ 16.467,27<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_08_26/3kxOgB6QeDOyS6ZAQj3e.jpg" class="vehicle-image" alt="Citroen C3 2011">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Citroen C3 2011</div>
+                        <div class="vehicle-info">📍 Goiânia, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: NWT-7E15</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 8.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 29.882,333<br>
+                                    📊 Desconto: 71.6%<br>
+                                    💵 Economize: R$ 21.382,33<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_08_13/gyQMMFzVj0xe26IAD5aZ.jpg" class="vehicle-image" alt="Fiat Stilo 2009">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Stilo 2009</div>
+                        <div class="vehicle-info">📍 São José dos Pinhais, PR</div>
+                        <div class="vehicle-info">🏷️ Placa: HID-4373</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 7.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 28.478,333<br>
+                                    📊 Desconto: 73.7%<br>
+                                    💵 Economize: R$ 20.978,33<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/425191/images/thumbs/7d686e9b6b310284e2324763fc8dc0fa.jpg" class="vehicle-image" alt="Renault Megane Sedan 2007">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Renault Megane Sedan 2007</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: DXC-6F10</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 5.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 20.216,00<br>
+                                    📊 Desconto: 75.3%<br>
+                                    💵 Economize: R$ 15.216<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://storage.googleapis.com/cars2you-fe381.appspot.com/arquivos/2025_08_15/PmbOVZaSQ432E8gcWZjz.jpg" class="vehicle-image" alt="Chevrolet Celta 2009">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Chevrolet Celta 2009</div>
+                        <div class="vehicle-info">📍 Goiânia, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: NLP-2981</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 7.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 20.690,50<br>
+                                    📊 Desconto: 63.8%<br>
+                                    💵 Economize: R$ 13.190,5<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429422/images/thumbs/cbc4370d7ed0ca715ef0fbb9178e0384.jpg" class="vehicle-image" alt="Fiat Mobi 2022">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Mobi 2022</div>
+                        <div class="vehicle-info">📍 Valparaíso de Goiás, GO</div>
+                        <div class="vehicle-info">🏷️ Placa: RNQ-4C13</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 26.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 50.268,00<br>
+                                    📊 Desconto: 48.3%<br>
+                                    💵 Economize: R$ 24.268<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429421/images/thumbs/218ef7a0d9875499a91658edb3fa9bcb.jpg" class="vehicle-image" alt="Fiat Argo 2024">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Argo 2024</div>
+                        <div class="vehicle-info">📍 São Bernardo do Campo, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: SUG-3B18</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 58.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 68.372,00<br>
+                                    📊 Desconto: 15.2%<br>
+                                    💵 Economize: R$ 10.372<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429420/images/thumbs/296fb33f6be6a5f297fd3e63403258a5.jpg" class="vehicle-image" alt="Chevrolet Cruze 2014">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Chevrolet Cruze 2014</div>
+                        <div class="vehicle-info">📍 Gaspar, SC</div>
+                        <div class="vehicle-info">🏷️ Placa: FME-5H77</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 26.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 59.990,857<br>
+                                    📊 Desconto: 55.8%<br>
+                                    💵 Economize: R$ 33.490,86<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429419/images/thumbs/a5a6c703868cd21badbffe24351d572e.jpg" class="vehicle-image" alt="Fiat Uno 2021">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Uno 2021</div>
+                        <div class="vehicle-info">📍 São José dos Pinhais, PR</div>
+                        <div class="vehicle-info">🏷️ Placa: RHB-4F27</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 30.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 45.774,00<br>
+                                    📊 Desconto: 34.5%<br>
+                                    💵 Economize: R$ 15.774<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429418/images/thumbs/3fe36a1443fa65242d538c4880c97394.jpg" class="vehicle-image" alt="Chevrolet Onix 2022">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Chevrolet Onix 2022</div>
+                        <div class="vehicle-info">📍 Manaus, AM</div>
+                        <div class="vehicle-info">🏷️ Placa: QZF-7J75</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 34.500,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 43.005,00<br>
+                                    📊 Desconto: 19.8%<br>
+                                    💵 Economize: R$ 8.505<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429417/images/thumbs/1b0735ec1da066c27b9645cdedeaae29.jpg" class="vehicle-image" alt="Chevrolet Onix 2021">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Chevrolet Onix 2021</div>
+                        <div class="vehicle-info">📍 Manaus, AM</div>
+                        <div class="vehicle-info">🏷️ Placa: PHZ-8B23</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-medium">Média Confiança</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 34.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 43.005,00<br>
+                                    📊 Desconto: 20.9%<br>
+                                    💵 Economize: R$ 9.005<br>
+                                    🔍 Fonte: FIPE API
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429416/images/thumbs/41a7cafb93c8593f699901cb7ffcecba.jpg" class="vehicle-image" alt="Chevrolet Prisma 2015">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Chevrolet Prisma 2015</div>
+                        <div class="vehicle-info">📍 Manaus, AM</div>
+                        <div class="vehicle-info">🏷️ Placa: OXM-4I07</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 21.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 48.632,167<br>
+                                    📊 Desconto: 56.8%<br>
+                                    💵 Economize: R$ 27.632,17<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429415/images/thumbs/0d5eaba9dc7a450a2457413d39f4e1f9.jpg" class="vehicle-image" alt="Mercedes benz C-300 2019">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Mercedes benz C-300 2019</div>
+                        <div class="vehicle-info">📍 São Bernardo do Campo, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: EJE-7G39</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 201.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 311.951,00<br>
+                                    📊 Desconto: 35.6%<br>
+                                    💵 Economize: R$ 110.951<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="sem-fipe" data-category="Moto">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429414/images/thumbs/60a3b6534a36c80b81806d35e04cde8d.jpg" class="vehicle-image" alt="Yamaha Fazer 250 2024">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Yamaha Fazer 250 2024</div>
+                        <div class="vehicle-info">📍 São Bernardo do Campo, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: SVJ-9B97</div>
+                        <div class="vehicle-info">📦 Moto</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            
+                            <span class="badge badge-sem-fipe">SEM FIPE</span>
+                            
+                            
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 15.000,00</div>
+                            <div class="fipe-info">❌ FIPE não disponível</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="sem-fipe" data-category="Moto">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429413/images/thumbs/6edfe5358eb412d12a95bc0fd93e9844.jpg" class="vehicle-image" alt="Yamaha FZ15 2024">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Yamaha FZ15 2024</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: SWJ-3G20</div>
+                        <div class="vehicle-info">📦 Moto</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            
+                            <span class="badge badge-sem-fipe">SEM FIPE</span>
+                            
+                            
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 12.000,00</div>
+                            <div class="fipe-info">❌ FIPE não disponível</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="sem-fipe" data-category="Moto">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429412/images/thumbs/b76c51ab366c55e422c44cb76c872525.jpg" class="vehicle-image" alt="Honda Cg 2024">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Honda Cg 2024</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: TJB-6C28</div>
+                        <div class="vehicle-info">📦 Moto</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            
+                            <span class="badge badge-sem-fipe">SEM FIPE</span>
+                            
+                            
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 14.000,00</div>
+                            <div class="fipe-info">❌ FIPE não disponível</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="sem-fipe" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429411/images/thumbs/60f042ce03644219ea71f4e1efbe95e3.jpg" class="vehicle-image" alt="Caoachery Tiggo7 2025">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Caoachery Tiggo7 2025</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: SWP-9F79</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            
+                            
+                            
+                            
+                            <span class="badge badge-sem-fipe">SEM FIPE</span>
+                            
+                            
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 128.000,00</div>
+                            <div class="fipe-info">❌ FIPE não disponível</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429410/images/thumbs/5d4a453ea716d8fc5bac15facdc6aac9.jpg" class="vehicle-image" alt="Hyundai HB20 2022">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Hyundai HB20 2022</div>
+                        <div class="vehicle-info">📍 Igarapé, MG</div>
+                        <div class="vehicle-info">🏷️ Placa: RNE-9J42</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 35.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 70.972,571<br>
+                                    📊 Desconto: 50.7%<br>
+                                    💵 Economize: R$ 35.972,57<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429409/images/thumbs/d1fb9323a3bdd02f6c3218f3d015a529.jpg" class="vehicle-image" alt="Fiat Toro 2017">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Fiat Toro 2017</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: PZK-0527</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 65.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 83.176,50<br>
+                                    📊 Desconto: 21.9%<br>
+                                    💵 Economize: R$ 18.176,5<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="vehicle-card" data-status="excelente" data-category="Carro">
+                    <img src="https://d2r0520c1zax1.cloudfront.net/vehicles/429408/images/thumbs/40144b1fed4f0965b688c18f1ed1fe9d.jpg" class="vehicle-image" alt="Volkswagen Fox 2016">
+                    <div class="vehicle-content">
+                        <div class="vehicle-title">Volkswagen Fox 2016</div>
+                        <div class="vehicle-info">📍 Guarulhos, SP</div>
+                        <div class="vehicle-info">🏷️ Placa: GBG-5444</div>
+                        <div class="vehicle-info">📦 Carro</div>
+                        
+                        <div style="margin-top: 10px;">
+                            <span class="badge badge-excelente">EXCELENTE</span>
+                            
+                            
+                            
+                            
+                            
+                            <span class="badge badge-high">Alta Confiança</span>
+                            
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">R$ 36.000,00</div>
+                            
+                                <div class="fipe-info">
+                                    💰 FIPE: R$ 43.226,00<br>
+                                    📊 Desconto: 16.7%<br>
+                                    💵 Economize: R$ 7.226<br>
+                                    🔍 Fonte: PlacaFipe
+                                </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+    </div>
+
+    <script>
+        function filterVehicles() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.vehicle-card');
+            
+            cards.forEach(card => {
+                const status = card.dataset.status;
+                const category = card.dataset.category;
+                const text = card.textContent.toLowerCase();
+                
+                const statusMatch = statusFilter === 'all' || status === statusFilter;
+                const categoryMatch = categoryFilter === 'all' || category === categoryFilter;
+                const searchMatch = searchInput === '' || text.includes(searchInput);
+                
+                if (statusMatch && categoryMatch && searchMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
