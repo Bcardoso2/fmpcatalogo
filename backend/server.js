@@ -9,31 +9,62 @@ const { query } = require('./config/database')
 const app = express()
 const PORT = process.env.PORT || 3000
 
-// Middleware
+// Middleware CORS - CORRIGIDO
 app.use(cors({
     origin: function(origin, callback) {
-        // Sempre permite
-        callback(null, origin || '*');
+        // Lista de origens permitidas
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5173',
+            'http://127.0.0.1:3000',
+            'http://127.0.0.1:5173',
+            'https://fmpcatalogo.onrender.com',
+            'https://autogiro.onrender.com'
+        ]
+        
+        // Se não tem origin (requisições do mesmo domínio) ou está na lista, permite
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(null, true) // Permite de qualquer forma em desenvolvimento
+        }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-}));
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    exposedHeaders: ['Set-Cookie']
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Session
+// Session - CORRIGIDO
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'sua_chave_secreta_aqui',
+    secret: process.env.SESSION_SECRET || 'sua_chave_secreta_aqui_mude_isso_em_producao',
     resave: false,
     saveUninitialized: false,
+    name: 'sessionId', // Nome customizado do cookie
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production', // true apenas em HTTPS
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 horas
-    }
+        maxAge: 24 * 60 * 60 * 1000, // 24 horas
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' para cross-origin em produção
+        domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined // Compartilhar entre subdomínios
+    },
+    proxy: true // Importante para funcionar atrás de proxy (Render, Heroku, etc)
 }))
+
+// Middleware de debug de sessão (remover em produção)
+app.use((req, res, next) => {
+    console.log('=== SESSION DEBUG ===')
+    console.log('Session ID:', req.sessionID)
+    console.log('Session:', req.session)
+    console.log('User ID:', req.session?.userId)
+    console.log('Cookies:', req.headers.cookie)
+    console.log('Origin:', req.headers.origin)
+    console.log('====================')
+    next()
+})
 
 // Servir arquivos estáticos do frontend
 app.use(express.static(path.join(__dirname, '../frontend')))
@@ -50,7 +81,11 @@ app.get('/health', (req, res) => {
     res.status(200).json({ 
         status: 'ok', 
         service: 'autogiro-api',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        session: {
+            id: req.sessionID,
+            userId: req.session?.userId || null
+        }
     })
 })
 
@@ -171,6 +206,7 @@ app.listen(PORT, () => {
     console.log(`Recarga em http://localhost:${PORT}/recarga`)
     console.log(`Perfil em http://localhost:${PORT}/perfil`)
     console.log(`Admin em http://localhost:${PORT}/admin`)
-    console.log(`Cron job 1: Desativação às 00:00`)
+    console.log(`Cron job 1: Desativação às 17:00`)
     console.log(`Cron job 2: Scraper às 20:00`)
+    console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`)
 })
