@@ -186,8 +186,17 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
     const proposal = proposalResult.rows[0]
     const oldStatus = proposal.status
     
-    // Verifica se o usuário é dono da proposta
-    if (proposal.user_id !== req.session.userId) {
+    // Buscar informações do usuário logado para verificar permissão
+    const currentUserResult = await client.query(
+      'SELECT role FROM users WHERE id = $1',
+      [req.session.userId]
+    )
+    
+    const isAdmin = currentUserResult.rows[0]?.role === 'admin'
+    const isOwner = proposal.user_id === req.session.userId
+    
+    // Verifica se é admin ou dono da proposta
+    if (!isAdmin && !isOwner) {
       await client.query('ROLLBACK')
       return res.status(403).json({ success: false, error: 'Sem permissão' })
     }
