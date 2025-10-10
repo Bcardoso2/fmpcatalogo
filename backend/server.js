@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000
 // Middleware
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? 'https://autogiro.onrender.com' 
+        ? 'https://fmpcatalogo.onrender.com' 
         : 'http://localhost:3000',
     credentials: true
 }))
