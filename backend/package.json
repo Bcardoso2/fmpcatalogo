@@ -19,7 +19,8 @@
     "pg": "^8.11.3",
     "puppeteer": "^24.23.0",
     "qrcode": "^1.5.4",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "node-cron": "^3.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
