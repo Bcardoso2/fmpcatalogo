@@ -1,4 +1,5 @@
 const express = require('express')
+const bcrypt = require('bcrypt')
 const { query } = require('../config/database')
 const { requireAuth } = require('../middleware/auth')
 const router = express.Router()
@@ -53,6 +54,119 @@ router.get('/users', requireAuth, requireAdmin, async (req, res) => {
   } catch (error) {
     console.error('Erro ao listar usuários:', error)
     res.status(500).json({ success: false, error: 'Erro ao listar usuários' })
+  }
+})
+
+// POST /api/admin/users/create - Criar novo usuário
+router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { name, phone, email, password, role, initial_credits } = req.body
+    
+    // Validações
+    if (!name || !phone || !password || !role) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Nome, telefone, senha e tipo são obrigatórios' 
+      })
+    }
+    
+    if (name.length < 3) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Nome deve ter no mínimo 3 caracteres' 
+      })
+    }
+    
+    if (!/^[0-9]{10,11}$/.test(phone)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Telefone inválido. Use apenas números (DDD + número)' 
+      })
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Senha deve ter no mínimo 6 caracteres' 
+      })
+    }
+    
+    if (!['customer', 'admin'].includes(role)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Tipo de usuário inválido' 
+      })
+    }
+    
+    await query('BEGIN')
+    
+    // Verificar se telefone já existe
+    const existingUser = await query('SELECT id FROM users WHERE phone = $1', [phone])
+    if (existingUser.rows.length > 0) {
+      await query('ROLLBACK')
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Telefone já cadastrado' 
+      })
+    }
+    
+    // Verificar se email já existe (se fornecido)
+    if (email) {
+      const existingEmail = await query('SELECT id FROM users WHERE email = $1', [email])
+      if (existingEmail.rows.length > 0) {
+        await query('ROLLBACK')
+        return res.status(400).json({ 
+          success: false, 
+          error: 'Email já cadastrado' 
+        })
+      }
+    }
+    
+    // Hash da senha
+    const hashedPassword = await bcrypt.hash(password, 10)
+    
+    // Criar usuário
+    const credits = parseFloat(initial_credits) || 0
+    const userResult = await query(`
+      INSERT INTO users (phone, name, email, password, role, credits, is_active)
+      VALUES ($1, $2, $3, $4, $5, $6, true)
+      RETURNING id, phone, name, email, role, credits
+    `, [phone, name, email || null, hashedPassword, role, credits])
+    
+    const newUser = userResult.rows[0]
+    
+    // Se tiver créditos iniciais, registrar transação
+    if (credits > 0) {
+      await query(`
+        INSERT INTO credit_transactions (
+          user_id, type, amount, balance_before, balance_after,
+          description
+        ) VALUES ($1, 'admin_adjustment', $2, 0, $3, $4)
+      `, [
+        newUser.id, 
+        credits, 
+        credits, 
+        `Créditos iniciais ao criar usuário - Admin: ${req.session.userId}`
+      ])
+    }
+    
+    await query('COMMIT')
+    
+    res.json({ 
+      success: true, 
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        phone: newUser.phone,
+        email: newUser.email,
+        role: newUser.role,
+        credits: newUser.credits
+      }
+    })
+  } catch (error) {
+    await query('ROLLBACK')
+    console.error('Erro ao criar usuário:', error)
+    res.status(500).json({ success: false, error: 'Erro ao criar usuário' })
   }
 })
 
