@@ -1,4 +1,23 @@
-const express = require('express')
+// Criar usuário
+    const credits = parseFloat(initial_credits) || 0
+    
+    // Pegar o client_id do admin logado
+    const adminResult = await query('SELECT client_id FROM users WHERE id = $1', [req.session.userId])
+    const client_id = adminResult.rows[0]?.client_id || 'client1'
+    
+    // Inserir usuário com client_id
+    const userResult = await query(`
+      INSERT INTO users (
+        phone, 
+        password_hash, 
+        name, 
+        email, 
+        role, 
+        credits, 
+        total_credits_purchased,
+        is_active,
+        client_id,
+        created_atconst express = require('express')
 const bcrypt = require('bcrypt')
 const { query } = require('../config/database')
 const { requireAuth } = require('../middleware/auth')
@@ -128,7 +147,19 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
     // Criar usuário
     const credits = parseFloat(initial_credits) || 0
     
-    // Inserir usuário sem tenant_id
+    // Gerar client_id aleatório (formato: client_XXXXX onde X é número/letra)
+    const generateClientId = () => {
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+      let clientId = 'client_'
+      for (let i = 0; i < 8; i++) {
+        clientId += chars.charAt(Math.floor(Math.random() * chars.length))
+      }
+      return clientId
+    }
+    
+    const client_id = generateClientId()
+    
+    // Inserir usuário com client_id gerado
     const userResult = await query(`
       INSERT INTO users (
         phone, 
@@ -139,10 +170,11 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
         credits, 
         total_credits_purchased,
         is_active,
+        client_id,
         created_at,
         updated_at
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
       RETURNING id, phone, name, email, role, credits
     `, [
       phone, 
@@ -152,7 +184,8 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
       role, 
       credits,
       0,
-      true
+      true,
+      client_id
     ])
     
     const newUser = userResult.rows[0]
@@ -167,15 +200,13 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
           balance_before, 
           balance_after,
           description,
-          tenant_id,
           created_at
-        ) VALUES ($1, 'admin_adjustment', $2, 0, $3, $4, $5, NOW())
+        ) VALUES ($1, 'admin_adjustment', $2, 0, $3, $4, NOW())
       `, [
         newUser.id, 
         credits, 
         credits, 
-        `Créditos iniciais ao criar usuário - Admin: ${req.session.userName || req.session.userId}`,
-        'client1'
+        `Créditos iniciais ao criar usuário - Admin: ${req.session.userName || req.session.userId}`
       ])
     }
     
