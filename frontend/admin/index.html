@@ -35,24 +35,25 @@
             background: var(--bg-dark);
             color: var(--text-primary);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .hidden { display: none !important; }
 
-        /* Login Screen */
+        /* Mobile First - Login Screen */
         .login-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .login-box {
             background: var(--bg-card);
             border: 1px solid rgba(148, 163, 184, 0.1);
             border-radius: var(--radius);
-            padding: 3rem;
+            padding: 2rem 1.5rem;
             max-width: 450px;
             width: 100%;
             box-shadow: var(--shadow);
@@ -60,26 +61,26 @@
 
         .login-logo {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .login-logo-icon {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 800;
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin: 0 auto 1rem;
             box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
         }
 
         .login-title {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
@@ -89,14 +90,15 @@
         .login-subtitle {
             color: var(--text-secondary);
             margin-top: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .login-form {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-label {
@@ -104,6 +106,7 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: var(--text-primary);
+            font-size: 0.9rem;
         }
 
         .form-input, .form-select {
@@ -129,7 +132,7 @@
             display: block;
             margin-top: 0.25rem;
             color: var(--text-muted);
-            font-size: 0.875rem;
+            font-size: 0.8rem;
         }
 
         .btn-login {
@@ -159,18 +162,82 @@
             transform: none;
         }
 
-        /* Admin Container */
+        /* Mobile First - Admin Container */
         .admin-container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
         }
 
-        /* Sidebar */
+        /* Mobile Header */
+        .mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mobile-menu-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Sidebar - Mobile First */
         .sidebar {
             background: var(--bg-card);
-            border-right: 1px solid rgba(148, 163, 184, 0.1);
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 280px;
+            height: 100vh;
             padding: 2rem 0;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .logo {
@@ -208,50 +275,52 @@
             border-left: 3px solid var(--primary);
         }
 
-        /* Main Content */
+        /* Main Content - Mobile First */
         .main-content {
-            padding: 2rem;
+            padding: 1rem;
             overflow-y: auto;
+            flex: 1;
         }
 
         .page-header {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .page-title {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
         }
 
         .page-subtitle {
             color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
-        /* Stats Cards */
+        /* Stats Cards - Mobile First */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .stat-card {
             background: var(--bg-card);
             border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: var(--radius);
-            padding: 1.5rem;
+            border-radius: 12px;
+            padding: 1.25rem;
             transition: var(--transition);
         }
 
         .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -259,57 +328,76 @@
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: 800;
             color: var(--primary);
         }
 
-        /* Table */
+        /* Table Container - Mobile First */
         .table-container {
             background: var(--bg-card);
             border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: var(--radius);
+            border-radius: 12px;
             overflow: hidden;
+            margin-bottom: 1rem;
         }
 
         .table-header {
-            padding: 1.5rem;
+            padding: 1rem;
             border-bottom: 1px solid rgba(148, 163, 184, 0.1);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .table-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
+        }
+
+        .table-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .table-filters {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .filter-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             background: rgba(100, 116, 139, 0.1);
             border: 1px solid rgba(100, 116, 139, 0.2);
             border-radius: 8px;
             color: var(--text-secondary);
             cursor: pointer;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 500;
             transition: var(--transition);
+            white-space: nowrap;
         }
 
         .filter-btn:hover, .filter-btn.active {
             background: var(--primary);
             color: white;
+            border-color: var(--primary);
+        }
+
+        /* Responsive Table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px;
         }
 
         thead {
@@ -317,18 +405,20 @@
         }
 
         th {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             text-align: left;
             font-weight: 600;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            white-space: nowrap;
         }
 
         td {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-top: 1px solid rgba(148, 163, 184, 0.1);
+            font-size: 0.9rem;
         }
 
         tbody tr {
@@ -353,15 +443,16 @@
         .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
         .badge-primary { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
 
-        /* Buttons */
+        /* Buttons - Mobile Optimized */
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.875rem;
             border: none;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             transition: var(--transition);
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -384,21 +475,28 @@
         }
 
         .btn-sm {
-            padding: 0.375rem 0.75rem;
+            padding: 0.375rem 0.625rem;
             font-size: 0.75rem;
         }
 
-        /* Modal */
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Modal - Mobile Optimized */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(4px);
-            z-index: 1000;
+            z-index: 2000;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
-            padding: 1.5rem;
+            padding: 0;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -412,23 +510,32 @@
         .modal-content {
             background: var(--bg-card);
             border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: var(--radius);
-            max-width: 600px;
+            border-radius: var(--radius) var(--radius) 0 0;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
         }
 
         .modal-header {
-            padding: 1.5rem;
+            padding: 1.25rem 1rem;
             border-bottom: 1px solid rgba(148, 163, 184, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            z-index: 10;
         }
 
         .modal-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
         }
 
@@ -440,9 +547,12 @@
             color: var(--text-secondary);
             padding: 0.5rem;
             border-radius: 8px;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-close:hover {
@@ -450,7 +560,7 @@
         }
 
         .modal-body {
-            padding: 1.5rem;
+            padding: 1.25rem 1rem;
         }
 
         .form-textarea {
@@ -488,7 +598,8 @@
             margin-bottom: 0.75rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             animation: slideIn 0.3s ease;
-            min-width: 300px;
+            min-width: 280px;
+            max-width: 90vw;
         }
 
         @keyframes slideIn {
@@ -498,6 +609,127 @@
 
         .toast-success { border-left: 4px solid var(--success); }
         .toast-error { border-left: 4px solid var(--danger); }
+
+        /* Desktop Breakpoints */
+        @media (min-width: 768px) {
+            .login-box {
+                padding: 3rem;
+            }
+
+            .login-logo-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+                border-radius: 20px;
+            }
+
+            .login-title {
+                font-size: 2rem;
+            }
+
+            .mobile-header {
+                display: none;
+            }
+
+            .sidebar {
+                position: static;
+                width: 250px;
+                max-width: none;
+                border-right: 1px solid rgba(148, 163, 184, 0.1);
+            }
+
+            .sidebar-overlay {
+                display: none;
+            }
+
+            .admin-container {
+                flex-direction: row;
+            }
+
+            .main-content {
+                padding: 2rem;
+                flex: 1;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .table-header {
+                padding: 1.5rem;
+                flex-direction: row;
+            }
+
+            .table-title {
+                font-size: 1.25rem;
+            }
+
+            .table-filters {
+                gap: 0.75rem;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            th {
+                padding: 1rem 1.5rem;
+                font-size: 0.875rem;
+            }
+
+            td {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .modal-overlay {
+                align-items: center;
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                max-width: 600px;
+                border-radius: var(--radius);
+                transform: scale(0.9);
+            }
+
+            .modal-overlay.active .modal-content {
+                transform: scale(1);
+            }
+
+            .modal-header {
+                padding: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
@@ -534,15 +766,25 @@
 
     <!-- Admin Panel -->
     <div id="adminPanel" class="admin-container hidden">
-        <aside class="sidebar">
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            <div class="mobile-logo">FMP REPASSES</div>
+            <div style="width: 40px;"></div>
+        </div>
+
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileMenu()"></div>
+
+        <aside class="sidebar" id="sidebar">
             <div class="logo">
                 <div class="logo-text">FMP REPASSES</div>
             </div>
             <nav>
-                <div class="nav-item active" onclick="showPage('dashboard')">📊 Dashboard</div>
-                <div class="nav-item" onclick="showPage('proposals')">💰 Propostas</div>
-                <div class="nav-item" onclick="showPage('users')">👥 Usuários</div>
-                <div class="nav-item" onclick="showPage('transactions')">💳 Transações</div>
+                <div class="nav-item active" onclick="showPage('dashboard'); closeMobileMenu()">📊 Dashboard</div>
+                <div class="nav-item" onclick="showPage('proposals'); closeMobileMenu()">💰 Propostas</div>
+                <div class="nav-item" onclick="showPage('users'); closeMobileMenu()">👥 Usuários</div>
+                <div class="nav-item" onclick="showPage('transactions'); closeMobileMenu()">💳 Transações</div>
                 <div class="nav-item" onclick="adminLogout()">🚪 Sair</div>
                 <div class="nav-item" onclick="window.location.href='/'">🏠 Voltar ao Site</div>
             </nav>
@@ -578,20 +820,22 @@
                             <button class="filter-btn" onclick="filterProposals('rejected')">Rejeitadas</button>
                         </div>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Cliente</th>
-                                <th>Veículo</th>
-                                <th>Valor Proposta</th>
-                                <th>Status</th>
-                                <th>Data</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="proposalsTable">
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Veículo</th>
+                                    <th>Valor Proposta</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="proposalsTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -609,20 +853,22 @@
                             ➕ Novo Usuário
                         </button>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Telefone</th>
-                                <th>Email</th>
-                                <th>Créditos</th>
-                                <th>Total Comprado</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTable">
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Email</th>
+                                    <th>Créditos</th>
+                                    <th>Total Comprado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -637,20 +883,22 @@
                     <div class="table-header">
                         <h3 class="table-title">Últimas Transações</h3>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Usuário</th>
-                                <th>Tipo</th>
-                                <th>Valor</th>
-                                <th>Saldo Anterior</th>
-                                <th>Saldo Novo</th>
-                                <th>Data</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionsTable">
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                    <th>Saldo Anterior</th>
+                                    <th>Saldo Novo</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
@@ -660,6 +908,21 @@
         const API_BASE = 'https://fmpcatalogo.onrender.com/api'
         let currentFilter = 'all'
         let isAdmin = false
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar')
+            const overlay = document.getElementById('sidebarOverlay')
+            sidebar.classList.toggle('active')
+            overlay.classList.toggle('active')
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar')
+            const overlay = document.getElementById('sidebarOverlay')
+            sidebar.classList.remove('active')
+            overlay.classList.remove('active')
+        }
 
         // Login Admin
         async function handleAdminLogin(event) {
@@ -941,7 +1204,7 @@
                     <td>${parseFloat(u.total_credits_purchased || 0).toFixed(1)}</td>
                     <td>
                         <button class="btn btn-primary btn-sm" onclick="openAddCreditsModal('${u.id}', '${u.name}')">
-                            Adicionar Créditos
+                            💰 Créditos
                         </button>
                     </td>
                 </tr>
@@ -995,7 +1258,7 @@
                         <span class="form-hint">Opcional - padrão é 0</span>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <button type="submit" class="btn btn-primary btn-full" style="margin-top: 1rem;">
                         ✅ Criar Usuário
                     </button>
                 </form>
@@ -1059,7 +1322,7 @@
                                   placeholder="Motivo do ajuste..."></textarea>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <button type="submit" class="btn btn-primary btn-full">
                         Adicionar Créditos
                     </button>
                 </form>
