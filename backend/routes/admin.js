@@ -1,23 +1,4 @@
-// Criar usuário
-    const credits = parseFloat(initial_credits) || 0
-    
-    // Pegar o client_id do admin logado
-    const adminResult = await query('SELECT client_id FROM users WHERE id = $1', [req.session.userId])
-    const client_id = adminResult.rows[0]?.client_id || 'client1'
-    
-    // Inserir usuário com client_id
-    const userResult = await query(`
-      INSERT INTO users (
-        phone, 
-        password_hash, 
-        name, 
-        email, 
-        role, 
-        credits, 
-        total_credits_purchased,
-        is_active,
-        client_id,
-        created_atconst express = require('express')
+const express = require('express')
 const bcrypt = require('bcrypt')
 const { query } = require('../config/database')
 const { requireAuth } = require('../middleware/auth')
