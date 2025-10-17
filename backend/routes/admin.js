@@ -91,7 +91,7 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
       })
     }
     
-    if (!['customer', 'admin'].includes(role)) {
+    if (!['customer', 'admin', 'viewer'].includes(role)) {
       return res.status(400).json({ 
         success: false, 
         error: 'Tipo de usuário inválido' 
@@ -127,11 +127,35 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
     
     // Criar usuário
     const credits = parseFloat(initial_credits) || 0
+    
+    // CORREÇÃO: Usar password_hash ao invés de password
     const userResult = await query(`
-      INSERT INTO users (phone, name, email, password, role, credits, is_active)
-      VALUES ($1, $2, $3, $4, $5, $6, true)
+      INSERT INTO users (
+        phone, 
+        password_hash, 
+        name, 
+        email, 
+        tenant_id, 
+        role, 
+        credits, 
+        total_credits_purchased,
+        is_active,
+        created_at,
+        updated_at
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
       RETURNING id, phone, name, email, role, credits
-    `, [phone, name, email || null, hashedPassword, role, credits])
+    `, [
+      phone, 
+      hashedPassword,
+      name, 
+      email || null, 
+      'client1',
+      role, 
+      credits,
+      0,
+      true
+    ])
     
     const newUser = userResult.rows[0]
     
@@ -139,14 +163,21 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
     if (credits > 0) {
       await query(`
         INSERT INTO credit_transactions (
-          user_id, type, amount, balance_before, balance_after,
-          description
-        ) VALUES ($1, 'admin_adjustment', $2, 0, $3, $4)
+          user_id, 
+          type, 
+          amount, 
+          balance_before, 
+          balance_after,
+          description,
+          tenant_id,
+          created_at
+        ) VALUES ($1, 'admin_adjustment', $2, 0, $3, $4, $5, NOW())
       `, [
         newUser.id, 
         credits, 
         credits, 
-        `Créditos iniciais ao criar usuário - Admin: ${req.session.userId}`
+        `Créditos iniciais ao criar usuário - Admin: ${req.session.userName || req.session.userId}`,
+        'client1'
       ])
     }
     
@@ -154,6 +185,7 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
     
     res.json({ 
       success: true, 
+      message: 'Usuário criado com sucesso!',
       user: {
         id: newUser.id,
         name: newUser.name,
@@ -166,7 +198,10 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
   } catch (error) {
     await query('ROLLBACK')
     console.error('Erro ao criar usuário:', error)
-    res.status(500).json({ success: false, error: 'Erro ao criar usuário' })
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro ao criar usuário: ' + error.message 
+    })
   }
 })
 
