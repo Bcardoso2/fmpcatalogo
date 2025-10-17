@@ -1069,12 +1069,12 @@
     const eventFilter = document.getElementById('eventFilter').value
     
     let filteredVehicles = APP_STATE.vehicles.filter(vehicle => {
-        const matchCategory = categoryFilter === 'all' || vehicle.category === categoryFilter
-        const matchState = stateFilter === 'all' || vehicle.state === stateFilter
-        const vehicleEventDate = vehicle.event_date ? vehicle.event_date.split('T')[0] : null
-        const matchEvent = eventFilter === 'all' || vehicleEventDate === eventFilter
-        return matchCategory && matchState && matchEvent
-    })
+    const matchCategory = categoryFilter === 'all' || vehicle.category === categoryFilter
+    const matchState = stateFilter === 'all' || vehicle.shop?.state === stateFilter
+    const vehicleEventDate = vehicle.event_date ? vehicle.event_date.split('T')[0] : null
+    const matchEvent = eventFilter === 'all' || vehicleEventDate === eventFilter
+    return matchCategory && matchState && matchEvent
+})
             
             const groupedByEvent = {}
             filteredVehicles.forEach(vehicle => {
@@ -1157,7 +1157,7 @@
     const stateFilter = document.getElementById('stateFilter')
     const states = [...new Set(
         APP_STATE.vehicles
-            .map(v => v.state)
+            .map(v => v.shop?.state)  // Acessa shop.state
             .filter(Boolean)
     )]
     states.sort()
