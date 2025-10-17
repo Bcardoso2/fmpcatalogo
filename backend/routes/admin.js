@@ -128,14 +128,13 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
     // Criar usuário
     const credits = parseFloat(initial_credits) || 0
     
-    // CORREÇÃO: Usar password_hash ao invés de password
+    // Inserir usuário sem tenant_id
     const userResult = await query(`
       INSERT INTO users (
         phone, 
         password_hash, 
         name, 
         email, 
-        tenant_id, 
         role, 
         credits, 
         total_credits_purchased,
@@ -143,14 +142,13 @@ router.post('/users/create', requireAuth, requireAdmin, async (req, res) => {
         created_at,
         updated_at
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
       RETURNING id, phone, name, email, role, credits
     `, [
       phone, 
       hashedPassword,
       name, 
-      email || null, 
-      'client1',
+      email || null,
       role, 
       credits,
       0,
