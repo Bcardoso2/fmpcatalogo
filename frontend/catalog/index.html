@@ -953,22 +953,27 @@
                 </div>
                 
                 <div class="filters-row">
-                    <div class="filter-group">
-                        <select class="filter-select" id="categoryFilter">
-                            <option value="all">Todas as Categorias</option>
-                            <option value="Carro">Carros</option>
-                            <option value="Caminhão">Caminhões</option>
-                            <option value="Moto">Motos</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <select class="filter-select" id="eventFilter">
-                            <option value="all">Todos os Eventos</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <div class="filter-group">
+        <select class="filter-select" id="categoryFilter">
+            <option value="all">Todas as Categorias</option>
+            <option value="Carro">Carros</option>
+            <option value="Caminhão">Caminhões</option>
+            <option value="Moto">Motos</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
+        <select class="filter-select" id="stateFilter">
+            <option value="all">Todos os Estados</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
+        <select class="filter-select" id="eventFilter">
+            <option value="all">Todos os Eventos</option>
+        </select>
+    </div>
+</div>
 
             <div class="results-summary">
                 Mostrando <strong id="visibleCount">0</strong> de <strong id="totalCount">0</strong> veículos
@@ -994,12 +999,13 @@
                 const data = await response.json()
                 
                 if (data.success) {
-                    APP_STATE.vehicles = data.vehicles
-                    console.log('Veículos carregados:', APP_STATE.vehicles.length)
-                    populateEventFilter()
-                    renderVehicles()
-                    updateStats()
-                } else {
+    APP_STATE.vehicles = data.vehicles
+    console.log('Veículos carregados:', APP_STATE.vehicles.length)
+    populateStateFilter()
+    populateEventFilter()
+    renderVehicles()
+    updateStats()
+} else {
                     showToast('Erro ao carregar veículos', 'error')
                 }
             } catch (error) {
@@ -1055,18 +1061,20 @@
         }
 
         function renderVehicles() {
-            const grid = document.getElementById('vehiclesGrid')
-            grid.innerHTML = ''
-            
-            const categoryFilter = document.getElementById('categoryFilter').value
-            const eventFilter = document.getElementById('eventFilter').value
-            
-            let filteredVehicles = APP_STATE.vehicles.filter(vehicle => {
-                const matchCategory = categoryFilter === 'all' || vehicle.category === categoryFilter
-                const vehicleEventDate = vehicle.event_date ? vehicle.event_date.split('T')[0] : null
-                const matchEvent = eventFilter === 'all' || vehicleEventDate === eventFilter
-                return matchCategory && matchEvent
-            })
+    const grid = document.getElementById('vehiclesGrid')
+    grid.innerHTML = ''
+    
+    const categoryFilter = document.getElementById('categoryFilter').value
+    const stateFilter = document.getElementById('stateFilter').value
+    const eventFilter = document.getElementById('eventFilter').value
+    
+    let filteredVehicles = APP_STATE.vehicles.filter(vehicle => {
+        const matchCategory = categoryFilter === 'all' || vehicle.category === categoryFilter
+        const matchState = stateFilter === 'all' || vehicle.state === stateFilter
+        const vehicleEventDate = vehicle.event_date ? vehicle.event_date.split('T')[0] : null
+        const matchEvent = eventFilter === 'all' || vehicleEventDate === eventFilter
+        return matchCategory && matchState && matchEvent
+    })
             
             const groupedByEvent = {}
             filteredVehicles.forEach(vehicle => {
@@ -1145,6 +1153,22 @@
                 eventFilter.appendChild(option)
             })
         }
+        function populateStateFilter() {
+    const stateFilter = document.getElementById('stateFilter')
+    const states = [...new Set(
+        APP_STATE.vehicles
+            .map(v => v.state)
+            .filter(Boolean)
+    )]
+    states.sort()
+    
+    states.forEach(state => {
+        const option = document.createElement('option')
+        option.value = state
+        option.textContent = state
+        stateFilter.appendChild(option)
+    })
+}
 
         function updateVisibleCount(count) {
             document.getElementById('visibleCount').textContent = count
@@ -1247,41 +1271,46 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('searchInput')
-            const categoryFilter = document.getElementById('categoryFilter')
-            const eventFilter = document.getElementById('eventFilter')
+    const searchInput = document.getElementById('searchInput')
+    const categoryFilter = document.getElementById('categoryFilter')
+    const stateFilter = document.getElementById('stateFilter')
+    const eventFilter = document.getElementById('eventFilter')
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase()
+            const allCards = document.querySelectorAll('.vehicle-card')
+            let count = 0
             
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    const query = e.target.value.toLowerCase()
-                    const allCards = document.querySelectorAll('.vehicle-card')
-                    let count = 0
-                    
-                    allCards.forEach((card) => {
-                        const index = parseInt(card.getAttribute('data-index'))
-                        const vehicle = APP_STATE.vehicles[index]
-                        const text = `${vehicle.brand} ${vehicle.model} ${vehicle.description || ''} ${vehicle.color || ''}`.toLowerCase()
-                        
-                        if (text.includes(query)) {
-                            card.style.display = ''
-                            count++
-                        } else {
-                            card.style.display = 'none'
-                        }
-                    })
-                    
-                    document.getElementById('visibleCount').textContent = count
-                })
-            }
+            allCards.forEach((card) => {
+                const index = parseInt(card.getAttribute('data-index'))
+                const vehicle = APP_STATE.vehicles[index]
+                const text = `${vehicle.brand} ${vehicle.model} ${vehicle.description || ''} ${vehicle.color || ''}`.toLowerCase()
+                
+                if (text.includes(query)) {
+                    card.style.display = ''
+                    count++
+                } else {
+                    card.style.display = 'none'
+                }
+            })
             
-            if (categoryFilter) {
-                categoryFilter.addEventListener('change', renderVehicles)
-            }
-            
-            if (eventFilter) {
-                eventFilter.addEventListener('change', renderVehicles)
-            }
+            document.getElementById('visibleCount').textContent = count
         })
+    }
+    
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', renderVehicles)
+    }
+    
+    if (stateFilter) {
+        stateFilter.addEventListener('change', renderVehicles)
+    }
+    
+    if (eventFilter) {
+        eventFilter.addEventListener('change', renderVehicles)
+    }
+})
 
         async function handleProposal(index) {
             const vehicle = APP_STATE.vehicles[index]
