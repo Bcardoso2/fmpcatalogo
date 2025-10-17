@@ -1076,8 +1076,9 @@
                 const vehicleState = vehicle.vehicle_data?.shop_stock?.state
                 const matchState = stateFilter === 'all' || vehicleState === stateFilter
                 
-                // Evento - usando event_date do veículo
-                const vehicleEventDate = vehicle.event_date ? vehicle.event_date.split('T')[0] : null
+                // Data do evento está em vehicle_data.negotiation.finish_date_display
+                const finishDate = vehicle.vehicle_data?.negotiation?.finish_date_display
+                const vehicleEventDate = finishDate ? finishDate.split(' ')[0] : null
                 const matchEvent = eventFilter === 'all' || vehicleEventDate === eventFilter
                 
                 return matchCategory && matchState && matchEvent
@@ -1085,7 +1086,8 @@
             
             const groupedByEvent = {}
             filteredVehicles.forEach(vehicle => {
-                const eventDate = vehicle.event_date ? vehicle.event_date.split('T')[0] : 'sem-data'
+                const finishDate = vehicle.vehicle_data?.negotiation?.finish_date_display
+                const eventDate = finishDate ? finishDate.split(' ')[0] : 'sem-data'
                 if (!groupedByEvent[eventDate]) {
                     groupedByEvent[eventDate] = []
                 }
@@ -1108,17 +1110,16 @@
                 if (eventDate === 'sem-data') {
                     formattedDate = 'Sem data definida'
                 } else {
-                    const date = new Date(eventDate + 'T12:00:00')
-                    formattedDate = date.toLocaleDateString('pt-BR', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                    })
+                    const [year, month, day] = eventDate.split('-')
+                    formattedDate = `${day}/${month}/${year}`
                 }
+                
+                // Pegar o nome do evento do primeiro veículo do grupo
+                const eventName = vehicles[0]?.vehicle_data?.event?.name || 'Evento'
                 
                 eventGroup.innerHTML = `
                     <div class="event-header">
-                        <h2 class="event-title">Evento: ${formattedDate}</h2>
+                        <h2 class="event-title">${eventName} - ${formattedDate}</h2>
                         <span class="event-count">${vehicles.length}</span>
                     </div>
                     <div class="vehicles-grid" id="grid-${eventDate.replace(/[^a-zA-Z0-9]/g, '-')}"></div>
@@ -1141,7 +1142,10 @@
             const eventFilter = document.getElementById('eventFilter')
             const events = [...new Set(
                 APP_STATE.vehicles
-                    .map(v => v.event_date ? v.event_date.split('T')[0] : null)
+                    .map(v => {
+                        const finishDate = v.vehicle_data?.negotiation?.finish_date_display
+                        return finishDate ? finishDate.split(' ')[0] : null
+                    })
                     .filter(Boolean)
             )]
             events.sort((a, b) => new Date(b) - new Date(a))
@@ -1150,12 +1154,8 @@
                 const option = document.createElement('option')
                 option.value = eventDate
                 
-                const date = new Date(eventDate + 'T12:00:00')
-                option.textContent = date.toLocaleDateString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                })
+                const [year, month, day] = eventDate.split('-')
+                option.textContent = `${day}/${month}/${year}`
                 
                 eventFilter.appendChild(option)
             })
