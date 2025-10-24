@@ -10,7 +10,18 @@ class DealersClubScraper {
       total: 0,
       inserted: 0,
       updated: 0,
-      errors: 0
+      errors: 0,
+      reprocessed: 0
+    }
+    // Estatísticas de laudos
+    this.laudoStats = {
+      comLaudo: 0,
+      semLaudo: 0,
+      laudoAprovado: 0,
+      laudoReprovado: 0,
+      laudoPendente: 0,
+      laudoOutros: 0,
+      laudosAdicionados: 0
     }
   }
 
@@ -77,6 +88,47 @@ class DealersClubScraper {
     } catch (error) {
       console.error("❌ Erro ao buscar veículos:", error.message)
       return []
+    }
+  }
+
+  async getVehiclesWithoutLaudo() {
+    try {
+      console.log("🔍 Buscando veículos sem laudo no banco...\n")
+      
+      const result = await query(`
+        SELECT external_id 
+        FROM vehicles 
+        WHERE (laudo_url IS NULL OR laudo_url = '') 
+        AND is_active = true
+        ORDER BY updated_at DESC
+      `)
+      
+      console.log(`✅ ${result.rows.length} veículos sem laudo encontrados\n`)
+      return result.rows.map(row => row.external_id)
+    } catch (error) {
+      console.error("❌ Erro ao buscar veículos sem laudo:", error.message)
+      return []
+    }
+  }
+
+  async getVehicleDetails(vehicleId) {
+    try {
+      const response = await axios.get(
+        `${this.baseURL}/jornada-compra/anuncios/veiculos/${vehicleId}?whitelabel_id=8`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.authToken}`,
+            Accept: "application/json, text/plain, */*",
+            Origin: "https://vendadireta.dealersclub.com.br",
+            Referer: "https://vendadireta.dealersclub.com.br/",
+          },
+        },
+      )
+
+      return response.data
+    } catch (error) {
+      console.error(`   ❌ Erro ao buscar detalhes do veículo ${vehicleId}:`, error.message)
+      return null
     }
   }
 
@@ -172,7 +224,53 @@ class DealersClubScraper {
     return cleaned
   }
 
-  async saveVehicleToDB(vehicleItem) {
+  debugLaudo(vehicleItem) {
+    const vehicle = vehicleItem.vehicle
+    const report = vehicle.precautionary_report
+    
+    console.log(`\n   🔍 DEBUG LAUDO:`)
+    console.log(`   ├─ Veículo: ${vehicle.brand_name} ${vehicle.model_name}`)
+    console.log(`   ├─ ID Externo: ${vehicleItem.id}`)
+    
+    if (!report) {
+      console.log(`   ├─ ❌ Sem objeto precautionary_report`)
+      console.log(`   └─ Status: SEM_LAUDO`)
+      return
+    }
+    
+    console.log(`   ├─ ✅ Objeto precautionary_report existe`)
+    console.log(`   ├─ Estrutura do laudo:`)
+    console.log(`   │  ├─ file: ${report.file || 'null'}`)
+    console.log(`   │  ├─ file_url: ${report.file_url || 'null'}`)
+    console.log(`   │  ├─ pdf_url: ${report.pdf_url || 'null'}`)
+    console.log(`   │  ├─ report_url: ${report.report_url || 'null'}`)
+    console.log(`   │  ├─ situation: ${report.situation || 'null'}`)
+    console.log(`   │  └─ Todas as chaves: ${Object.keys(report).join(', ')}`)
+    
+    // Verificar se há alguma URL válida
+    const possibleUrls = [
+      report.file_url,
+      report.pdf_url,
+      report.report_url,
+      report.file, // Adicionar a chave 'file' também
+    ]
+    
+    const validUrls = possibleUrls.filter(url => url && typeof url === 'string' && url.startsWith('http'))
+    
+    if (validUrls.length > 0) {
+      console.log(`   ├─ ✅ URL(s) válida(s) encontrada(s): ${validUrls.length}`)
+      validUrls.forEach((url, idx) => {
+        console.log(`   │  ${idx + 1}. ${url}`)
+      })
+    } else {
+      console.log(`   ├─ ⚠️  Nenhuma URL válida encontrada`)
+    }
+    
+    const situation = report.situation?.toLowerCase() || 'sem_laudo'
+    console.log(`   └─ Status final: ${situation.toUpperCase()}`)
+  }
+
+  async saveVehicleToDB(vehicleItem, isReprocessing = false) {
     try {
       const vehicle = vehicleItem.vehicle
       const shop = vehicleItem.shop
@@ -183,7 +281,7 @@ class DealersClubScraper {
       const eventDate = this.extractEventDate(vehicleItem)
       const year = vehicle.model_year || vehicle.manufacture_year
 
-      console.log(`   📋 ${vehicle.brand_name} ${vehicle.model_name} ${year} [${category}]`)
+      console.log(`\n📋 ${vehicle.brand_name} ${vehicle.model_name} ${year} [${category}]${isReprocessing ? ' 🔄 REPROCESSANDO' : ''}`)
 
       const images = vehicle.image_gallery?.map((img) => ({
         url: img.image,
@@ -191,20 +289,52 @@ class DealersClubScraper {
         order: img.order,
       })) || []
 
+      // DEBUG DO LAUDO
+      this.debugLaudo(vehicleItem)
+
+      // Verificar se tinha laudo antes
+      const oldData = await query(
+        'SELECT laudo_url FROM vehicles WHERE external_id = $1',
+        [vehicleItem.id.toString()]
+      )
+      const hadLaudo = oldData.rows.length > 0 && oldData.rows[0].laudo_url
+
       let laudoPdfUrl = null
       if (vehicle.precautionary_report) {
         const possibleUrls = [
           vehicle.precautionary_report.file_url,
           vehicle.precautionary_report.pdf_url,
           vehicle.precautionary_report.report_url,
+          vehicle.precautionary_report.file, // Adicionar a chave 'file'
         ]
         
         for (const url of possibleUrls) {
-          if (url && url.startsWith('http')) {
+          if (url && typeof url === 'string' && url.startsWith('http')) {
             laudoPdfUrl = url
             break
           }
         }
+        
+        this.laudoStats.comLaudo++
+        
+        // Contabilizar se foi adicionado laudo novo
+        if (!hadLaudo && laudoPdfUrl) {
+          this.laudoStats.laudosAdicionados++
+          console.log(`   🎉 LAUDO ADICIONADO AGORA!`)
+        }
+        
+        const situation = vehicle.precautionary_report.situation?.toLowerCase() || ''
+        if (situation.includes('aprovado')) {
+          this.laudoStats.laudoAprovado++
+        } else if (situation.includes('reprovado')) {
+          this.laudoStats.laudoReprovado++
+        } else if (situation.includes('pendente')) {
+          this.laudoStats.laudoPendente++
+        } else {
+          this.laudoStats.laudoOutros++
+        }
+      } else {
+        this.laudoStats.semLaudo++
       }
 
       const laudoStatus = vehicle.precautionary_report?.situation?.toLowerCase() || 'sem_laudo'
@@ -262,8 +392,12 @@ class DealersClubScraper {
           vehicleData.vehicle_data, vehicleData.external_id
         ])
         
-        this.stats.updated++
-        console.log(`   ✅ Atualizado\n`)
+        if (isReprocessing) {
+          this.stats.reprocessed++
+        } else {
+          this.stats.updated++
+        }
+        console.log(`   ✅ Atualizado`)
       } else {
         await query(`
           INSERT INTO vehicles (
@@ -285,12 +419,37 @@ class DealersClubScraper {
         ])
         
         this.stats.inserted++
-        console.log(`   ✅ Inserido\n`)
+        console.log(`   ✅ Inserido`)
       }
 
     } catch (error) {
       this.stats.errors++
       console.error(`   ❌ Erro:`, error.message)
+    }
+  }
+
+  async reprocessVehiclesWithoutLaudo() {
+    console.log("\n" + "=".repeat(70))
+    console.log("🔄 FASE 2: REPROCESSANDO VEÍCULOS SEM LAUDO")
+    console.log("=".repeat(70) + "\n")
+
+    const vehiclesWithoutLaudo = await this.getVehiclesWithoutLaudo()
+    
+    if (vehiclesWithoutLaudo.length === 0) {
+      console.log("✅ Nenhum veículo sem laudo para reprocessar!\n")
+      return
+    }
+
+    console.log(`📊 Reprocessando ${vehiclesWithoutLaudo.length} veículos...\n`)
+
+    for (const externalId of vehiclesWithoutLaudo) {
+      const vehicleData = await this.getVehicleDetails(externalId)
+      
+      if (vehicleData) {
+        await this.saveVehicleToDB(vehicleData, true)
+        // Pequeno delay para não sobrecarregar a API
+        await new Promise(resolve => setTimeout(resolve, 500))
+      }
     }
   }
 
@@ -303,23 +462,41 @@ class DealersClubScraper {
       process.exit(1)
     }
 
+    // FASE 1: Processar veículos da lista principal
+    console.log("=".repeat(70))
+    console.log("📋 FASE 1: PROCESSANDO LISTA PRINCIPAL DE VEÍCULOS")
+    console.log("=".repeat(70) + "\n")
+
     const vehicles = await this.getVehiclesList()
     this.stats.total = vehicles.length
 
     console.log(`📊 Processando ${vehicles.length} veículos...\n`)
 
     for (const vehicle of vehicles) {
-      await this.saveVehicleToDB(vehicle)
+      await this.saveVehicleToDB(vehicle, false)
     }
+
+    // FASE 2: Reprocessar veículos sem laudo
+    await this.reprocessVehiclesWithoutLaudo()
 
     console.log("\n" + "=".repeat(70))
     console.log("📊 SCRAPING CONCLUÍDO!")
     console.log("=".repeat(70))
-    console.log(`\n📈 Estatísticas:`)
+    console.log(`\n📈 Estatísticas Gerais:`)
     console.log(`   Total processado: ${this.stats.total}`)
     console.log(`   Inseridos: ${this.stats.inserted}`)
     console.log(`   Atualizados: ${this.stats.updated}`)
+    console.log(`   Reprocessados: ${this.stats.reprocessed}`)
     console.log(`   Erros: ${this.stats.errors}`)
+    
+    console.log(`\n📋 Estatísticas de Laudos:`)
+    console.log(`   Veículos com laudo: ${this.laudoStats.comLaudo}`)
+    console.log(`   Veículos sem laudo: ${this.laudoStats.semLaudo}`)
+    console.log(`   🎉 Laudos adicionados nesta execução: ${this.laudoStats.laudosAdicionados}`)
+    console.log(`   ├─ Aprovados: ${this.laudoStats.laudoAprovado}`)
+    console.log(`   ├─ Reprovados: ${this.laudoStats.laudoReprovado}`)
+    console.log(`   ├─ Pendentes: ${this.laudoStats.laudoPendente}`)
+    console.log(`   └─ Outros status: ${this.laudoStats.laudoOutros}`)
     console.log("")
 
     process.exit(0)
