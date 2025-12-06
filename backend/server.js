@@ -19,7 +19,9 @@ app.use(cors({
             'http://127.0.0.1:3000',
             'http://127.0.0.1:5173',
             'https://fmpcatalogo.onrender.com',
-            'https://autogiro.onrender.com'
+            'https://autogiro.onrender.com',
+            'https://clubefmp.com',
+            'https://www.clubefmp.com'
         ]
         
         // Se não tem origin (requisições do mesmo domínio) ou está na lista, permite
@@ -49,7 +51,7 @@ app.use(session({
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 horas
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' para cross-origin em produção
-        domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined // Compartilhar entre subdomínios
+        domain: undefined // Funciona com qualquer domínio
     },
     proxy: true // Importante para funcionar atrás de proxy (Render, Heroku, etc)
 }))
