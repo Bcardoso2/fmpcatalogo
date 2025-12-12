@@ -7,410 +7,416 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #0d5c3d;
             --primary-dark: #094a31;
-            --primary-light: #115d42;
-            --accent: #16a34a;
-            --success: #16a34a;
+            --primary-light: #10b981;
+            --accent: #34d399;
+            --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --bg-main: #ffffff;
-            --bg-secondary: #f0fdf4;
-            --bg-card: #ffffff;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border-light: #d1fae5;
-            --border: #a7f3d0;
-            --shadow-sm: 0 2px 8px rgba(13, 92, 61, 0.08);
-            --shadow-md: 0 4px 16px rgba(13, 92, 61, 0.12);
-            --shadow-lg: 0 8px 32px rgba(13, 92, 61, 0.16);
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --text-lighter: #94a3b8;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-main);
-            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .hidden { display: none !important; }
         
-        /* Header Redesenhado */
+        /* Header Ultra Moderno */
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 1.25rem 0;
+            background: linear-gradient(135deg, #0d5c3d 0%, #115e3e 50%, #0a4a2f 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             position: sticky;
             top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.15);
         }
         
-        .header-content {
+        .header-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 1.5rem;
-            display: grid;
-            gap: 1rem;
-            align-items: center;
+            padding: 1.5rem 2rem;
         }
         
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.5rem;
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.875rem;
+            gap: 1rem;
             text-decoration: none;
         }
         
         .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 800;
-            font-size: 1.25rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-weight: 900;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-icon:hover {
+            transform: translateY(-2px) scale(1.05);
         }
         
         .logo-text {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.75rem;
+            font-weight: 900;
             color: white;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.5px;
         }
 
-        .header-right {
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .user-badge {
             display: flex;
             align-items: center;
             gap: 1rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
-            border-radius: 50px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
-        .user-credits {
+        .credits-amount {
+            color: #fbbf24;
             font-weight: 700;
-            color: #fef08a;
+        }
+
+        .btn-auth {
+            background: white;
+            color: var(--primary);
+            padding: 0.875rem 2rem;
+            border-radius: 100px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
         .btn-logout {
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
-            padding: 0.375rem 0.875rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 0.8rem;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            padding: 0.625rem 1.25rem;
+            border-radius: 100px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
             font-weight: 600;
-            border: none;
+            font-size: 0.875rem;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-logout:hover {
-            background: var(--danger);
-            transform: translateY(-1px);
+            background: #ef4444;
+            color: white;
         }
 
-        .btn-login {
-            background: white;
-            color: var(--primary);
-            padding: 0.625rem 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 700;
-            border: none;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .nav-menu {
+        .nav {
             display: flex;
+            gap: 0.75rem;
             justify-content: center;
-            gap: 0.5rem;
             flex-wrap: wrap;
         }
 
         .nav-link {
-            padding: 0.5rem 1.25rem;
-            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
             text-decoration: none;
-            color: rgba(255, 255, 255, 0.85);
-            font-weight: 500;
-            font-size: 0.875rem;
+            color: rgba(255,255,255,0.85);
+            font-weight: 600;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
 
         .nav-link:hover, .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.2);
             color: white;
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255,255,255,0.3);
         }
         
-        .header-stats {
+        .stats-bar {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
         
-        .stat-item {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 0.75rem 1.25rem;
+        .stat {
             text-align: center;
         }
         
-        .stat-number {
+        .stat-value {
             display: block;
-            font-size: 1.75rem;
-            font-weight: 800;
+            font-size: 2rem;
+            font-weight: 900;
             color: white;
+            line-height: 1;
+            margin-bottom: 0.5rem;
         }
         
         .stat-label {
             display: block;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
         }
 
         /* Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
+            padding: 3rem 2rem;
         }
 
         /* Loading */
         .loading {
             text-align: center;
-            padding: 4rem 1rem;
+            padding: 6rem 2rem;
         }
 
-        .loading-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--border-light);
+        .spinner {
+            width: 56px;
+            height: 56px;
+            border: 5px solid var(--border);
             border-top-color: var(--primary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1.5rem;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        /* Filters Redesenhados */
-        .filters-section {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-sm);
+        /* Filters Modernos */
+        .filters {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
         }
         
-        .search-bar {
+        .search-container {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .search-input {
+        .search {
             width: 100%;
-            padding: 1rem 1rem 1rem 3.5rem;
-            background: white;
+            padding: 1.25rem 1.5rem 1.25rem 4rem;
+            background: var(--bg);
             border: 2px solid var(--border);
-            border-radius: 50px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
+            border-radius: 100px;
+            color: var(--text);
+            font-size: 1rem;
             font-family: inherit;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
         
-        .search-input:focus {
+        .search:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(13, 92, 61, 0.1);
+            background: white;
         }
         
-        .search-input::placeholder {
-            color: var(--text-muted);
+        .search::placeholder {
+            color: var(--text-lighter);
         }
 
         .search-icon {
             position: absolute;
-            left: 1.25rem;
+            left: 1.5rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--primary);
             pointer-events: none;
         }
 
-        .filters-row {
+        .filters-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
         }
 
-        .filter-select {
+        .select {
             width: 100%;
-            padding: 0.875rem 1.25rem;
-            background: white;
+            padding: 1rem 1.25rem;
+            background: var(--bg);
             border: 2px solid var(--border);
             border-radius: 16px;
-            color: var(--text-primary);
-            font-size: 0.875rem;
+            color: var(--text);
+            font-size: 0.95rem;
             font-family: inherit;
-            transition: all 0.3s ease;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .filter-select:focus {
+        .select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(13, 92, 61, 0.1);
+            background: white;
         }
 
-        /* Event Group Headers Redesenhados */
-        .event-group {
-            margin-bottom: 3rem;
-        }
-
-        .event-header {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-            color: white;
+        .results-info {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #a7f3d0;
             border-radius: 16px;
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            margin-top: 2rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .results-info strong {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        /* Event Groups */
+        .event-section {
+            margin-bottom: 4rem;
+        }
+
+        .event-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-lg);
         }
 
-        .event-title {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: white;
+        .event-info h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
         }
 
-        .event-count {
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: var(--primary-dark);
+        .event-badge {
             background: white;
-            padding: 0.375rem 1rem;
-            border-radius: 50px;
-        }
-
-        .results-summary {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-light);
-            border-radius: 16px;
-            padding: 0.875rem 1.25rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        
-        .results-summary strong {
             color: var(--primary);
-            font-weight: 700;
+            padding: 0.625rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 800;
+            font-size: 1.125rem;
         }
 
-        /* Vehicles Grid Redesenhado */
-        .vehicles-grid {
+        /* Cards Ultra Modernos */
+        .grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 2rem;
         }
         
-        .vehicle-card {
-            background: var(--bg-card);
-            border: 2px solid var(--border-light);
-            border-radius: 20px;
+        .card {
+            background: var(--surface);
+            border-radius: 24px;
             overflow: hidden;
+            border: 1px solid var(--border);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow);
         }
         
-        .vehicle-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-xl);
             border-color: var(--primary);
         }
 
-        /* Gallery Redesenhada */
-        .vehicle-gallery {
+        /* Gallery Premium */
+        .gallery {
             position: relative;
-            height: 280px;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #dcfce7 100%);
+            height: 320px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
         }
         
-        .main-image-container {
+        .gallery-main {
             position: relative;
-            height: 220px;
+            height: 260px;
             cursor: pointer;
             overflow: hidden;
         }
         
-        .main-image-container img {
+        .gallery-main img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .vehicle-card:hover .main-image-container img {
-            transform: scale(1.08);
+        .card:hover .gallery-main img {
+            transform: scale(1.1);
         }
         
-        .image-overlay {
+        .gallery-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(13, 92, 61, 0.9) 0%, rgba(9, 74, 49, 0.95) 100%);
+            background: linear-gradient(135deg, rgba(13, 92, 61, 0.95) 0%, rgba(9, 74, 49, 0.95) 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -420,211 +426,219 @@
             color: white;
         }
         
-        .main-image-container:hover .image-overlay {
+        .gallery-main:hover .gallery-overlay {
             opacity: 1;
         }
         
-        .zoom-text {
-            font-size: 0.875rem;
-            margin-top: 0.75rem;
-            font-weight: 600;
+        .gallery-icon {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .gallery-text {
+            font-size: 1rem;
+            font-weight: 700;
         }
 
-        .thumbnail-strip {
+        .thumbs {
             display: flex;
             height: 60px;
-            gap: 6px;
-            padding: 6px;
-            background: rgba(255, 255, 255, 0.5);
+            gap: 8px;
+            padding: 8px;
+            background: rgba(255,255,255,0.5);
         }
         
-        .thumbnail-strip img {
+        .thumb {
             flex: 1;
-            height: 48px;
+            height: 44px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
         }
         
-        .thumbnail-strip img:hover {
+        .thumb:hover {
             border-color: var(--primary);
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
         
-        .more-photos {
+        .more-btn {
             flex: 1;
-            height: 48px;
+            height: 44px;
             background: rgba(13, 92, 61, 0.1);
-            border: 2px solid var(--primary);
-            border-radius: 10px;
+            border: 3px solid var(--primary);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
         }
         
-        .more-photos:hover {
+        .more-btn:hover {
             background: var(--primary);
             color: white;
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
 
         .no-image {
-            height: 280px;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #dcfce7 100%);
+            height: 320px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
+            color: var(--text-lighter);
+        }
+        
+        .no-image-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
         }
         
         .no-image-text {
-            font-size: 0.875rem;
-            margin-top: 0.75rem;
-            font-weight: 500;
-        }
-
-        /* Vehicle Info Redesenhada */
-        .vehicle-info {
-            padding: 1.5rem;
-        }
-        
-        .vehicle-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.25rem;
-            gap: 1rem;
-        }
-        
-        .vehicle-title-section {
-            flex: 1;
-        }
-        
-        .vehicle-title {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.3;
-            margin-bottom: 0.625rem;
-        }
-        
-        .vehicle-year {
-            display: inline-block;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            padding: 0.25rem 0.875rem;
-            border-radius: 50px;
-        }
-        
-        .vehicle-badges {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            flex-shrink: 0;
-        }
-        
-        .category-badge {
-            padding: 0.375rem 0.875rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-align: center;
-            white-space: nowrap;
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .vehicle-pricing {
-            margin-bottom: 1.25rem;
-            text-align: center;
-            padding: 1.25rem;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #dcfce7 100%);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-        }
-        
-        .main-price {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -0.5px;
-        }
-
-        .vehicle-specs-mini {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.625rem;
-            margin-bottom: 1.25rem;
-        }
-        
-        .spec-mini {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-light);
-            padding: 0.375rem 0.875rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+            font-size: 1rem;
             font-weight: 600;
         }
 
-        .vehicle-location {
-            margin-bottom: 1.25rem;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            font-weight: 500;
+        /* Card Content */
+        .content {
+            padding: 2rem;
         }
-
-        /* Actions Redesenhadas */
-        .vehicle-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            gap: 1.5rem;
+        }
+        
+        .title-section {
+            flex: 1;
+        }
+        
+        .title {
+            font-size: 1.375rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.3;
+            margin-bottom: 0.75rem;
+        }
+        
+        .year-badge {
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 800;
+            color: var(--primary);
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #a7f3d0;
+            padding: 0.375rem 1rem;
+            border-radius: 100px;
+        }
+        
+        .badges {
+            display: flex;
+            flex-direction: column;
             gap: 0.625rem;
         }
         
-        .vehicle-actions .btn-proposal {
+        .badge {
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            font-size: 0.8125rem;
+            font-weight: 800;
+            text-align: center;
+            white-space: nowrap;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(13, 92, 61, 0.25);
+        }
+
+        .price-box {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #a7f3d0;
+            border-radius: 20px;
+        }
+        
+        .price {
+            font-size: 2.25rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+
+        .specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .spec {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            padding: 0.625rem 1.25rem;
+            border-radius: 100px;
+            font-size: 0.8125rem;
+            color: var(--text-light);
+            font-weight: 700;
+        }
+
+        .location {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.9375rem;
+            font-weight: 600;
+        }
+
+        /* Actions */
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.875rem;
+        }
+        
+        .actions .btn-cta {
             grid-column: 1 / -1;
         }
         
-        .btn-primary, .btn-secondary, .btn-proposal, .btn-laudo {
-            padding: 0.75rem 1rem;
+        .btn {
+            padding: 1rem 1.5rem;
             border: none;
-            border-radius: 12px;
-            font-weight: 700;
+            border-radius: 16px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            font-size: 0.9375rem;
             text-align: center;
             font-family: inherit;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 4px 12px rgba(13, 92, 61, 0.25);
         }
         
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(13, 92, 61, 0.35);
         }
         
         .btn-secondary {
-            background: var(--bg-secondary);
+            background: var(--bg);
             color: var(--primary);
             border: 2px solid var(--border);
-            font-weight: 600;
+            font-weight: 700;
         }
         
         .btn-secondary:hover {
@@ -632,93 +646,91 @@
             border-color: var(--primary);
         }
         
-        .btn-proposal {
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        .btn-cta {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            box-shadow: var(--shadow-md);
-            font-size: 0.875rem;
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+            font-size: 1.0625rem;
         }
         
-        .btn-proposal:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(16, 185, 129, 0.4);
         }
         
-        .btn-laudo {
+        .btn-warning {
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
             color: white;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.25);
         }
         
-        .btn-laudo:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.35);
         }
 
-        /* Modal Styles Redesenhados */
-        .modal-overlay {
+        /* Modals */
+        .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 2rem;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
         }
         
-        .modal-overlay.active {
+        .modal.active {
             opacity: 1;
             visibility: visible;
         }
         
-        .modal-content {
+        .modal-box {
             background: white;
-            border: 2px solid var(--border);
-            border-radius: 24px;
+            border-radius: 28px;
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             transform: scale(0.9);
             transition: transform 0.3s ease;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
         
-        .modal-overlay.active .modal-content {
+        .modal.active .modal-box {
             transform: scale(1);
         }
         
         .modal-header {
-            padding: 1.5rem;
-            border-bottom: 2px solid var(--border-light);
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--bg-secondary);
+            background: var(--bg);
         }
         
         .modal-title {
-            font-size: 1.375rem;
-            font-weight: 800;
+            font-size: 1.75rem;
+            font-weight: 900;
             color: var(--primary);
-            margin: 0;
         }
         
         .modal-close {
             background: white;
             border: 2px solid var(--border);
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             cursor: pointer;
-            color: var(--text-secondary);
+            color: var(--text-light);
             padding: 0.5rem;
             border-radius: 12px;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -733,100 +745,73 @@
         }
         
         .modal-body {
-            padding: 1.5rem;
+            padding: 2.5rem;
         }
 
-        /* Form Styles Redesenhados */
+        /* Forms */
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.75rem;
         }
         
-        .form-label {
+        .label {
             display: block;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.625rem;
-            font-size: 0.875rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 0.875rem;
+            font-size: 0.9375rem;
         }
         
-        .form-input {
+        .input {
             width: 100%;
-            padding: 0.875rem 1.125rem;
-            background: var(--bg-secondary);
+            padding: 1.125rem 1.5rem;
+            background: var(--bg);
             border: 2px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 0.875rem;
+            border-radius: 16px;
+            color: var(--text);
+            font-size: 1rem;
             font-family: inherit;
+            font-weight: 600;
             transition: all 0.3s ease;
-            font-weight: 500;
         }
         
-        .form-input:focus {
+        .input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(13, 92, 61, 0.1);
             background: white;
         }
 
-        .btn-submit {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-            color: white;
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .btn-submit:disabled {
-            background: var(--text-muted);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .info-box {
+        .info-alert {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            padding: 1.125rem;
-            border-radius: 16px;
-            margin: 1.25rem 0;
-            font-size: 0.85rem;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            font-size: 0.9375rem;
             color: #92400e;
             line-height: 1.6;
             border: 2px solid #fcd34d;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        /* Toast Notifications Redesenhados */
+        /* Toast */
         #toastContainer {
             position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 2rem;
+            right: 2rem;
             z-index: 9999;
         }
         
         .toast {
             background: white;
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 0.75rem;
-            box-shadow: var(--shadow-lg);
+            border-radius: 20px;
+            padding: 1.25rem 2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: 280px;
+            min-width: 320px;
             max-width: 90vw;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.9375rem;
         }
         
         @keyframes slideIn {
@@ -836,46 +821,29 @@
         
         .toast-success { 
             border-left: 6px solid var(--success);
-            background: linear-gradient(to right, #f0fdf4 0%, white 100%);
+            color: var(--success);
         }
         .toast-error { 
             border-left: 6px solid var(--danger);
-            background: linear-gradient(to right, #fef2f2 0%, white 100%);
+            color: var(--danger);
         }
         
         /* Responsive */
         @media (min-width: 640px) {
-            .vehicles-grid {
+            .grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (min-width: 768px) {
-            .header-content {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .nav-menu {
-                display: flex !important;
-            }
-
-            .filters-row {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
         @media (min-width: 1024px) {
-            .vehicles-grid {
+            .grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
 
         @media (min-width: 1280px) {
-            .vehicles-grid {
-                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             }
         }
     </style>
@@ -884,35 +852,33 @@
     <div id="toastContainer"></div>
 
     <header class="header">
-        <div class="header-content">
+        <div class="header-container">
             <div class="header-top">
                 <a href="/" class="logo">
-                    <div class="logo-icon">FMP</div>
-                    <div class="logo-text">REPASSES</div>
+                    <div class="logo-icon">F</div>
+                    <div class="logo-text">FMP REPASSES</div>
                 </a>
 
-                <div class="header-right">
-                    <div id="userInfoContainer">
-                        <div class="user-info hidden" id="userInfo">
-                            <span id="userName"></span>
-                            <span class="user-credits" id="userCredits">0 créditos</span>
-                            <button class="btn-logout" onclick="logout()">Sair</button>
-                        </div>
-                        <a href="login" class="btn-login" id="btnLogin">Entrar</a>
+                <div class="header-actions">
+                    <div class="user-badge hidden" id="userBadge">
+                        <span id="userName"></span>
+                        <span class="credits-amount" id="userCredits">0 créditos</span>
+                        <button class="btn-logout" onclick="logout()">Sair</button>
                     </div>
+                    <a href="login" class="btn-auth" id="btnLogin">Entrar</a>
                 </div>
             </div>
 
-            <nav class="nav-menu" id="navMenu">
+            <nav class="nav" id="nav">
                 <a href="/" class="nav-link active">Catálogo</a>
                 <a href="propostas" class="nav-link">Propostas</a>
                 <a href="recarga" class="nav-link">Recarregar</a>
                 <a href="perfil" class="nav-link">Perfil</a>
             </nav>
 
-            <div class="header-stats">
-                <div class="stat-item">
-                    <span class="stat-number" id="totalVehicles">0</span>
+            <div class="stats-bar">
+                <div class="stat">
+                    <span class="stat-value" id="totalVehicles">0</span>
                     <span class="stat-label">Veículos</span>
                 </div>
             </div>
@@ -921,73 +887,64 @@
 
     <div class="container">
         <div class="loading" id="loading">
-            <div class="loading-spinner"></div>
-            <p>Carregando veículos...</p>
+            <div class="spinner"></div>
+            <p style="font-weight: 600; color: var(--text-light); font-size: 1.125rem;">Carregando veículos...</p>
         </div>
 
-        <div id="catalogContent" class="hidden">
-            <div class="filters-section">
-                <div class="search-bar">
-                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div id="catalog" class="hidden">
+            <div class="filters">
+                <div class="search-container">
+                    <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por marca, modelo...">
+                    <input type="text" class="search" id="search" placeholder="Buscar por marca, modelo...">
                 </div>
                 
-                <div class="filters-row">
-                    <div class="filter-group">
-                        <select class="filter-select" id="categoryFilter">
-                            <option value="all">Todas as Categorias</option>
-                        </select>
-                    </div>
+                <div class="filters-grid">
+                    <select class="select" id="categoryFilter">
+                        <option value="all">Todas as Categorias</option>
+                    </select>
                     
-                    <div class="filter-group">
-                        <select class="filter-select" id="stateFilter">
-                            <option value="all">Todos os Estados</option>
-                        </select>
-                    </div>
+                    <select class="select" id="stateFilter">
+                        <option value="all">Todos os Estados</option>
+                    </select>
                     
-                    <div class="filter-group">
-                        <select class="filter-select" id="eventFilter">
-                            <option value="all">Todos os Eventos</option>
-                        </select>
-                    </div>
+                    <select class="select" id="eventFilter">
+                        <option value="all">Todos os Eventos</option>
+                    </select>
 
-                    <div class="filter-group">
-                        <select class="filter-select" id="priceFilter">
-                            <option value="all">Todos os Preços</option>
-                            <option value="0-10000">Até R$ 10.000</option>
-                            <option value="10000-20000">R$ 10.000 - R$ 20.000</option>
-                            <option value="20000-30000">R$ 20.000 - R$ 30.000</option>
-                            <option value="30000-50000">R$ 30.000 - R$ 50.000</option>
-                            <option value="50000-100000">R$ 50.000 - R$ 100.000</option>
-                            <option value="100000-999999999">Acima de R$ 100.000</option>
-                        </select>
-                    </div>
+                    <select class="select" id="priceFilter">
+                        <option value="all">Todos os Preços</option>
+                        <option value="0-10000">Até R$ 10.000</option>
+                        <option value="10000-20000">R$ 10.000 - R$ 20.000</option>
+                        <option value="20000-30000">R$ 20.000 - R$ 30.000</option>
+                        <option value="30000-50000">R$ 30.000 - R$ 50.000</option>
+                        <option value="50000-100000">R$ 50.000 - R$ 100.000</option>
+                        <option value="100000-999999999">Acima de R$ 100.000</option>
+                    </select>
 
-                    <div class="filter-group">
-                        <select class="filter-select" id="sortFilter">
-                            <option value="none">Ordenar por</option>
-                            <option value="price-asc">Menor Preço</option>
-                            <option value="price-desc">Maior Preço</option>
-                            <option value="year-desc">Ano (Mais Novo)</option>
-                            <option value="year-asc">Ano (Mais Antigo)</option>
-                            <option value="km-asc">Menor KM</option>
-                            <option value="km-desc">Maior KM</option>
-                        </select>
-                    </div>
+                    <select class="select" id="sortFilter">
+                        <option value="none">Ordenar por</option>
+                        <option value="price-asc">Menor Preço</option>
+                        <option value="price-desc">Maior Preço</option>
+                        <option value="year-desc">Ano (Mais Novo)</option>
+                        <option value="year-asc">Ano (Mais Antigo)</option>
+                        <option value="km-asc">Menor KM</option>
+                        <option value="km-desc">Maior KM</option>
+                    </select>
                 </div>
 
-                <div class="results-summary">
+                <div class="results-info">
                     Mostrando <strong id="visibleCount">0</strong> de <strong id="totalCount">0</strong> veículos
                 </div>
             </div>
 
-            <div class="vehicles-grid" id="vehiclesGrid"></div>
+            <div id="vehiclesGrid"></div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
         const APP_STATE = {
             vehicles: [],
@@ -999,606 +956,498 @@
 
         async function loadVehicles() {
             try {
-                console.log('Carregando veículos...')
                 const response = await fetch(`${API_BASE}/vehicles`, { credentials: 'include' })
                 const data = await response.json()
                 
                 if (data.success) {
                     APP_STATE.vehicles = data.vehicles
-                    console.log('Veículos carregados:', APP_STATE.vehicles.length)
-                    populateStateFilter()
-                    populateCategoryFilter()
-                    populateEventFilter()
+                    populateFilters()
                     renderVehicles()
                     updateStats()
                 } else {
                     showToast('Erro ao carregar veículos', 'error')
                 }
             } catch (error) {
-                console.error('Erro ao carregar veículos:', error)
-                showToast('Erro ao conectar com o servidor', 'error')
+                console.error('Erro:', error)
+                showToast('Erro ao conectar', 'error')
             } finally {
                 document.getElementById('loading').classList.add('hidden')
-                document.getElementById('catalogContent').classList.remove('hidden')
+                document.getElementById('catalog').classList.remove('hidden')
             }
         }
 
         async function checkAuth() {
             try {
-                console.log('Verificando autenticação...')
                 const response = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' })
                 const data = await response.json()
                 
                 if (data.success && data.user) {
                     APP_STATE.currentUser = data.user
                     APP_STATE.isLoggedIn = true
-                } else {
-                    APP_STATE.isLoggedIn = false
-                    APP_STATE.currentUser = null
                 }
                 
                 updateUserUI()
             } catch (error) {
-                console.error('Erro ao verificar auth:', error)
-                APP_STATE.isLoggedIn = false
-                APP_STATE.currentUser = null
                 updateUserUI()
             }
         }
 
         function updateUserUI() {
-            const userInfo = document.getElementById('userInfo')
-            const btnLogin = document.getElementById('btnLogin')
-            const userName = document.getElementById('userName')
-            const userCredits = document.getElementById('userCredits')
-            const navMenu = document.getElementById('navMenu')
+            const badge = document.getElementById('userBadge')
+            const btn = document.getElementById('btnLogin')
+            const nav = document.getElementById('nav')
             
             if (APP_STATE.isLoggedIn && APP_STATE.currentUser) {
-                userInfo.classList.remove('hidden')
-                btnLogin.classList.add('hidden')
-                navMenu.classList.remove('hidden')
-                userName.textContent = APP_STATE.currentUser.name
-                userCredits.textContent = `${parseFloat(APP_STATE.currentUser.credits).toFixed(1)} créditos`
+                badge.classList.remove('hidden')
+                btn.classList.add('hidden')
+                nav.classList.remove('hidden')
+                document.getElementById('userName').textContent = APP_STATE.currentUser.name
+                document.getElementById('userCredits').textContent = `${parseFloat(APP_STATE.currentUser.credits).toFixed(1)} créditos`
             } else {
-                userInfo.classList.add('hidden')
-                btnLogin.classList.remove('hidden')
-                navMenu.classList.add('hidden')
+                badge.classList.add('hidden')
+                btn.classList.remove('hidden')
+                nav.classList.add('hidden')
             }
+        }
+
+        function populateFilters() {
+            const categoryFilter = document.getElementById('categoryFilter')
+            const stateFilter = document.getElementById('stateFilter')
+            const eventFilter = document.getElementById('eventFilter')
+            
+            const categories = [...new Set(APP_STATE.vehicles.map(v => v.vehicle_data?.vehicle?.category_name).filter(Boolean))].sort()
+            const states = [...new Set(APP_STATE.vehicles.map(v => v.vehicle_data?.shop_stock?.state).filter(Boolean))].sort()
+            const events = [...new Set(APP_STATE.vehicles.map(v => {
+                const fd = v.vehicle_data?.negotiation?.finish_date_display
+                return fd ? fd.split(' ')[0] : null
+            }).filter(Boolean))].sort((a,b) => new Date(b) - new Date(a))
+            
+            categories.forEach(c => {
+                const opt = document.createElement('option')
+                opt.value = c
+                opt.textContent = c
+                categoryFilter.appendChild(opt)
+            })
+            
+            states.forEach(s => {
+                const opt = document.createElement('option')
+                opt.value = s
+                opt.textContent = s
+                stateFilter.appendChild(opt)
+            })
+            
+            events.forEach(e => {
+                const [y,m,d] = e.split('-')
+                const opt = document.createElement('option')
+                opt.value = e
+                opt.textContent = `${d}/${m}/${y}`
+                eventFilter.appendChild(opt)
+            })
         }
 
         function renderVehicles() {
             const grid = document.getElementById('vehiclesGrid')
             grid.innerHTML = ''
             
+            let filtered = [...APP_STATE.vehicles]
+            
             const categoryFilter = document.getElementById('categoryFilter').value
             const stateFilter = document.getElementById('stateFilter').value
             const eventFilter = document.getElementById('eventFilter').value
             
-            let filteredVehicles = APP_STATE.vehicles.filter(vehicle => {
-                const vehicleCategory = vehicle.vehicle_data?.vehicle?.category_name
-                const matchCategory = categoryFilter === 'all' || vehicleCategory === categoryFilter
-                
-                const vehicleState = vehicle.vehicle_data?.shop_stock?.state
-                const matchState = stateFilter === 'all' || vehicleState === stateFilter
-                
-                const finishDate = vehicle.vehicle_data?.negotiation?.finish_date_display
-                const vehicleEventDate = finishDate ? finishDate.split(' ')[0] : null
-                const matchEvent = eventFilter === 'all' || vehicleEventDate === eventFilter
-                
-                return matchCategory && matchState && matchEvent
+            if (categoryFilter !== 'all') {
+                filtered = filtered.filter(v => v.vehicle_data?.vehicle?.category_name === categoryFilter)
+            }
+            
+            if (stateFilter !== 'all') {
+                filtered = filtered.filter(v => v.vehicle_data?.shop_stock?.state === stateFilter)
+            }
+            
+            if (eventFilter !== 'all') {
+                filtered = filtered.filter(v => {
+                    const fd = v.vehicle_data?.negotiation?.finish_date_display
+                    return fd && fd.split(' ')[0] === eventFilter
+                })
+            }
+            
+            const grouped = {}
+            filtered.forEach(v => {
+                const fd = v.vehicle_data?.negotiation?.finish_date_display
+                const date = fd ? fd.split(' ')[0] : 'sem-data'
+                if (!grouped[date]) grouped[date] = []
+                grouped[date].push(v)
             })
             
-            const groupedByEvent = {}
-            filteredVehicles.forEach(vehicle => {
-                const finishDate = vehicle.vehicle_data?.negotiation?.finish_date_display
-                const eventDate = finishDate ? finishDate.split(' ')[0] : 'sem-data'
-                if (!groupedByEvent[eventDate]) {
-                    groupedByEvent[eventDate] = []
-                }
-                groupedByEvent[eventDate].push(vehicle)
-            })
-            
-            const sortedDates = Object.keys(groupedByEvent).sort((a, b) => {
+            const sorted = Object.keys(grouped).sort((a,b) => {
                 if (a === 'sem-data') return 1
                 if (b === 'sem-data') return -1
                 return new Date(b) - new Date(a)
             })
             
-            sortedDates.forEach(eventDate => {
-                const vehicles = groupedByEvent[eventDate]
+            sorted.forEach(date => {
+                const section = document.createElement('div')
+                section.className = 'event-section'
                 
-                const eventGroup = document.createElement('div')
-                eventGroup.className = 'event-group'
-                
-                let formattedDate
-                if (eventDate === 'sem-data') {
-                    formattedDate = 'Sem data definida'
+                let formatted
+                if (date === 'sem-data') {
+                    formatted = 'Sem data definida'
                 } else {
-                    const [year, month, day] = eventDate.split('-')
-                    formattedDate = `${day}/${month}/${year}`
+                    const [y,m,d] = date.split('-')
+                    formatted = `${d}/${m}/${y}`
                 }
                 
-                eventGroup.innerHTML = `
-                    <div class="event-header">
-                        <h2 class="event-title">Evento: ${formattedDate}</h2>
-                        <span class="event-count">${vehicles.length}</span>
+                section.innerHTML = `
+                    <div class="event-banner">
+                        <div class="event-info">
+                            <h2>Evento: ${formatted}</h2>
+                        </div>
+                        <div class="event-badge">${grouped[date].length}</div>
                     </div>
-                    <div class="vehicles-grid" id="grid-${eventDate.replace(/[^a-zA-Z0-9]/g, '-')}"></div>
+                    <div class="grid" id="grid-${date}"></div>
                 `
                 
-                grid.appendChild(eventGroup)
+                grid.appendChild(section)
                 
-                const groupGrid = eventGroup.querySelector('.vehicles-grid')
-                vehicles.forEach((vehicle) => {
-                    const globalIndex = APP_STATE.vehicles.indexOf(vehicle)
-                    const card = createVehicleCard(vehicle, globalIndex)
-                    groupGrid.appendChild(card)
+                const subgrid = document.getElementById(`grid-${date}`)
+                grouped[date].forEach((v, i) => {
+                    const idx = APP_STATE.vehicles.indexOf(v)
+                    subgrid.appendChild(createCard(v, idx))
                 })
             })
             
-            updateVisibleCount(filteredVehicles.length)
+            updateVisibleCount(filtered.length)
         }
 
-        function populateEventFilter() {
-            const eventFilter = document.getElementById('eventFilter')
-            const events = [...new Set(
-                APP_STATE.vehicles
-                    .map(v => {
-                        const finishDate = v.vehicle_data?.negotiation?.finish_date_display
-                        return finishDate ? finishDate.split(' ')[0] : null
-                    })
-                    .filter(Boolean)
-            )]
-            events.sort((a, b) => new Date(b) - new Date(a))
+        function createCard(v, idx) {
+            const card = document.createElement('div')
+            card.className = 'card'
+            card.setAttribute('data-index', idx)
             
-            events.forEach(eventDate => {
-                const option = document.createElement('option')
-                option.value = eventDate
-                
-                const [year, month, day] = eventDate.split('-')
-                option.textContent = `${day}/${month}/${year}`
-                
-                eventFilter.appendChild(option)
-            })
-        }
-
-        function populateStateFilter() {
-            const stateFilter = document.getElementById('stateFilter')
-            const states = [...new Set(
-                APP_STATE.vehicles
-                    .map(v => v.vehicle_data?.shop_stock?.state)
-                    .filter(Boolean)
-            )]
-            states.sort()
+            const imgs = v.images || []
+            const hasImgs = imgs.length > 0
             
-            states.forEach(state => {
-                const option = document.createElement('option')
-                option.value = state
-                option.textContent = state
-                stateFilter.appendChild(option)
-            })
-        }
-
-        function populateCategoryFilter() {
-            const categoryFilter = document.getElementById('categoryFilter')
-            
-            while (categoryFilter.options.length > 1) {
-                categoryFilter.remove(1)
-            }
-            
-            const categories = [...new Set(
-                APP_STATE.vehicles
-                    .map(v => v.vehicle_data?.vehicle?.category_name)
-                    .filter(Boolean)
-            )]
-            categories.sort()
-            
-            categories.forEach(category => {
-                const option = document.createElement('option')
-                option.value = category
-                option.textContent = category
-                categoryFilter.appendChild(option)
-            })
-        }
-
-        function updateVisibleCount(count) {
-            document.getElementById('visibleCount').textContent = count
-            document.getElementById('totalCount').textContent = APP_STATE.vehicles.length
-        }
-
-        function createVehicleCard(vehicle, index) {
-            const div = document.createElement('div')
-            div.className = 'vehicle-card'
-            div.setAttribute('data-index', index)
-            
-            const images = vehicle.images || []
-            const hasImages = images.length > 0
-            
-            div.innerHTML = `
-                <div class="vehicle-gallery">
-                    ${hasImages ? `
-                        <div class="main-image-container" onclick="openGallery(${index})">
-                            <img src="${images[0].url}" alt="${vehicle.brand} ${vehicle.model}">
-                            <div class="image-overlay">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <path d="m21 21-4.35-4.35"></path>
-                                </svg>
-                                <span class="zoom-text">Ver ${images.length} foto${images.length > 1 ? 's' : ''}</span>
+            card.innerHTML = `
+                <div class="gallery">
+                    ${hasImgs ? `
+                        <div class="gallery-main" onclick="openGallery(${idx})">
+                            <img src="${imgs[0].url}" alt="${v.brand} ${v.model}">
+                            <div class="gallery-overlay">
+                                <div class="gallery-icon">🔍</div>
+                                <div class="gallery-text">Ver ${imgs.length} foto${imgs.length>1?'s':''}</div>
                             </div>
                         </div>
-                        ${images.length > 1 ? `
-                            <div class="thumbnail-strip">
-                                ${images.slice(1, 4).map((img, idx) => `
-                                    <img src="${img.thumb || img.url}" alt="Foto ${idx + 2}" 
-                                         onclick="openGallery(${index}, ${idx + 1})">
-                                `).join('')}
-                                ${images.length > 4 ? `
-                                    <div class="more-photos" onclick="openGallery(${index})">+${images.length - 4}</div>
-                                ` : ''}
+                        ${imgs.length > 1 ? `
+                            <div class="thumbs">
+                                ${imgs.slice(1,4).map((img,i) => `<img class="thumb" src="${img.thumb||img.url}" onclick="openGallery(${idx},${i+1})">`).join('')}
+                                ${imgs.length > 4 ? `<div class="more-btn" onclick="openGallery(${idx})">+${imgs.length-4}</div>` : ''}
                             </div>
                         ` : ''}
                     ` : `
                         <div class="no-image">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                            <span class="no-image-text">Sem Imagem</span>
+                            <div class="no-image-icon">📷</div>
+                            <div class="no-image-text">Sem Imagem</div>
                         </div>
                     `}
                 </div>
 
-                <div class="vehicle-info">
-                    <div class="vehicle-header">
-                        <div class="vehicle-title-section">
-                            <h3 class="vehicle-title">${vehicle.brand} ${vehicle.model}</h3>
-                            <div class="vehicle-year">${vehicle.year}</div>
+                <div class="content">
+                    <div class="card-header">
+                        <div class="title-section">
+                            <h3 class="title">${v.brand} ${v.model}</h3>
+                            <div class="year-badge">${v.year}</div>
                         </div>
-                        <div class="vehicle-badges">
-                            <span class="category-badge">${vehicle.vehicle_data?.vehicle?.category_name || 'N/A'}</span>
+                        <div class="badges">
+                            <span class="badge">${v.vehicle_data?.vehicle?.category_name||'N/A'}</span>
                         </div>
                     </div>
 
-                    <div class="vehicle-pricing">
-                        <div class="main-price">R$ ${formatPrice(vehicle.price)}</div>
+                    <div class="price-box">
+                        <div class="price">R$ ${formatPrice(v.price)}</div>
                     </div>
 
-                    <div class="vehicle-specs-mini">
-                        <span class="spec-mini">${formatNumber(vehicle.mileage)} km</span>
-                        <span class="spec-mini">${vehicle.fuel_type || 'N/A'}</span>
-                        <span class="spec-mini">${vehicle.transmission || 'Manual'}</span>
+                    <div class="specs">
+                        <span class="spec">${formatNumber(v.mileage)} km</span>
+                        <span class="spec">${v.fuel_type||'N/A'}</span>
+                        <span class="spec">${v.transmission||'Manual'}</span>
                     </div>
 
-                    <div class="vehicle-location">
-                        <span>${vehicle.location || 'Localização não informada'}</span>
-                    </div>
+                    <div class="location">${v.location||'Localização não informada'}</div>
 
-                    <div class="vehicle-actions">
-                        <button class="btn-primary" onclick="openDetails(${index})">Ver Detalhes</button>
-                        <button class="btn-secondary" onclick="openGallery(${index})">Fotos (${images.length})</button>
-                        ${vehicle.laudo_file_url ? `
-                            <button class="btn-laudo" onclick="window.open('${vehicle.laudo_file_url}', '_blank')">Ver Laudo</button>
-                        ` : ''}
-                        <button class="btn-proposal" onclick="handleProposal(${index})">Fazer Proposta</button>
+                    <div class="actions">
+                        <button class="btn btn-primary" onclick="openDetails(${idx})">Ver Detalhes</button>
+                        <button class="btn btn-secondary" onclick="openGallery(${idx})">Fotos (${imgs.length})</button>
+                        ${v.laudo_file_url ? `<button class="btn btn-warning" onclick="window.open('${v.laudo_file_url}','_blank')">Ver Laudo</button>` : ''}
+                        <button class="btn btn-cta" onclick="handleProposal(${idx})">Fazer Proposta</button>
                     </div>
                 </div>
             `
             
-            return div
+            return card
         }
 
-        function formatPrice(price) {
-            return parseFloat(price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+        function formatPrice(p) {
+            return parseFloat(p||0).toLocaleString('pt-BR', {minimumFractionDigits:2})
         }
 
-        function formatNumber(num) {
-            return parseInt(num || 0).toLocaleString('pt-BR')
+        function formatNumber(n) {
+            return parseInt(n||0).toLocaleString('pt-BR')
         }
 
         function updateStats() {
             document.getElementById('totalVehicles').textContent = APP_STATE.vehicles.length
         }
 
+        function updateVisibleCount(c) {
+            document.getElementById('visibleCount').textContent = c
+            document.getElementById('totalCount').textContent = APP_STATE.vehicles.length
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('searchInput')
-            const categoryFilter = document.getElementById('categoryFilter')
-            const stateFilter = document.getElementById('stateFilter')
-            const eventFilter = document.getElementById('eventFilter')
-            
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    const query = e.target.value.toLowerCase()
-                    const allCards = document.querySelectorAll('.vehicle-card')
-                    let count = 0
-                    
-                    allCards.forEach((card) => {
-                        const index = parseInt(card.getAttribute('data-index'))
-                        const vehicle = APP_STATE.vehicles[index]
-                        const text = `${vehicle.brand} ${vehicle.model} ${vehicle.description || ''} ${vehicle.color || ''}`.toLowerCase()
-                        
-                        if (text.includes(query)) {
-                            card.style.display = ''
-                            count++
-                        } else {
-                            card.style.display = 'none'
-                        }
-                    })
-                    
-                    document.getElementById('visibleCount').textContent = count
+            document.getElementById('search').addEventListener('input', e => {
+                const q = e.target.value.toLowerCase()
+                document.querySelectorAll('.card').forEach(card => {
+                    const idx = parseInt(card.getAttribute('data-index'))
+                    const v = APP_STATE.vehicles[idx]
+                    const txt = `${v.brand} ${v.model} ${v.description||''} ${v.color||''}`.toLowerCase()
+                    card.style.display = txt.includes(q) ? '' : 'none'
                 })
-            }
+            })
             
-            if (categoryFilter) {
-                categoryFilter.addEventListener('change', renderVehicles)
-            }
-            
-            if (stateFilter) {
-                stateFilter.addEventListener('change', renderVehicles)
-            }
-            
-            if (eventFilter) {
-                eventFilter.addEventListener('change', renderVehicles)
-            }
+            document.getElementById('categoryFilter').addEventListener('change', renderVehicles)
+            document.getElementById('stateFilter').addEventListener('change', renderVehicles)
+            document.getElementById('eventFilter').addEventListener('change', renderVehicles)
         })
 
-        async function handleProposal(index) {
-            const vehicle = APP_STATE.vehicles[index]
+        async function handleProposal(idx) {
+            const v = APP_STATE.vehicles[idx]
             
             if (!APP_STATE.isLoggedIn) {
-                showToast('Você precisa fazer login para fazer uma proposta', 'error')
-                setTimeout(() => {
-                    window.location.href = 'login'
-                }, 1500)
+                showToast('Faça login para fazer propostas', 'error')
+                setTimeout(() => window.location.href = 'login', 1500)
                 return
             }
             
             if (!APP_STATE.currentUser.cpf) {
-                showToast('Complete seu cadastro para fazer propostas', 'error')
-                setTimeout(() => {
-                    window.location.href = 'perfil'
-                }, 1500)
+                showToast('Complete seu cadastro', 'error')
+                setTimeout(() => window.location.href = 'perfil', 1500)
                 return
             }
             
             if (APP_STATE.currentUser.credits < 1) {
                 showToast('Créditos insuficientes', 'error')
-                setTimeout(() => {
-                    window.location.href = 'recarga'
-                }, 1500)
+                setTimeout(() => window.location.href = 'recarga', 1500)
                 return
             }
             
-            openProposalModal(vehicle)
+            openProposalModal(v)
         }
-        
-        function openProposalModal(vehicle) {
+
+        function openProposalModal(v) {
             createModal('Fazer Proposta', `
                 <div style="text-align: center;">
-                    <h3 style="margin-bottom: 1rem;">${vehicle.brand} ${vehicle.model} ${vehicle.year}</h3>
-                    <p style="font-size: 1.2rem; color: var(--success); font-weight: 600; margin: 1.25rem 0;">
-                        Preço Anunciado: R$ ${formatPrice(vehicle.price)}
+                    <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">${v.brand} ${v.model} ${v.year}</h3>
+                    <p style="font-size: 1.5rem; color: var(--success); font-weight: 800; margin: 1.5rem 0;">
+                        Preço: R$ ${formatPrice(v.price)}
                     </p>
                     
-                    <form id="proposalForm" onsubmit="submitProposal(event, '${vehicle.external_id}')">
+                    <form id="proposalForm" onsubmit="submitProposal(event,'${v.external_id}')">
                         <div class="form-group">
-                            <label class="form-label" for="proposalValue">Valor da Proposta *</label>
-                            <input type="number" id="proposalValue" class="form-input" 
-                                   placeholder="0.00" step="0.01" min="1" required>
+                            <label class="label">Valor da Proposta *</label>
+                            <input type="number" id="proposalValue" class="input" placeholder="0.00" step="0.01" min="1" required>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="clientName">Seu Nome *</label>
-                            <input type="text" id="clientName" class="form-input" 
-                                   value="${APP_STATE.currentUser.name}" required>
+                            <label class="label">Seu Nome *</label>
+                            <input type="text" id="clientName" class="input" value="${APP_STATE.currentUser.name}" required>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="clientPhone">Seu Telefone *</label>
-                            <input type="tel" id="clientPhone" class="form-input" 
-                                   value="${APP_STATE.currentUser.phone}" required>
+                            <label class="label">Seu Telefone *</label>
+                            <input type="tel" id="clientPhone" class="input" value="${APP_STATE.currentUser.phone}" required>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="clientEmail">Seu Email (opcional)</label>
-                            <input type="email" id="clientEmail" class="form-input" 
-                                   value="${APP_STATE.currentUser.email || ''}" placeholder="seu@email.com">
+                            <label class="label">Seu Email (opcional)</label>
+                            <input type="email" id="clientEmail" class="input" value="${APP_STATE.currentUser.email||''}" placeholder="seu@email.com">
                         </div>
                         
-                        <div class="info-box">
+                        <div class="info-alert">
                             <strong>Atenção:</strong> Esta proposta consumirá <strong>1 crédito (R$ 1.000,00)</strong> do seu saldo.<br>
                             Saldo atual: <strong>${parseFloat(APP_STATE.currentUser.credits).toFixed(1)} créditos</strong>
                         </div>
                         
-                        <button type="submit" class="btn-submit">Enviar Proposta (1 crédito)</button>
+                        <button type="submit" class="btn btn-cta" style="width:100%">Enviar Proposta (1 crédito)</button>
                     </form>
                 </div>
             `)
         }
 
-        async function submitProposal(event, vehicleExternalId) {
-            event.preventDefault()
+        async function submitProposal(e, extId) {
+            e.preventDefault()
             
-            const btn = event.target.querySelector('.btn-submit')
+            const btn = e.target.querySelector('button[type="submit"]')
             btn.disabled = true
             btn.textContent = 'Enviando...'
             
-            const proposalData = {
-                vehicle_external_id: vehicleExternalId,
-                proposal_amount: parseFloat(document.getElementById('proposalValue').value),
-                customer_name: document.getElementById('clientName').value,
-                customer_phone: document.getElementById('clientPhone').value,
-                customer_email: document.getElementById('clientEmail').value || null
-            }
-            
             try {
-                const response = await fetch(`${API_BASE}/proposals`, {
+                const res = await fetch(`${API_BASE}/proposals`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     credentials: 'include',
-                    body: JSON.stringify(proposalData)
+                    body: JSON.stringify({
+                        vehicle_external_id: extId,
+                        proposal_amount: parseFloat(document.getElementById('proposalValue').value),
+                        customer_name: document.getElementById('clientName').value,
+                        customer_phone: document.getElementById('clientPhone').value,
+                        customer_email: document.getElementById('clientEmail').value || null
+                    })
                 })
                 
-                const data = await response.json()
+                const data = await res.json()
                 
                 if (data.success) {
                     APP_STATE.currentUser.credits = data.remaining_credits
                     updateUserUI()
                     closeAllModals()
-                    showToast('Proposta enviada com sucesso!', 'success')
+                    showToast('Proposta enviada!', 'success')
                 } else {
-                    showToast(data.error || 'Erro ao enviar proposta', 'error')
+                    showToast(data.error||'Erro', 'error')
                     btn.disabled = false
                     btn.textContent = 'Enviar Proposta (1 crédito)'
                 }
             } catch (error) {
-                console.error('Erro ao enviar proposta:', error)
-                showToast('Erro ao conectar com o servidor', 'error')
+                showToast('Erro ao conectar', 'error')
                 btn.disabled = false
                 btn.textContent = 'Enviar Proposta (1 crédito)'
             }
         }
 
-        function openDetails(index) {
-            const vehicle = APP_STATE.vehicles[index]
+        function openDetails(idx) {
+            const v = APP_STATE.vehicles[idx]
             
-            createModal(`${vehicle.brand} ${vehicle.model}`, `
-                <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 16px;">
-                    <h4 style="margin-bottom: 1rem; color: var(--primary); font-weight: 700;">Informações do Veículo</h4>
+            createModal(`${v.brand} ${v.model}`, `
+                <div style="background: var(--bg); padding: 2rem; border-radius: 20px;">
+                    <h4 style="margin-bottom: 1.5rem; color: var(--primary); font-weight: 800; font-size: 1.25rem;">Informações do Veículo</h4>
                     
-                    <p><strong>Marca/Modelo:</strong> ${vehicle.brand} ${vehicle.model}</p>
-                    <p><strong>Ano:</strong> ${vehicle.year}</p>
-                    <p><strong>Quilometragem:</strong> ${formatNumber(vehicle.mileage)} km</p>
-                    <p><strong>Combustível:</strong> ${vehicle.fuel_type || 'N/A'}</p>
-                    <p><strong>Transmissão:</strong> ${vehicle.transmission || 'Manual'}</p>
-                    <p><strong>Cor:</strong> ${vehicle.color || 'N/A'}</p>
-                    <p><strong>Preço:</strong> R$ ${formatPrice(vehicle.price)}</p>
-                    <p><strong>Localização:</strong> ${vehicle.location || 'N/A'}</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Marca/Modelo:</strong> ${v.brand} ${v.model}</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Ano:</strong> ${v.year}</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Quilometragem:</strong> ${formatNumber(v.mileage)} km</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Combustível:</strong> ${v.fuel_type||'N/A'}</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Transmissão:</strong> ${v.transmission||'Manual'}</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Cor:</strong> ${v.color||'N/A'}</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Preço:</strong> R$ ${formatPrice(v.price)}</p>
+                    <p style="margin-bottom: 0.75rem;"><strong>Localização:</strong> ${v.location||'N/A'}</p>
                     
-                    ${vehicle.description ? `
-                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid var(--border);">
-                            <h4 style="margin-bottom: 0.5rem; color: var(--primary); font-weight: 700;">Descrição</h4>
-                            <p style="color: var(--text-secondary);">${vehicle.description}</p>
+                    ${v.description ? `
+                        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border);">
+                            <h4 style="margin-bottom: 1rem; color: var(--primary); font-weight: 800;">Descrição</h4>
+                            <p style="color: var(--text-light); line-height: 1.7;">${v.description}</p>
                         </div>
                     ` : ''}
                 </div>
             `)
         }
 
-        function openGallery(index, startImage = 0) {
-            const vehicle = APP_STATE.vehicles[index]
-            const images = vehicle.images || []
+        function openGallery(idx, start=0) {
+            const v = APP_STATE.vehicles[idx]
+            const imgs = v.images || []
             
-            if (images.length === 0) {
-                showToast('Nenhuma imagem disponível', 'error')
+            if (imgs.length === 0) {
+                showToast('Nenhuma imagem', 'error')
                 return
             }
             
-            let currentImage = startImage
+            let cur = start
             
-            createModal(`${vehicle.brand} ${vehicle.model} - Galeria`, `
+            createModal(`${v.brand} ${v.model} - Galeria`, `
                 <div id="galleryContent" style="text-align: center;">
-                    <img id="galleryImage" src="${images[currentImage].url}" 
-                          style="max-width: 100%; max-height: 60vh; border-radius: 16px;">
-                    <p style="margin-top: 1rem; color: var(--text-secondary); font-weight: 600;">
-                        Foto ${currentImage + 1} de ${images.length}
+                    <img id="galleryImage" src="${imgs[cur].url}" style="max-width: 100%; max-height: 60vh; border-radius: 20px;">
+                    <p style="margin-top: 1.5rem; color: var(--text-light); font-weight: 700; font-size: 1.125rem;">
+                        Foto ${cur+1} de ${imgs.length}
                     </p>
-                    ${images.length > 1 ? `
-                        <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem;">
-                            <button class="btn-secondary" onclick="changeGalleryImage(-1)">← Anterior</button>
-                            <button class="btn-secondary" onclick="changeGalleryImage(1)">Próxima →</button>
+                    ${imgs.length > 1 ? `
+                        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                            <button class="btn btn-secondary" onclick="changeGalleryImg(-1)">← Anterior</button>
+                            <button class="btn btn-secondary" onclick="changeGalleryImg(1)">Próxima →</button>
                         </div>
                     ` : ''}
                 </div>
             `)
             
-            window.changeGalleryImage = (direction) => {
-                currentImage += direction
-                if (currentImage < 0) currentImage = images.length - 1
-                if (currentImage >= images.length) currentImage = 0
+            window.changeGalleryImg = (dir) => {
+                cur += dir
+                if (cur < 0) cur = imgs.length - 1
+                if (cur >= imgs.length) cur = 0
                 
-                document.getElementById('galleryImage').src = images[currentImage].url
-                document.querySelector('#galleryContent p').textContent = `Foto ${currentImage + 1} de ${images.length}`
+                document.getElementById('galleryImage').src = imgs[cur].url
+                document.querySelector('#galleryContent p').textContent = `Foto ${cur+1} de ${imgs.length}`
             }
         }
 
-        function createModal(title, content, canCloseOutside = true) {
-            const overlay = document.createElement('div')
-            overlay.className = 'modal-overlay'
-            overlay.innerHTML = `
-                <div class="modal-content">
+        function createModal(title, content) {
+            const modal = document.createElement('div')
+            modal.className = 'modal'
+            modal.innerHTML = `
+                <div class="modal-box">
                     <div class="modal-header">
                         <h2 class="modal-title">${title}</h2>
                         <button class="modal-close" onclick="closeModal(this)">&times;</button>
                     </div>
-                    <div class="modal-body">
-                        ${content}
-                    </div>
+                    <div class="modal-body">${content}</div>
                 </div>
             `
             
-            document.body.appendChild(overlay)
-            setTimeout(() => overlay.classList.add('active'), 10)
+            document.body.appendChild(modal)
+            setTimeout(() => modal.classList.add('active'), 10)
             
-            if (canCloseOutside) {
-                overlay.addEventListener('click', (e) => {
-                    if (e.target === overlay) closeModal(overlay.querySelector('.modal-close'))
-                })
-            }
+            modal.addEventListener('click', e => {
+                if (e.target === modal) closeModal(modal.querySelector('.modal-close'))
+            })
             
-            return overlay
+            return modal
         }
-        
-        function closeModal(closeBtn) {
-            const overlay = closeBtn.closest('.modal-overlay')
-            overlay.classList.remove('active')
-            setTimeout(() => overlay.remove(), 300)
+
+        function closeModal(btn) {
+            const modal = btn.closest('.modal')
+            modal.classList.remove('active')
+            setTimeout(() => modal.remove(), 300)
         }
 
         function closeAllModals() {
-            document.querySelectorAll('.modal-overlay').forEach(modal => {
-                modal.classList.remove('active')
-                setTimeout(() => modal.remove(), 300)
+            document.querySelectorAll('.modal').forEach(m => {
+                m.classList.remove('active')
+                setTimeout(() => m.remove(), 300)
             })
         }
 
         async function logout() {
             try {
-                await fetch(`${API_BASE}/auth/logout`, {
-                    method: 'POST',
-                    credentials: 'include'
-                })
-                
+                await fetch(`${API_BASE}/auth/logout`, {method: 'POST', credentials: 'include'})
                 APP_STATE.currentUser = null
                 APP_STATE.isLoggedIn = false
                 updateUserUI()
-                showToast('Logout realizado com sucesso', 'success')
+                showToast('Logout realizado', 'success')
             } catch (error) {
-                console.error('Erro no logout:', error)
+                console.error(error)
             }
         }
 
-        function showToast(message, type = 'success') {
+        function showToast(msg, type='success') {
             const container = document.getElementById('toastContainer')
             const toast = document.createElement('div')
             toast.className = `toast toast-${type}`
-            toast.textContent = message
+            toast.textContent = msg
             container.appendChild(toast)
             
             setTimeout(() => {
                 toast.style.opacity = '0'
-                toast.style.transform = 'translateX(400px)';
+                toast.style.transform = 'translateX(400px)'
                 setTimeout(() => toast.remove(), 300)
             }, 3000)
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            console.log('Iniciando aplicação...')
-            checkAuth().then(() => {
-                console.log('Auth checado, carregando veículos...')
-                loadVehicles()
-            })
+            checkAuth().then(() => loadVehicles())
         })
     </script>
 </body>
