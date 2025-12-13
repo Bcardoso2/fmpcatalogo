@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FMP REPASSES - Catálogo Premium</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,7 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
         
         :root {
             --green-50: #ecfdf5;
@@ -32,11 +37,6 @@
             --slate-700: #334155;
             --slate-800: #1e293b;
             --slate-900: #0f172a;
-            
-            --radius-sm: 12px;
-            --radius-md: 20px;
-            --radius-lg: 28px;
-            --radius-xl: 36px;
         }
         
         body { 
@@ -45,280 +45,279 @@
             color: var(--slate-900);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         .hidden { display: none !important; }
         
-        /* HEADER ULTRA PREMIUM */
+        /* ==================== HEADER MOBILE FIRST ==================== */
         .header {
             background: linear-gradient(180deg, #000000 0%, #0a2015 100%);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            background: radial-gradient(ellipse at top, rgba(16, 185, 129, 0.15), transparent 70%);
-            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         
         .header-wrap {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 2rem 3rem;
-            position: relative;
+            padding: 1rem;
         }
         
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
+        /* Logo compacto mobile */
         .brand {
             display: flex;
             align-items: center;
-            gap: 1.25rem;
+            gap: 0.75rem;
             text-decoration: none;
+            margin-bottom: 1rem;
         }
         
         .brand-icon {
-            width: 64px;
-            height: 64px;
+            width: 44px;
+            height: 44px;
             background: linear-gradient(135deg, var(--green-500) 0%, var(--green-700) 100%);
-            border-radius: 18px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 900;
             color: white;
-            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .brand-icon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
         }
         
         .brand-text {
-            display: flex;
-            flex-direction: column;
+            flex: 1;
         }
         
         .brand-name {
-            font-size: 2rem;
+            font-size: 1.125rem;
             font-weight: 900;
             background: linear-gradient(135deg, #ffffff 0%, var(--green-200) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
         }
         
         .brand-tagline {
-            font-size: 0.875rem;
+            font-size: 0.625rem;
             color: var(--green-300);
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
+        /* User chip mobile */
         .user-chip {
             display: flex;
-            align-items: center;
-            gap: 1.25rem;
+            flex-direction: column;
+            gap: 0.5rem;
             background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 100px;
-            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .user-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .user-name {
             color: white;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.875rem;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .credits-pill {
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
             color: #000;
-            padding: 0.5rem 1.25rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 100px;
             font-weight: 800;
-            font-size: 0.9375rem;
-            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
+            font-size: 0.75rem;
+            white-space: nowrap;
         }
 
         .logout-btn {
-            background: rgba(239, 68, 68, 0.1);
+            width: 100%;
+            background: rgba(239, 68, 68, 0.15);
             color: #fca5a5;
             border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 0.75rem 1.5rem;
-            border-radius: 100px;
+            padding: 0.625rem;
+            border-radius: 8px;
             font-weight: 700;
+            font-size: 0.8125rem;
             cursor: pointer;
             transition: all 0.3s;
             font-family: inherit;
-            font-size: 0.9375rem;
         }
 
-        .logout-btn:hover {
+        .logout-btn:active {
+            transform: scale(0.97);
             background: #ef4444;
             color: white;
-            border-color: #ef4444;
-            transform: translateY(-2px);
         }
 
         .login-btn {
+            display: block;
+            width: 100%;
             background: linear-gradient(135deg, var(--green-500) 0%, var(--green-700) 100%);
             color: white;
-            padding: 1rem 2.5rem;
-            border-radius: 100px;
+            padding: 0.875rem;
+            border-radius: 12px;
             font-weight: 800;
             text-decoration: none;
-            font-size: 1rem;
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.9375rem;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+            margin-bottom: 1rem;
         }
 
-        .login-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(16, 185, 129, 0.4);
+        .login-btn:active {
+            transform: scale(0.97);
         }
 
+        /* Nav mobile - horizontal scroll */
+        .nav-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            margin: 0 -1rem 1rem;
+            padding: 0 1rem;
+        }
+        
+        .nav-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        
         .nav-bar {
             display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+            min-width: min-content;
         }
 
         .nav-item {
-            padding: 0.875rem 2rem;
+            padding: 0.625rem 1.25rem;
             border-radius: 100px;
             text-decoration: none;
             color: rgba(255,255,255,0.6);
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.8125rem;
             transition: all 0.3s;
             border: 1px solid transparent;
-            position: relative;
+            white-space: nowrap;
+            background: rgba(255,255,255,0.05);
         }
 
-        .nav-item:hover, .nav-item.active {
+        .nav-item:active,
+        .nav-item.active {
             color: white;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             border-color: rgba(255,255,255,0.2);
+            transform: scale(0.97);
         }
 
+        /* Métricas mobile */
         .metrics {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            padding-top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            padding-top: 1rem;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         .metric {
             text-align: center;
+            background: rgba(255,255,255,0.05);
+            padding: 0.875rem;
+            border-radius: 12px;
         }
 
         .metric-value {
-            font-size: 2.5rem;
+            font-size: 1.75rem;
             font-weight: 900;
             background: linear-gradient(135deg, white 0%, var(--green-200) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: block;
             line-height: 1;
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.5rem;
         }
 
         .metric-label {
-            font-size: 0.8125rem;
+            font-size: 0.6875rem;
             color: var(--green-300);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
         }
 
-        /* CONTAINER */
+        /* ==================== CONTAINER ==================== */
         .wrap {
+            padding: 1rem;
             max-width: 1600px;
             margin: 0 auto;
-            padding: 4rem 3rem;
         }
 
-        /* LOADING */
+        /* ==================== LOADING ==================== */
         .loader {
             text-align: center;
-            padding: 8rem 2rem;
+            padding: 4rem 1rem;
         }
 
         .spinner {
-            width: 64px;
-            height: 64px;
-            border: 6px solid var(--slate-200);
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--slate-200);
             border-top-color: var(--green-600);
             border-radius: 50%;
             animation: rotate 0.8s linear infinite;
-            margin: 0 auto 2rem;
+            margin: 0 auto 1.5rem;
         }
 
         @keyframes rotate {
             to { transform: rotate(360deg); }
         }
 
-        /* FILTERS PREMIUM */
-        .filter-panel {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 3rem;
-            margin-bottom: 4rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.03);
-            border: 1px solid var(--slate-200);
+        .loader p {
+            font-weight: 700;
+            color: var(--slate-400);
+            font-size: 0.9375rem;
         }
 
+        /* ==================== FILTERS MOBILE FIRST ==================== */
+        .filter-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        /* Search box otimizado mobile */
         .search-box {
             position: relative;
-            margin-bottom: 2.5rem;
+            margin-bottom: 1rem;
         }
 
         .search-input {
             width: 100%;
-            padding: 1.5rem 2rem 1.5rem 5rem;
+            padding: 0.875rem 0.875rem 0.875rem 2.75rem;
             background: var(--slate-50);
             border: 2px solid var(--slate-200);
-            border-radius: 100px;
-            font-size: 1.125rem;
+            border-radius: 12px;
+            font-size: 0.9375rem;
             font-family: inherit;
             font-weight: 600;
             color: var(--slate-900);
@@ -329,57 +328,107 @@
             outline: none;
             border-color: var(--green-600);
             background: white;
-            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
         .search-input::placeholder {
             color: var(--slate-400);
+            font-size: 0.875rem;
         }
 
         .search-ico {
             position: absolute;
-            left: 2rem;
+            left: 0.875rem;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.5rem;
-            color: var(--green-600);
+            font-size: 1.125rem;
+        }
+
+        /* Botão toggle filtros mobile */
+        .filter-toggle-btn {
+            width: 100%;
+            background: var(--green-600);
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            font-family: inherit;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .filter-toggle-btn:active {
+            transform: scale(0.97);
+        }
+
+        .filter-toggle-btn .arrow {
+            transition: transform 0.3s;
+        }
+
+        .filter-toggle-btn.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Área de filtros colapsável */
+        .filter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .filter-content.expanded {
+            max-height: 1000px;
         }
 
         .filter-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
         }
 
         .dropdown {
-            padding: 1.25rem 1.75rem;
+            padding: 0.875rem;
             background: var(--slate-50);
             border: 2px solid var(--slate-200);
-            border-radius: var(--radius-md);
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
             font-family: inherit;
             font-weight: 700;
             color: var(--slate-900);
             cursor: pointer;
             transition: all 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23334155' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.875rem center;
+            padding-right: 2.5rem;
         }
 
         .dropdown:focus {
             outline: none;
             border-color: var(--green-600);
-            background: white;
-            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
+        /* Summary compacto */
         .summary {
             background: linear-gradient(135deg, var(--green-50) 0%, var(--slate-50) 100%);
             border: 2px solid var(--green-200);
-            border-radius: var(--radius-md);
-            padding: 1.5rem;
-            margin-top: 2.5rem;
+            border-radius: 12px;
+            padding: 0.875rem;
+            margin-top: 1rem;
             text-align: center;
             font-weight: 700;
-            font-size: 1.0625rem;
+            font-size: 0.8125rem;
             color: var(--green-800);
         }
 
@@ -388,177 +437,162 @@
             color: var(--green-700);
         }
 
-        /* EVENT BANNER */
+        /* ==================== EVENT BANNER MOBILE ==================== */
         .event-block {
-            margin-bottom: 5rem;
+            margin-bottom: 2rem;
         }
 
         .event-head {
             background: linear-gradient(135deg, var(--green-800) 0%, var(--green-900) 100%);
-            border-radius: var(--radius-lg);
-            padding: 2.5rem 3rem;
-            margin-bottom: 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 40px rgba(13, 92, 61, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .event-head::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.2), transparent 70%);
-            border-radius: 50%;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 16px rgba(13, 92, 61, 0.3);
         }
 
         .event-title {
-            font-size: 2.25rem;
+            font-size: 1.125rem;
             font-weight: 900;
             color: white;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 0.5rem;
+            text-align: center;
         }
 
         .event-count {
             background: white;
             color: var(--green-800);
-            padding: 1rem 2rem;
+            padding: 0.5rem 1rem;
             border-radius: 100px;
             font-weight: 900;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 1;
+            font-size: 1rem;
+            display: inline-block;
+            margin: 0 auto;
+            display: block;
+            width: fit-content;
         }
 
-        /* GRID PREMIUM */
+        /* ==================== GRID MOBILE FIRST ==================== */
         .vehicle-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2.5rem;
+            gap: 1.25rem;
         }
 
         .v-card {
             background: white;
-            border-radius: var(--radius-xl);
+            border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--slate-200);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-        .v-card:hover {
-            transform: translateY(-16px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-            border-color: var(--green-600);
+        .v-card:active {
+            transform: scale(0.98);
         }
 
-        /* IMAGE SECTION */
+        /* ==================== IMAGE SECTION MOBILE ==================== */
         .img-zone {
             position: relative;
-            height: 400px;
-            background: linear-gradient(135deg, var(--slate-100) 0%, var(--slate-200) 100%);
+            background: var(--slate-100);
         }
 
         .main-img {
             position: relative;
-            height: 340px;
+            height: 220px;
             cursor: pointer;
             overflow: hidden;
+            background: linear-gradient(135deg, var(--slate-100) 0%, var(--slate-200) 100%);
         }
 
         .main-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s;
         }
 
-        .v-card:hover .main-img img {
-            transform: scale(1.15) rotate(2deg);
+        .v-card:active .main-img img {
+            transform: scale(1.05);
         }
 
-        .img-overlay {
+        /* Badge de quantidade de fotos */
+        .photo-badge {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(13, 92, 61, 0.95) 0%, rgba(6, 78, 59, 0.98) 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .main-img:hover .img-overlay {
-            opacity: 1;
-        }
-
-        .zoom-ico {
-            font-size: 4rem;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(10px);
             color: white;
-            margin-bottom: 1rem;
-        }
-
-        .zoom-label {
-            color: white;
-            font-size: 1.25rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 100px;
             font-weight: 800;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            z-index: 10;
+        }
+
+        /* Thumbnails mobile - horizontal scroll */
+        .thumb-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.03);
+        }
+
+        .thumb-wrapper::-webkit-scrollbar {
+            display: none;
         }
 
         .thumb-bar {
             display: flex;
-            height: 60px;
-            gap: 8px;
-            padding: 8px;
-            background: rgba(0,0,0,0.03);
+            gap: 0.5rem;
+            min-width: min-content;
         }
 
         .thumb-img {
-            flex: 1;
-            height: 44px;
+            width: 64px;
+            height: 48px;
+            flex-shrink: 0;
             object-fit: cover;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
             cursor: pointer;
+            border: 2px solid transparent;
             transition: all 0.3s;
-            border: 3px solid transparent;
         }
 
-        .thumb-img:hover {
+        .thumb-img:active {
             border-color: var(--green-600);
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .more-thumb {
-            flex: 1;
-            height: 44px;
+            width: 64px;
+            height: 48px;
+            flex-shrink: 0;
             background: var(--green-50);
-            border: 3px solid var(--green-600);
-            border-radius: var(--radius-sm);
+            border: 2px solid var(--green-600);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
             color: var(--green-700);
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
+            font-size: 0.875rem;
         }
 
-        .more-thumb:hover {
+        .more-thumb:active {
             background: var(--green-600);
             color: white;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .no-img {
-            height: 400px;
+            height: 220px;
             background: linear-gradient(135deg, var(--slate-100) 0%, var(--slate-200) 100%);
             display: flex;
             flex-direction: column;
@@ -567,196 +601,192 @@
         }
 
         .no-img-ico {
-            font-size: 5rem;
-            color: var(--slate-300);
-            margin-bottom: 1.5rem;
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.3;
         }
 
         .no-img-txt {
-            font-size: 1.25rem;
+            font-size: 0.875rem;
             font-weight: 700;
             color: var(--slate-400);
         }
 
-        /* CARD BODY */
+        /* ==================== CARD BODY MOBILE ==================== */
         .v-body {
-            padding: 3rem;
+            padding: 1rem;
         }
 
         .v-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-            gap: 2rem;
-        }
-
-        .v-info {
-            flex: 1;
+            margin-bottom: 1rem;
         }
 
         .v-name {
-            font-size: 2rem;
+            font-size: 1.125rem;
             font-weight: 900;
             color: var(--slate-900);
-            margin-bottom: 1rem;
-            line-height: 1.2;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .v-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .year-tag {
             display: inline-block;
             background: linear-gradient(135deg, var(--green-50) 0%, var(--green-100) 100%);
             color: var(--green-800);
-            padding: 0.625rem 1.5rem;
+            padding: 0.375rem 0.875rem;
             border-radius: 100px;
-            font-weight: 900;
-            font-size: 1rem;
+            font-weight: 800;
+            font-size: 0.75rem;
             border: 2px solid var(--green-200);
-        }
-
-        .v-tags {
-            display: flex;
-            flex-direction: column;
-            gap: 0.875rem;
         }
 
         .cat-tag {
             background: linear-gradient(135deg, var(--green-600) 0%, var(--green-800) 100%);
             color: white;
-            padding: 0.75rem 1.75rem;
+            padding: 0.375rem 0.875rem;
             border-radius: 100px;
-            font-weight: 900;
-            font-size: 0.9375rem;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(13, 92, 61, 0.3);
+            font-weight: 800;
+            font-size: 0.75rem;
             white-space: nowrap;
         }
 
+        /* Preço destaque mobile */
         .price-card {
             background: linear-gradient(135deg, var(--green-50) 0%, white 100%);
-            border: 3px solid var(--green-200);
-            border-radius: var(--radius-lg);
-            padding: 2.5rem;
+            border: 2px solid var(--green-200);
+            border-radius: 12px;
+            padding: 1rem;
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-label {
+            font-size: 0.6875rem;
+            color: var(--green-700);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
         }
 
         .price-amt {
-            font-size: 3rem;
+            font-size: 1.75rem;
             font-weight: 900;
             background: linear-gradient(135deg, var(--green-600) 0%, var(--green-800) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -2px;
+            letter-spacing: -1px;
+            line-height: 1;
         }
 
+        /* Specs compactos mobile */
         .spec-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .spec-tag {
             background: var(--slate-50);
-            border: 2px solid var(--slate-200);
-            padding: 0.875rem 1.5rem;
+            border: 1px solid var(--slate-200);
+            padding: 0.5rem 0.875rem;
             border-radius: 100px;
-            font-weight: 800;
-            font-size: 0.9375rem;
+            font-weight: 700;
+            font-size: 0.75rem;
             color: var(--slate-700);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .spec-icon {
+            font-size: 0.875rem;
         }
 
         .loc-info {
             color: var(--slate-500);
             font-weight: 700;
-            font-size: 1.0625rem;
-            margin-bottom: 2rem;
+            font-size: 0.8125rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
         }
 
+        /* Botões mobile otimizados */
         .btn-group {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-        }
-
-        .btn-group .cta-btn {
-            grid-column: 1 / -1;
+            grid-template-columns: 1fr;
+            gap: 0.625rem;
         }
 
         .btn {
-            padding: 1.25rem 2rem;
+            padding: 0.875rem;
             border: none;
-            border-radius: var(--radius-md);
-            font-weight: 900;
-            font-size: 1.0625rem;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.9375rem;
             cursor: pointer;
             transition: all 0.3s;
             font-family: inherit;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
         }
 
         .primary-btn {
             background: linear-gradient(135deg, var(--green-600) 0%, var(--green-800) 100%);
             color: white;
-            box-shadow: 0 6px 20px rgba(13, 92, 61, 0.3);
-        }
-
-        .primary-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(13, 92, 61, 0.4);
+            box-shadow: 0 4px 16px rgba(13, 92, 61, 0.25);
         }
 
         .secondary-btn {
             background: var(--slate-50);
             color: var(--green-700);
             border: 2px solid var(--slate-200);
-            font-weight: 800;
-        }
-
-        .secondary-btn:hover {
-            background: white;
-            border-color: var(--green-600);
-            color: var(--green-700);
         }
 
         .cta-btn {
             background: linear-gradient(135deg, var(--green-500) 0%, var(--green-700) 100%);
             color: white;
-            font-size: 1.25rem;
-            box-shadow: 0 8px 28px rgba(16, 185, 129, 0.35);
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 36px rgba(16, 185, 129, 0.45);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+            font-size: 1rem;
         }
 
         .warn-btn {
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: white;
-            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
+            color: #000;
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.25);
         }
 
-        .warn-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
-        }
-
-        /* MODAL */
+        /* ==================== MODAL MOBILE ==================== */
         .overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(16px);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
             z-index: 1000;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
-            padding: 2rem;
+            padding: 0;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s;
+            transition: all 0.3s;
         }
 
         .overlay.show {
@@ -766,47 +796,45 @@
 
         .dialog {
             background: white;
-            border-radius: var(--radius-xl);
-            max-width: 700px;
+            border-radius: 20px 20px 0 0;
             width: 100%;
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
-            transform: scale(0.9);
-            transition: transform 0.4s;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
-        }
-
-        /* Modal maior para galeria */
-        .dialog.gallery-dialog {
-            max-width: 1200px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .overlay.show .dialog {
-            transform: scale(1);
+            transform: translateY(0);
         }
 
         .dialog-head {
-            padding: 3rem;
+            padding: 1.25rem 1rem;
             border-bottom: 1px solid var(--slate-200);
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--slate-50);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .dialog-title {
-            font-size: 2.25rem;
+            font-size: 1.25rem;
             font-weight: 900;
             color: var(--green-800);
+            flex: 1;
+            padding-right: 1rem;
         }
 
         .close-btn {
-            width: 52px;
-            height: 52px;
+            width: 40px;
+            height: 40px;
             background: white;
             border: 2px solid var(--slate-200);
-            border-radius: var(--radius-sm);
-            font-size: 2rem;
+            border-radius: 10px;
+            font-size: 1.5rem;
             font-weight: 900;
             color: var(--slate-400);
             cursor: pointer;
@@ -814,38 +842,40 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
-        .close-btn:hover {
+        .close-btn:active {
+            transform: scale(0.95);
             background: var(--slate-100);
-            color: var(--slate-600);
         }
 
         .dialog-body {
-            padding: 3rem;
+            padding: 1rem;
         }
 
+        /* Form fields mobile */
         .field {
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
         }
 
         .field-label {
             display: block;
-            font-weight: 900;
-            font-size: 1.0625rem;
+            font-weight: 800;
+            font-size: 0.875rem;
             color: var(--slate-900);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .field-input {
             width: 100%;
-            padding: 1.25rem 1.75rem;
+            padding: 0.875rem;
             background: var(--slate-50);
             border: 2px solid var(--slate-200);
-            border-radius: var(--radius-md);
-            font-size: 1.0625rem;
+            border-radius: 12px;
+            font-size: 0.9375rem;
             font-family: inherit;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--slate-900);
             transition: all 0.3s;
         }
@@ -854,116 +884,90 @@
             outline: none;
             border-color: var(--green-600);
             background: white;
-            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
 
         .alert-box {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 3px solid #fbbf24;
-            border-radius: var(--radius-md);
-            padding: 2rem;
-            margin: 2.5rem 0;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.25rem 0;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.8125rem;
             color: #92400e;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
-        /* TOAST */
-        #toastWrap {
-            position: fixed;
-            top: 2.5rem;
-            right: 2.5rem;
-            z-index: 9999;
-        }
-
-        .toast {
-            background: white;
-            border-radius: var(--radius-md);
-            padding: 1.75rem 2.5rem;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            animation: slideToast 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: 360px;
-            font-weight: 800;
-            font-size: 1.0625rem;
-        }
-
-        @keyframes slideToast {
-            from { transform: translateX(500px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .toast.success {
-            border-left: 8px solid var(--green-600);
-            color: var(--green-700);
-        }
-
-        .toast.error {
-            border-left: 8px solid #ef4444;
-            color: #dc2626;
-        }
-
-        /* GALERIA COM THUMBNAILS SELECIONÁVEIS */
-        .main-photo-viewer {
-            width: 100%;
+        /* ==================== GALLERY MOBILE ==================== */
+        .gallery-viewer {
             background: #000;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .main-photo-container {
             position: relative;
             min-height: 50vh;
-            max-height: 70vh;
+            max-height: 60vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #000;
         }
 
-        .main-photo-viewer img {
+        .main-photo {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            max-height: 60vh;
         }
 
-        .photo-counter-badge {
+        .photo-counter {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: rgba(0,0,0,0.85);
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 0.75rem 1.25rem;
+            padding: 0.5rem 0.875rem;
             border-radius: 100px;
             font-weight: 900;
-            font-size: 1rem;
+            font-size: 0.8125rem;
+        }
+
+        /* Thumbnails grid mobile */
+        .thumbnails-section {
+            padding: 1rem;
+            background: var(--slate-50);
         }
 
         .thumbnails-section h5 {
-            font-size: 1rem;
-            font-weight: 900;
+            font-size: 0.875rem;
+            font-weight: 800;
             color: var(--green-800);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .thumbnails-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            max-height: 250px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-height: 300px;
             overflow-y: auto;
-            padding: 0.75rem;
-            background: var(--slate-50);
-            border-radius: var(--radius-md);
+            -webkit-overflow-scrolling: touch;
         }
 
         .thumbnail-box {
             aspect-ratio: 16/9;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            transition: all 0.3s;
             position: relative;
+            background: var(--slate-200);
         }
 
         .thumbnail-box img {
@@ -978,123 +982,14 @@
 
         .thumbnail-box.active {
             border-color: var(--green-600);
-            box-shadow: 0 0 0 3px var(--green-200);
+            box-shadow: 0 0 0 2px var(--green-200);
         }
 
         .thumbnail-box.active::after {
             content: '✓';
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--green-600);
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 0.875rem;
-        }
-
-        @media (min-width: 640px) {
-            .thumbnails-container {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .thumbnails-container {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .thumbnail-box:hover {
-                border-color: var(--green-400);
-                transform: scale(1.05);
-            }
-        }
-
-        /* GALLERY MODAL STYLES */
-        .gallery-modal {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .main-photo-container {
-            width: 100%;
-            background: var(--slate-900);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-            max-height: 70vh;
-            position: relative;
-        }
-
-        .main-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            cursor: zoom-in;
-        }
-
-        .photo-counter {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 100px;
-            font-weight: 900;
-            font-size: 1rem;
-        }
-
-        .thumbnails-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 0.5rem;
-        }
-
-        .thumbnail-item {
-            aspect-ratio: 16/9;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .thumbnail-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .thumbnail-item:hover {
-            border-color: var(--green-400);
-            transform: scale(1.05);
-        }
-
-        .thumbnail-item.active {
-            border-color: var(--green-600);
-            box-shadow: 0 0 0 2px var(--green-200);
-        }
-
-        .thumbnail-item.active::after {
-            content: '✓';
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            top: 0.375rem;
+            right: 0.375rem;
             background: var(--green-600);
             color: white;
             width: 24px;
@@ -1104,191 +999,174 @@
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 0.875rem;
-        }
-
-        /* MOBILE ADJUSTMENTS FOR GALLERY */
-        @media (max-width: 639px) {
-            .thumbnails-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .main-photo-container {
-                min-height: 40vh;
-                max-height: 50vh;
-            }
-        }
-
-        @media (min-width: 640px) {
-            .thumbnails-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .thumbnails-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-        }
-
-        /* MOBILE FIRST - BASE STYLES */
-        .header-wrap {
-            padding: 1.5rem 1rem;
-        }
-
-        .brand-icon {
-            width: 48px;
-            height: 48px;
-            font-size: 1.5rem;
-        }
-
-        .brand-name {
-            font-size: 1.25rem;
-        }
-
-        .brand-tagline {
             font-size: 0.75rem;
         }
 
-        .nav-bar {
-            flex-direction: column;
+        /* ==================== TOAST MOBILE ==================== */
+        #toastWrap {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 800;
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
             gap: 0.75rem;
         }
 
-        .nav-item {
-            width: 100%;
-            text-align: center;
+        @keyframes slideUp {
+            from { 
+                transform: translateY(100px); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0); 
+                opacity: 1; 
+            }
         }
 
-        .metrics {
-            flex-direction: column;
-            gap: 1.5rem;
+        .toast.success {
+            border-left: 6px solid var(--green-600);
+            color: var(--green-700);
         }
 
-        .wrap {
-            padding: 2rem 1rem;
+        .toast.error {
+            border-left: 6px solid #ef4444;
+            color: #dc2626;
         }
 
-        .filter-panel {
-            padding: 1.5rem;
-        }
-
-        .search-input {
-            padding: 1rem 1rem 1rem 3.5rem;
-            font-size: 1rem;
-        }
-
-        .search-ico {
-            left: 1rem;
+        .toast::before {
             font-size: 1.25rem;
         }
 
-        .filter-row {
-            grid-template-columns: 1fr;
-            gap: 1rem;
+        .toast.success::before {
+            content: '✓';
         }
 
-        .event-head {
-            padding: 1.5rem;
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
+        .toast.error::before {
+            content: '⚠';
         }
 
-        .event-title {
-            font-size: 1.5rem;
-        }
-
-        .vehicle-grid {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        .v-body {
-            padding: 1.5rem;
-        }
-
-        .v-name {
-            font-size: 1.5rem;
-        }
-
-        .price-amt {
-            font-size: 2rem;
-        }
-
-        .btn-group {
-            grid-template-columns: 1fr;
-        }
-
-        .user-chip {
-            flex-direction: column;
-            gap: 0.75rem;
-            padding: 1rem;
-        }
-
-        .header-right {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .login-btn {
-            width: 100%;
-            text-align: center;
-        }
-
-        /* TABLET - 640px+ */
+        /* ==================== TABLET 640px+ ==================== */
         @media (min-width: 640px) {
             .header-wrap {
-                padding: 2rem 2rem;
+                padding: 1.5rem 2rem;
             }
 
             .brand-icon {
-                width: 56px;
-                height: 56px;
+                width: 52px;
+                height: 52px;
                 font-size: 1.75rem;
             }
 
             .brand-name {
-                font-size: 1.75rem;
+                font-size: 1.5rem;
             }
 
-            .nav-bar {
+            .brand-tagline {
+                font-size: 0.75rem;
+            }
+
+            .user-chip {
                 flex-direction: row;
-                flex-wrap: wrap;
+                align-items: center;
+                padding: 1rem 1.5rem;
             }
 
-            .nav-item {
+            .user-info-row {
+                flex: 1;
+            }
+
+            .logout-btn {
                 width: auto;
+                padding: 0.625rem 1.5rem;
             }
 
-            .filter-row {
+            .metrics {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            .event-head {
-                flex-direction: row;
-                text-align: left;
+                gap: 1rem;
             }
 
             .vehicle-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .main-img {
+                height: 260px;
+            }
+
+            .v-body {
+                padding: 1.5rem;
             }
 
             .btn-group {
                 grid-template-columns: 1fr 1fr;
             }
 
-            .header-right {
-                flex-direction: row;
-                width: auto;
+            .btn-group .cta-btn {
+                grid-column: 1 / -1;
             }
 
-            .login-btn {
-                width: auto;
+            .filter-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .thumbnails-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .overlay {
+                align-items: center;
+                padding: 2rem;
+            }
+
+            .dialog {
+                border-radius: 20px;
+                max-width: 600px;
+                transform: scale(0.9);
+            }
+
+            .overlay.show .dialog {
+                transform: scale(1);
+            }
+
+            #toastWrap {
+                top: 1.5rem;
+                right: 1.5rem;
+                left: auto;
+                bottom: auto;
+            }
+
+            .toast {
+                min-width: 360px;
+                animation: slideRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @keyframes slideRight {
+                from { 
+                    transform: translateX(400px); 
+                    opacity: 0; 
+                }
+                to { 
+                    transform: translateX(0); 
+                    opacity: 1; 
+                }
             }
         }
 
-        /* DESKTOP SMALL - 1024px+ */
+        /* ==================== DESKTOP 1024px+ ==================== */
         @media (min-width: 1024px) {
             .header-wrap {
                 padding: 2rem 3rem;
@@ -1305,50 +1183,68 @@
             }
 
             .metrics {
-                flex-direction: row;
-                gap: 3rem;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
             }
 
             .wrap {
-                padding: 4rem 3rem;
+                padding: 3rem 2rem;
             }
 
             .filter-panel {
-                padding: 3rem;
+                padding: 2.5rem;
             }
 
             .filter-row {
                 grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
             }
 
             .vehicle-grid {
                 grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
             }
 
-            .v-body {
-                padding: 3rem;
+            .main-img {
+                height: 300px;
             }
 
-            .v-name {
-                font-size: 2rem;
+            .v-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 32px rgba(0,0,0,0.12);
             }
 
-            .price-amt {
-                font-size: 3rem;
+            .v-card:active {
+                transform: translateY(-4px);
+            }
+
+            .thumb-img:hover {
+                border-color: var(--green-400);
+                transform: scale(1.1);
+            }
+
+            .thumbnail-box:hover {
+                border-color: var(--green-400);
+                transform: scale(1.05);
+            }
+
+            .dialog {
+                max-width: 900px;
+            }
+
+            .thumbnails-container {
+                grid-template-columns: repeat(6, 1fr);
             }
         }
 
-        /* DESKTOP LARGE - 1280px+ */
+        /* ==================== DESKTOP XL 1280px+ ==================== */
         @media (min-width: 1280px) {
             .filter-row {
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             }
-        }
 
-        /* DESKTOP XL - 1600px+ */
-        @media (min-width: 1600px) {
             .vehicle-grid {
-                grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             }
         }
     </style>
@@ -1358,31 +1254,32 @@
 
     <header class="header">
         <div class="header-wrap">
-            <div class="top-bar">
-                <a href="/" class="brand">
-                    <div class="brand-icon">F</div>
-                    <div class="brand-text">
-                        <div class="brand-name">FMP REPASSES</div>
-                        <div class="brand-tagline">Veículos Premium</div>
-                    </div>
-                </a>
-
-                <div class="header-right">
-                    <div class="user-chip hidden" id="userChip">
-                        <span class="user-name" id="userName"></span>
-                        <span class="credits-pill" id="userCredits">0 créditos</span>
-                        <button class="logout-btn" onclick="logout()">Sair</button>
-                    </div>
-                    <a href="login" class="login-btn" id="loginBtn">Entrar Agora</a>
+            <a href="/" class="brand">
+                <div class="brand-icon">F</div>
+                <div class="brand-text">
+                    <div class="brand-name">FMP REPASSES</div>
+                    <div class="brand-tagline">Veículos Premium</div>
                 </div>
-            </div>
+            </a>
 
-            <nav class="nav-bar" id="navBar">
-                <a href="/" class="nav-item active">Catálogo</a>
-                <a href="propostas" class="nav-item">Minhas Propostas</a>
-                <a href="recarga" class="nav-item">Recarregar</a>
-                <a href="perfil" class="nav-item">Meu Perfil</a>
-            </nav>
+            <div class="user-chip hidden" id="userChip">
+                <div class="user-info-row">
+                    <span class="user-name" id="userName"></span>
+                    <span class="credits-pill" id="userCredits">0 créditos</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">🚪 Sair</button>
+            </div>
+            
+            <a href="login" class="login-btn" id="loginBtn">🔐 Entrar Agora</a>
+
+            <div class="nav-wrapper" id="navWrapper">
+                <nav class="nav-bar">
+                    <a href="/" class="nav-item active">🏠 Catálogo</a>
+                    <a href="propostas" class="nav-item">📋 Propostas</a>
+                    <a href="recarga" class="nav-item">💰 Recarregar</a>
+                    <a href="perfil" class="nav-item">👤 Perfil</a>
+                </nav>
+            </div>
 
             <div class="metrics">
                 <div class="metric">
@@ -1396,52 +1293,65 @@
     <div class="wrap">
         <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p style="font-weight: 800; color: var(--slate-400); font-size: 1.375rem;">Carregando catálogo...</p>
+            <p>Carregando catálogo...</p>
         </div>
 
         <div id="catalog" class="hidden">
             <div class="filter-panel">
                 <div class="search-box">
                     <div class="search-ico">🔍</div>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Buscar veículos por marca ou modelo...">
+                    <input 
+                        type="search" 
+                        class="search-input" 
+                        id="searchInput" 
+                        placeholder="Buscar por marca, modelo..."
+                        autocomplete="off"
+                    >
                 </div>
 
-                <div class="filter-row">
-                    <select class="dropdown" id="categoryFilter">
-                        <option value="all">📦 Todas as Categorias</option>
-                    </select>
+                <button class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
+                    <span>🎛️ Filtros Avançados</span>
+                    <span class="arrow">▼</span>
+                </button>
 
-                    <select class="dropdown" id="stateFilter">
-                        <option value="all">📍 Todos os Estados</option>
-                    </select>
+                <div class="filter-content" id="filterContent">
+                    <div class="filter-row">
+                        <select class="dropdown" id="categoryFilter">
+                            <option value="all">📦 Todas Categorias</option>
+                        </select>
 
-                    <select class="dropdown" id="eventFilter">
-                        <option value="all">📅 Todos os Eventos</option>
-                    </select>
+                        <select class="dropdown" id="stateFilter">
+                            <option value="all">📍 Todos Estados</option>
+                        </select>
 
-                    <select class="dropdown" id="priceFilter">
-                        <option value="all">💰 Todos os Preços</option>
-                        <option value="0-10000">Até R$ 10.000</option>
-                        <option value="10000-20000">R$ 10.000 - R$ 20.000</option>
-                        <option value="20000-30000">R$ 20.000 - R$ 30.000</option>
-                        <option value="30000-50000">R$ 30.000 - R$ 50.000</option>
-                        <option value="50000-100000">R$ 50.000 - R$ 100.000</option>
-                        <option value="100000-999999999">Acima de R$ 100.000</option>
-                    </select>
+                        <select class="dropdown" id="eventFilter">
+                            <option value="all">📅 Todos Eventos</option>
+                        </select>
 
-                    <select class="dropdown" id="sortFilter">
-                        <option value="none">🔄 Ordenar por</option>
-                        <option value="price-asc">Menor Preço</option>
-                        <option value="price-desc">Maior Preço</option>
-                        <option value="year-desc">Ano (Mais Novo)</option>
-                        <option value="year-asc">Ano (Mais Antigo)</option>
-                        <option value="km-asc">Menor KM</option>
-                        <option value="km-desc">Maior KM</option>
-                    </select>
+                        <select class="dropdown" id="priceFilter">
+                            <option value="all">💰 Todos Preços</option>
+                            <option value="0-10000">Até R$ 10k</option>
+                            <option value="10000-20000">R$ 10k - 20k</option>
+                            <option value="20000-30000">R$ 20k - 30k</option>
+                            <option value="30000-50000">R$ 30k - 50k</option>
+                            <option value="50000-100000">R$ 50k - 100k</option>
+                            <option value="100000-999999999">Acima R$ 100k</option>
+                        </select>
+
+                        <select class="dropdown" id="sortFilter">
+                            <option value="none">🔄 Ordenar por</option>
+                            <option value="price-asc">Menor Preço</option>
+                            <option value="price-desc">Maior Preço</option>
+                            <option value="year-desc">Ano (Novo)</option>
+                            <option value="year-asc">Ano (Antigo)</option>
+                            <option value="km-asc">Menor KM</option>
+                            <option value="km-desc">Maior KM</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="summary">
-                    Exibindo <strong id="visibleCount">0</strong> de <strong id="totalCount">0</strong> veículos disponíveis
+                    <span id="visibleCount">0</span> de <strong id="totalCount">0</strong> veículos
                 </div>
             </div>
 
@@ -1453,10 +1363,25 @@
         const APP_STATE = {
             vehicles: [],
             currentUser: null,
-            isLoggedIn: false
+            isLoggedIn: false,
+            filtersExpanded: false
         }
 
         const API_BASE = window.location.origin + '/api'
+
+        function toggleFilters() {
+            APP_STATE.filtersExpanded = !APP_STATE.filtersExpanded
+            const content = document.getElementById('filterContent')
+            const btn = document.getElementById('filterToggle')
+            
+            if (APP_STATE.filtersExpanded) {
+                content.classList.add('expanded')
+                btn.classList.add('active')
+            } else {
+                content.classList.remove('expanded')
+                btn.classList.remove('active')
+            }
+        }
 
         async function loadVehicles() {
             try {
@@ -1499,7 +1424,7 @@
         function updateUI() {
             const chip = document.getElementById('userChip')
             const btn = document.getElementById('loginBtn')
-            const nav = document.getElementById('navBar')
+            const nav = document.getElementById('navWrapper')
 
             if (APP_STATE.isLoggedIn && APP_STATE.currentUser) {
                 chip.classList.remove('hidden')
@@ -1594,8 +1519,8 @@
 
                 sec.innerHTML = `
                     <div class="event-head">
-                        <h2 class="event-title">Evento: ${fmt}</h2>
-                        <div class="event-count">${grouped[dt].length}</div>
+                        <h2 class="event-title">📅 ${fmt}</h2>
+                        <div class="event-count">${grouped[dt].length} veículos</div>
                     </div>
                     <div class="vehicle-grid" id="grid-${dt}"></div>
                 `
@@ -1624,16 +1549,19 @@
                 <div class="img-zone">
                     ${hasImgs ? `
                         <div class="main-img" onclick="viewGallery(${idx})">
-                            <img src="${imgs[0].url}" alt="${v.brand} ${v.model}">
-                            <div class="img-overlay">
-                                <div class="zoom-ico">🔍</div>
-                                <div class="zoom-label">Ver ${imgs.length} Foto${imgs.length>1?'s':''}</div>
+                            <img src="${imgs[0].url}" alt="${v.brand} ${v.model}" loading="lazy">
+                            <div class="photo-badge">
+                                📷 ${imgs.length}
                             </div>
                         </div>
                         ${imgs.length > 1 ? `
-                            <div class="thumb-bar">
-                                ${imgs.slice(1,4).map((img,i) => `<img class="thumb-img" src="${img.thumb||img.url}" onclick="viewGallery(${idx},${i+1})">`).join('')}
-                                ${imgs.length > 4 ? `<div class="more-thumb" onclick="viewGallery(${idx})">+${imgs.length-4}</div>` : ''}
+                            <div class="thumb-wrapper">
+                                <div class="thumb-bar">
+                                    ${imgs.slice(1,5).map((img,i) => `
+                                        <img class="thumb-img" src="${img.thumb||img.url}" onclick="viewGallery(${idx},${i+1})" loading="lazy">
+                                    `).join('')}
+                                    ${imgs.length > 5 ? `<div class="more-thumb" onclick="viewGallery(${idx})">+${imgs.length-5}</div>` : ''}
+                                </div>
                             </div>
                         ` : ''}
                     ` : `
@@ -1646,32 +1574,52 @@
 
                 <div class="v-body">
                     <div class="v-head">
-                        <div class="v-info">
-                            <h3 class="v-name">${v.brand} ${v.model}</h3>
-                            <div class="year-tag">${v.year}</div>
-                        </div>
-                        <div class="v-tags">
+                        <h3 class="v-name">${v.brand} ${v.model}</h3>
+                        <div class="v-subtitle">
+                            <span class="year-tag">📅 ${v.year}</span>
                             <span class="cat-tag">${v.vehicle_data?.vehicle?.category_name||'N/A'}</span>
                         </div>
                     </div>
 
                     <div class="price-card">
+                        <div class="price-label">Preço</div>
                         <div class="price-amt">R$ ${fmt(v.price)}</div>
                     </div>
 
                     <div class="spec-list">
-                        <span class="spec-tag">${num(v.mileage)} km</span>
-                        <span class="spec-tag">${v.fuel_type||'N/A'}</span>
-                        <span class="spec-tag">${v.transmission||'Manual'}</span>
+                        <span class="spec-tag">
+                            <span class="spec-icon">🛣️</span>
+                            ${num(v.mileage)} km
+                        </span>
+                        <span class="spec-tag">
+                            <span class="spec-icon">⛽</span>
+                            ${v.fuel_type||'N/A'}
+                        </span>
+                        <span class="spec-tag">
+                            <span class="spec-icon">⚙️</span>
+                            ${v.transmission||'Manual'}
+                        </span>
                     </div>
 
-                    <div class="loc-info">📍 ${v.location||'Local não informado'}</div>
+                    <div class="loc-info">
+                        📍 ${v.location||'Local não informado'}
+                    </div>
 
                     <div class="btn-group">
-                        <button class="btn primary-btn" onclick="viewDetails(${idx})">Ver Detalhes</button>
-                        <button class="btn secondary-btn" onclick="viewGallery(${idx})">Fotos (${imgs.length})</button>
-                        ${v.laudo_file_url ? `<button class="btn warn-btn" onclick="window.open('${v.laudo_file_url}','_blank')">Ver Laudo</button>` : ''}
-                        <button class="btn cta-btn" onclick="propose(${idx})">Fazer Proposta</button>
+                        <button class="btn primary-btn" onclick="viewDetails(${idx})">
+                            📋 Detalhes
+                        </button>
+                        <button class="btn secondary-btn" onclick="viewGallery(${idx})">
+                            📷 Fotos (${imgs.length})
+                        </button>
+                        ${v.laudo_file_url ? `
+                            <button class="btn warn-btn" onclick="window.open('${v.laudo_file_url}','_blank')">
+                                📄 Ver Laudo
+                            </button>
+                        ` : ''}
+                        <button class="btn cta-btn" onclick="propose(${idx})">
+                            💰 Fazer Proposta
+                        </button>
                     </div>
                 </div>
             `
@@ -1697,14 +1645,18 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            let searchTimeout
             document.getElementById('searchInput').addEventListener('input', e => {
-                const q = e.target.value.toLowerCase()
-                document.querySelectorAll('.v-card').forEach(card => {
-                    const idx = parseInt(card.getAttribute('data-index'))
-                    const v = APP_STATE.vehicles[idx]
-                    const txt = `${v.brand} ${v.model} ${v.description||''} ${v.color||''}`.toLowerCase()
-                    card.style.display = txt.includes(q) ? '' : 'none'
-                })
+                clearTimeout(searchTimeout)
+                searchTimeout = setTimeout(() => {
+                    const q = e.target.value.toLowerCase()
+                    document.querySelectorAll('.v-card').forEach(card => {
+                        const idx = parseInt(card.getAttribute('data-index'))
+                        const v = APP_STATE.vehicles[idx]
+                        const txt = `${v.brand} ${v.model} ${v.description||''} ${v.color||''}`.toLowerCase()
+                        card.style.display = txt.includes(q) ? '' : 'none'
+                    })
+                }, 300)
             })
 
             document.getElementById('categoryFilter').addEventListener('change', renderVehicles)
@@ -1737,40 +1689,78 @@
         }
 
         function showProposalModal(v) {
-            modal('Nova Proposta', `
+            modal('💰 Nova Proposta', `
                 <div style="text-align: center;">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 900;">${v.brand} ${v.model} ${v.year}</h3>
-                    <p style="font-size: 1.75rem; color: var(--green-700); font-weight: 900; margin: 2rem 0;">
-                        Preço Anunciado: R$ ${fmt(v.price)}
-                    </p>
+                    <h3 style="margin-bottom: 1rem; font-size: 1.125rem; font-weight: 900; color: var(--slate-800);">
+                        ${v.brand} ${v.model} ${v.year}
+                    </h3>
+                    <div style="background: var(--green-50); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                        <div style="font-size: 0.75rem; color: var(--green-700); font-weight: 700; margin-bottom: 0.25rem;">
+                            Preço Anunciado
+                        </div>
+                        <div style="font-size: 1.5rem; color: var(--green-700); font-weight: 900;">
+                            R$ ${fmt(v.price)}
+                        </div>
+                    </div>
 
                     <form id="proposalForm" onsubmit="sendProposal(event,'${v.external_id}')">
                         <div class="field">
-                            <label class="field-label">Valor da Proposta *</label>
-                            <input type="number" id="proposalValue" class="field-input" placeholder="Ex: 45000.00" step="0.01" min="1" required>
+                            <label class="field-label">💵 Valor da Proposta *</label>
+                            <input 
+                                type="number" 
+                                id="proposalValue" 
+                                class="field-input" 
+                                placeholder="Ex: 45000.00" 
+                                step="0.01" 
+                                min="1" 
+                                required
+                                inputmode="decimal"
+                            >
                         </div>
 
                         <div class="field">
-                            <label class="field-label">Seu Nome *</label>
-                            <input type="text" id="clientName" class="field-input" value="${APP_STATE.currentUser.name}" required>
+                            <label class="field-label">👤 Seu Nome *</label>
+                            <input 
+                                type="text" 
+                                id="clientName" 
+                                class="field-input" 
+                                value="${APP_STATE.currentUser.name}" 
+                                required
+                            >
                         </div>
 
                         <div class="field">
-                            <label class="field-label">Seu Telefone *</label>
-                            <input type="tel" id="clientPhone" class="field-input" value="${APP_STATE.currentUser.phone}" required>
+                            <label class="field-label">📱 Seu Telefone *</label>
+                            <input 
+                                type="tel" 
+                                id="clientPhone" 
+                                class="field-input" 
+                                value="${APP_STATE.currentUser.phone}" 
+                                required
+                                inputmode="tel"
+                            >
                         </div>
 
                         <div class="field">
-                            <label class="field-label">Seu Email (opcional)</label>
-                            <input type="email" id="clientEmail" class="field-input" value="${APP_STATE.currentUser.email||''}" placeholder="seu@email.com">
+                            <label class="field-label">📧 Seu Email (opcional)</label>
+                            <input 
+                                type="email" 
+                                id="clientEmail" 
+                                class="field-input" 
+                                value="${APP_STATE.currentUser.email||''}" 
+                                placeholder="seu@email.com"
+                                inputmode="email"
+                            >
                         </div>
 
                         <div class="alert-box">
-                            <strong>⚠️ Atenção:</strong> Esta proposta consumirá <strong>1 crédito (R$ 1.000,00)</strong> do seu saldo.<br>
+                            <strong>⚠️ Atenção:</strong> Esta proposta consumirá <strong>1 crédito (R$ 1.000)</strong>.<br>
                             Saldo atual: <strong>${parseFloat(APP_STATE.currentUser.credits).toFixed(1)} créditos</strong>
                         </div>
 
-                        <button type="submit" class="btn cta-btn" style="width:100%">Enviar Proposta Agora</button>
+                        <button type="submit" class="btn cta-btn" style="width:100%">
+                            🚀 Enviar Proposta
+                        </button>
                     </form>
                 </div>
             `)
@@ -1781,7 +1771,7 @@
 
             const btn = e.target.querySelector('button[type="submit"]')
             btn.disabled = true
-            btn.textContent = 'Enviando...'
+            btn.innerHTML = '⏳ Enviando...'
 
             try {
                 const res = await fetch(`${API_BASE}/proposals`, {
@@ -1803,16 +1793,16 @@
                     APP_STATE.currentUser.credits = data.remaining_credits
                     updateUI()
                     closeModals()
-                    toast('Proposta enviada com sucesso!', 'success')
+                    toast('Proposta enviada!', 'success')
                 } else {
                     toast(data.error||'Erro ao enviar', 'error')
                     btn.disabled = false
-                    btn.textContent = 'Enviar Proposta Agora'
+                    btn.innerHTML = '🚀 Enviar Proposta'
                 }
             } catch (err) {
                 toast('Erro de conexão', 'error')
                 btn.disabled = false
-                btn.textContent = 'Enviar Proposta Agora'
+                btn.innerHTML = '🚀 Enviar Proposta'
             }
         }
 
@@ -1820,22 +1810,30 @@
             const v = APP_STATE.vehicles[idx]
 
             modal(`${v.brand} ${v.model}`, `
-                <div style="background: var(--slate-50); padding: 2.5rem; border-radius: var(--radius-lg);">
-                    <h4 style="margin-bottom: 2rem; color: var(--green-800); font-weight: 900; font-size: 1.5rem;">📋 Informações Completas</h4>
+                <div style="background: var(--slate-50); padding: 1.5rem; border-radius: 12px;">
+                    <h4 style="margin-bottom: 1.25rem; color: var(--green-800); font-weight: 900; font-size: 1.125rem;">
+                        📋 Informações Completas
+                    </h4>
 
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Marca/Modelo:</strong> ${v.brand} ${v.model}</p>
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Ano:</strong> ${v.year}</p>
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Quilometragem:</strong> ${num(v.mileage)} km</p>
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Combustível:</strong> ${v.fuel_type||'N/A'}</p>
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Transmissão:</strong> ${v.transmission||'Manual'}</p>
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Cor:</strong> ${v.color||'N/A'}</p>
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Preço:</strong> R$ ${fmt(v.price)}</p>
-                    <p style="margin-bottom: 1rem; font-weight: 700;"><strong>Localização:</strong> ${v.location||'N/A'}</p>
+                    <div style="display: grid; gap: 0.75rem; font-size: 0.9375rem;">
+                        <p style="font-weight: 700;"><strong>🚗 Marca/Modelo:</strong> ${v.brand} ${v.model}</p>
+                        <p style="font-weight: 700;"><strong>📅 Ano:</strong> ${v.year}</p>
+                        <p style="font-weight: 700;"><strong>🛣️ Quilometragem:</strong> ${num(v.mileage)} km</p>
+                        <p style="font-weight: 700;"><strong>⛽ Combustível:</strong> ${v.fuel_type||'N/A'}</p>
+                        <p style="font-weight: 700;"><strong>⚙️ Transmissão:</strong> ${v.transmission||'Manual'}</p>
+                        <p style="font-weight: 700;"><strong>🎨 Cor:</strong> ${v.color||'N/A'}</p>
+                        <p style="font-weight: 700;"><strong>💰 Preço:</strong> R$ ${fmt(v.price)}</p>
+                        <p style="font-weight: 700;"><strong>📍 Localização:</strong> ${v.location||'N/A'}</p>
+                    </div>
 
                     ${v.description ? `
-                        <div style="margin-top: 2.5rem; padding-top: 2.5rem; border-top: 3px solid var(--slate-200);">
-                            <h4 style="margin-bottom: 1.25rem; color: var(--green-800); font-weight: 900; font-size: 1.25rem;">📝 Descrição</h4>
-                            <p style="color: var(--slate-600); line-height: 1.8; font-weight: 600;">${v.description}</p>
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid var(--slate-200);">
+                            <h4 style="margin-bottom: 0.75rem; color: var(--green-800); font-weight: 900; font-size: 1rem;">
+                                📝 Descrição
+                            </h4>
+                            <p style="color: var(--slate-600); line-height: 1.6; font-weight: 600; font-size: 0.875rem;">
+                                ${v.description}
+                            </p>
                         </div>
                     ` : ''}
                 </div>
@@ -1847,7 +1845,7 @@
             const imgs = v.images || []
 
             if (imgs.length === 0) {
-                toast('Sem imagens', 'error')
+                toast('Sem imagens disponíveis', 'error')
                 return
             }
 
@@ -1855,53 +1853,51 @@
 
             const thumbnailsHtml = imgs.map((img, i) => `
                 <div class="thumbnail-box ${i === cur ? 'active' : ''}" onclick="selectPhoto(${i})" data-thumb-index="${i}">
-                    <img src="${img.thumb || img.url}" alt="Foto ${i + 1}">
+                    <img src="${img.thumb || img.url}" alt="Foto ${i + 1}" loading="lazy">
                 </div>
             `).join('')
 
             modal(`📷 ${v.brand} ${v.model}`, `
-                <div style="margin-bottom: 2rem;">
-                    <div class="main-photo-viewer">
-                        <img id="mainPhoto" src="${imgs[cur].url}" alt="${v.brand} ${v.model}">
-                        <div class="photo-counter-badge">
+                <div class="gallery-viewer">
+                    <div class="main-photo-container">
+                        <img id="mainPhoto" src="${imgs[cur].url}" alt="${v.brand} ${v.model}" class="main-photo">
+                        <div class="photo-counter">
                             <span id="photoCounter">${cur + 1}</span> / ${imgs.length}
                         </div>
                     </div>
                     
                     <div class="thumbnails-section">
-                        <h5>Selecione uma foto para visualizar</h5>
+                        <h5>📸 Toque para visualizar</h5>
                         <div class="thumbnails-container">
                             ${thumbnailsHtml}
                         </div>
                     </div>
                 </div>
-            `, true)
+            `)
 
             window.selectPhoto = (photoIndex) => {
                 cur = photoIndex
                 
-                // Atualizar imagem principal
-                document.getElementById('mainPhoto').src = imgs[cur].url
+                const mainPhoto = document.getElementById('mainPhoto')
+                mainPhoto.style.opacity = '0'
                 
-                // Atualizar contador
-                document.getElementById('photoCounter').textContent = cur + 1
-                
-                // Atualizar thumbnail ativo
-                document.querySelectorAll('.thumbnail-box').forEach((thumb, i) => {
-                    if (i === photoIndex) {
-                        thumb.classList.add('active')
-                    } else {
-                        thumb.classList.remove('active')
-                    }
-                })
+                setTimeout(() => {
+                    mainPhoto.src = imgs[cur].url
+                    mainPhoto.style.opacity = '1'
+                    document.getElementById('photoCounter').textContent = cur + 1
+                    
+                    document.querySelectorAll('.thumbnail-box').forEach((thumb, i) => {
+                        thumb.classList.toggle('active', i === photoIndex)
+                    })
+                }, 150)
             }
         }
 
-        function modal(title, content, isGallery = false) {
+        function modal(title, content) {
             const m = document.createElement('div')
             m.className = 'overlay'
             m.innerHTML = `
-                <div class="dialog ${isGallery ? 'gallery-dialog' : ''}">
+                <div class="dialog">
                     <div class="dialog-head">
                         <h2 class="dialog-title">${title}</h2>
                         <button class="close-btn" onclick="closeM(this)">×</button>
@@ -1911,6 +1907,7 @@
             `
 
             document.body.appendChild(m)
+            document.body.style.overflow = 'hidden'
             setTimeout(() => m.classList.add('show'), 10)
 
             m.addEventListener('click', e => {
@@ -1923,13 +1920,15 @@
         function closeM(btn) {
             const m = btn.closest('.overlay')
             m.classList.remove('show')
-            setTimeout(() => m.remove(), 400)
+            document.body.style.overflow = ''
+            setTimeout(() => m.remove(), 300)
         }
 
         function closeModals() {
             document.querySelectorAll('.overlay').forEach(m => {
                 m.classList.remove('show')
-                setTimeout(() => m.remove(), 400)
+                document.body.style.overflow = ''
+                setTimeout(() => m.remove(), 300)
             })
         }
 
@@ -1954,8 +1953,8 @@
 
             setTimeout(() => {
                 t.style.opacity = '0'
-                t.style.transform = 'translateX(500px)'
-                setTimeout(() => t.remove(), 400)
+                t.style.transform = window.innerWidth < 640 ? 'translateY(100px)' : 'translateX(400px)'
+                setTimeout(() => t.remove(), 300)
             }, 3500)
         }
 
