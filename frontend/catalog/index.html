@@ -904,6 +904,117 @@
             color: #dc2626;
         }
 
+        /* GALERIA COM THUMBNAILS SELECIONÁVEIS */
+        .main-photo-viewer {
+            width: 100%;
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            min-height: 50vh;
+            max-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-photo-viewer img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .photo-counter-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 100px;
+            font-weight: 900;
+            font-size: 1rem;
+        }
+
+        .thumbnails-section h5 {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--green-800);
+            margin-bottom: 1rem;
+        }
+
+        .thumbnails-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0.75rem;
+            background: var(--slate-50);
+            border-radius: var(--radius-md);
+        }
+
+        .thumbnail-box {
+            aspect-ratio: 16/9;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .thumbnail-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-box:active {
+            transform: scale(0.95);
+        }
+
+        .thumbnail-box.active {
+            border-color: var(--green-600);
+            box-shadow: 0 0 0 3px var(--green-200);
+        }
+
+        .thumbnail-box.active::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--green-600);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 640px) {
+            .thumbnails-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .thumbnails-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .thumbnail-box:hover {
+                border-color: var(--green-400);
+                transform: scale(1.05);
+            }
+        }
+
         /* GALLERY MODAL STYLES */
         .gallery-modal {
             display: flex;
@@ -1743,25 +1854,23 @@
             let cur = start
 
             const thumbnailsHtml = imgs.map((img, i) => `
-                <div class="thumbnail-item ${i === cur ? 'active' : ''}" onclick="selectPhoto(${i})" data-thumb-index="${i}">
+                <div class="thumbnail-box ${i === cur ? 'active' : ''}" onclick="selectPhoto(${i})" data-thumb-index="${i}">
                     <img src="${img.thumb || img.url}" alt="Foto ${i + 1}">
                 </div>
             `).join('')
 
             modal(`📷 ${v.brand} ${v.model}`, `
-                <div class="gallery-modal">
-                    <div class="main-photo-container">
-                        <img id="mainPhoto" class="main-photo" src="${imgs[cur].url}" alt="${v.brand} ${v.model}">
-                        <div class="photo-counter">
+                <div style="margin-bottom: 2rem;">
+                    <div class="main-photo-viewer">
+                        <img id="mainPhoto" src="${imgs[cur].url}" alt="${v.brand} ${v.model}">
+                        <div class="photo-counter-badge">
                             <span id="photoCounter">${cur + 1}</span> / ${imgs.length}
                         </div>
                     </div>
                     
-                    <div>
-                        <h4 style="margin-bottom: 1rem; font-weight: 900; color: var(--slate-700); font-size: 1.125rem;">
-                            Selecione uma foto para visualizar
-                        </h4>
-                        <div class="thumbnails-grid">
+                    <div class="thumbnails-section">
+                        <h5>Selecione uma foto para visualizar</h5>
+                        <div class="thumbnails-container">
                             ${thumbnailsHtml}
                         </div>
                     </div>
@@ -1778,7 +1887,7 @@
                 document.getElementById('photoCounter').textContent = cur + 1
                 
                 // Atualizar thumbnail ativo
-                document.querySelectorAll('.thumbnail-item').forEach((thumb, i) => {
+                document.querySelectorAll('.thumbnail-box').forEach((thumb, i) => {
                     if (i === photoIndex) {
                         thumb.classList.add('active')
                     } else {
